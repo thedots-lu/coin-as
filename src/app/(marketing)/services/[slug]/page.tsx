@@ -5,7 +5,7 @@ import { Metadata } from 'next'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
 import Image from 'next/image'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 export async function generateMetadata({
   params,

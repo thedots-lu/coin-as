@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import FAQAccordion from '@/components/sections/FAQAccordion'
 import { LocaleString } from '@/lib/types/locale'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 export const metadata: Metadata = {
   title: 'FAQ',

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { getPublishedPartners } from '@/lib/firestore/partners'
 import { getLocalizedField } from '@/lib/locale'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 export const metadata: Metadata = {
   title: 'Partners',

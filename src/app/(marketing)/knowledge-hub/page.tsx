@@ -6,7 +6,7 @@ import { getLocalizedField } from '@/lib/locale'
 import { formatDate } from '@/lib/utils/date'
 import Badge from '@/components/ui/Badge'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 export const metadata: Metadata = {
   title: 'Knowledge Hub',
