@@ -1,3 +1,5 @@
+import { config } from 'dotenv';
+config({ path: '.env.local' });
 import { initializeApp } from 'firebase/app';
 import {
   getFirestore as getFs,
@@ -20,12 +22,12 @@ const ls = (en: string): LocaleString => ({ en, fr: '', nl: '' });
 
 function getFirestore(): Firestore {
   const app = initializeApp({
-    apiKey: 'AIzaSyDKS3f62jIsixa4_-XF1X288yEuODN8ioA',
-    authDomain: 'coin-website-8d592.firebaseapp.com',
-    projectId: 'coin-website-8d592',
-    storageBucket: 'coin-website-8d592.firebasestorage.app',
-    messagingSenderId: '228587590552',
-    appId: '1:228587590552:web:c34cf0771f5034f49cd1ed',
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
   });
   return getFs(app);
 }
