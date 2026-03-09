@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import FAQAccordion from '@/components/sections/FAQAccordion'
 import { LocaleString } from '@/lib/types/locale'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'FAQ',
   description: 'Frequently asked questions about business continuity, NIS2, DORA, and COIN services.',

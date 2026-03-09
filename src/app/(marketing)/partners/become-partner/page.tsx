@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Become a Partner',
   description: 'Partner with COIN to deliver business continuity solutions across the BeNeLux region.',

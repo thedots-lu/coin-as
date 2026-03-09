@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 import { getLocalizedField } from '@/lib/locale'
 
-export const revalidate = 300
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage('cookies-policy')

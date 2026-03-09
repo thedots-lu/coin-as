@@ -1,16 +1,11 @@
-import { getServiceBySlug, getPublishedServices } from '@/lib/firestore/services'
+import { getServiceBySlug } from '@/lib/firestore/services'
 import { getLocalizedField } from '@/lib/locale'
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
 import Image from 'next/image'
 
-export const revalidate = 300
-
-export async function generateStaticParams() {
-  const services = await getPublishedServices()
-  return services.filter((s) => s.slug !== 'overview').map((s) => ({ slug: s.slug }))
-}
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({
   params,
