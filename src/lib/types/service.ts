@@ -1,6 +1,6 @@
 import { LocaleString } from './locale'
 import { PageSection, SeoMeta } from './page'
-import { Timestamp } from 'firebase/firestore'
+import { Timestamp } from 'firebase/firestore/lite'
 
 export interface ServiceDocument {
   id: string

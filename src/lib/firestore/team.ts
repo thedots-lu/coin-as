@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs } from 'firebase/firestore'
+import { collection, query, where, getDocs } from 'firebase/firestore/lite'
 import { db } from '../firebase/config'
 import { TeamMember } from '../types/team'
 import { serializeFirestoreData } from './serialize'

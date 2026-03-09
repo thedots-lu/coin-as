@@ -1,5 +1,5 @@
 import { LocaleString } from './locale'
-import { Timestamp } from 'firebase/firestore'
+import { Timestamp } from 'firebase/firestore/lite'
 
 export interface Partner {
   id: string

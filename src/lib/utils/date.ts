@@ -1,4 +1,4 @@
-import { Timestamp } from 'firebase/firestore'
+import { Timestamp } from 'firebase/firestore/lite'
 
 export function formatDate(date: Timestamp | Date | string | null | undefined): string {
   if (!date) return ''

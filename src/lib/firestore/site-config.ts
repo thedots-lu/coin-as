@@ -1,4 +1,4 @@
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc } from 'firebase/firestore/lite'
 import { db } from '../firebase/config'
 import { SiteConfig } from '../types/site-config'
 import { serializeFirestoreData } from './serialize'

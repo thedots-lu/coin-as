@@ -1,4 +1,4 @@
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc } from 'firebase/firestore/lite'
 import { db } from '../firebase/config'
 import { MainNavigation, FooterNavigation } from '../types/navigation'
 import { serializeFirestoreData } from './serialize'

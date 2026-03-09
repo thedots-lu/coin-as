@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore/lite'
 import { db } from '../firebase/config'
 import { PageDocument } from '../types/page'
 import { serializeFirestoreData } from './serialize'
