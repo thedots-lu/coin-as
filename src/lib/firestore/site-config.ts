@@ -1,0 +1,11 @@
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '../firebase/config'
+import { SiteConfig } from '../types/site-config'
+import { serializeFirestoreData } from './serialize'
+
+export async function getSiteConfig(): Promise<SiteConfig | null> {
+  const docRef = doc(db, 'site_config', 'global')
+  const docSnap = await getDoc(docRef)
+  if (!docSnap.exists()) return null
+  return serializeFirestoreData<SiteConfig>(docSnap.data())
+}
