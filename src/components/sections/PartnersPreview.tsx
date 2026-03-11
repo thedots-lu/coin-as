@@ -19,7 +19,7 @@ export default function PartnersPreview({ section, locale, partners }: PartnersP
   const body = getLocalizedField(section.body, locale)
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-warm-50">
       <div className="container-padding">
         {section.imageUrl && (
           <AnimatedSection animation="slideUp" className="mb-12">
@@ -52,7 +52,7 @@ export default function PartnersPreview({ section, locale, partners }: PartnersP
 
         {body && (
           <AnimatedSection animation="slideUp" className="text-center mb-16">
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">{body}</p>
+            <p className="text-lg text-secondary-600 max-w-2xl mx-auto">{body}</p>
           </AnimatedSection>
         )}
 
@@ -76,7 +76,7 @@ export default function PartnersPreview({ section, locale, partners }: PartnersP
                       {partner.name}
                     </span>
                   )}
-                  <p className="text-sm text-gray-500 text-center">{partner.name}</p>
+                  <p className="text-sm text-secondary-500 text-center">{partner.name}</p>
                   {partner.websiteUrl && (
                     <a
                       href={partner.websiteUrl}
@@ -92,7 +92,7 @@ export default function PartnersPreview({ section, locale, partners }: PartnersP
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-500 mb-12">No partners to display.</p>
+          <p className="text-center text-secondary-500 mb-12">No partners to display.</p>
         )}
 
         {section.ctaLink && (

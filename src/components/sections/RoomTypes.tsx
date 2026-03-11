@@ -11,7 +11,7 @@ interface RoomTypesProps {
 
 export default function RoomTypes({ section, locale }: RoomTypesProps) {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-warm-100/60">
       <div className="container-padding">
         {section.imageUrl && (
           <div className="relative w-full h-64 md:h-80 rounded-2xl overflow-hidden mb-12 shadow-lg group">
@@ -39,7 +39,7 @@ export default function RoomTypes({ section, locale }: RoomTypesProps) {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold mb-1">{name}</h3>
-                  <p className="text-gray-600 text-sm">{description}</p>
+                  <p className="text-secondary-600 text-sm">{description}</p>
                 </div>
               </div>
             )

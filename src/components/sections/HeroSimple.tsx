@@ -18,7 +18,7 @@ export default function HeroSimple({ section, locale }: HeroSimpleProps) {
       style={{
         background: section.backgroundImageUrl
           ? undefined
-          : 'linear-gradient(135deg, var(--color-secondary-800) 0%, var(--color-primary-900) 100%)',
+          : 'linear-gradient(135deg, var(--color-surface-dark) 0%, var(--color-surface-darkest) 100%)',
       }}
     >
       {section.backgroundImageUrl && (
@@ -30,7 +30,7 @@ export default function HeroSimple({ section, locale }: HeroSimpleProps) {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-secondary-900/80 via-secondary-800/70 to-primary-900/80" />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(11,26,46,0.85) 0%, rgba(6,14,26,0.8) 100%)' }} />
         </>
       )}
       {!section.backgroundImageUrl && (

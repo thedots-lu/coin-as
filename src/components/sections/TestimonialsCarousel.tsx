@@ -20,24 +20,42 @@ export default function TestimonialsCarousel({
 }: TestimonialsCarouselProps) {
   const [current, setCurrent] = useState(0)
   const [direction, setDirection] = useState(0)
+  const [progress, setProgress] = useState(0)
   const touchStartX = useRef(0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const progressRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const total = testimonials.length
+  const AUTOPLAY_MS = 8000
+  const PROGRESS_TICK = 50
+
+  const resetProgress = useCallback(() => {
+    setProgress(0)
+    if (progressRef.current) clearInterval(progressRef.current)
+    progressRef.current = setInterval(() => {
+      setProgress((prev) => {
+        const next = prev + (PROGRESS_TICK / AUTOPLAY_MS) * 100
+        return next >= 100 ? 100 : next
+      })
+    }, PROGRESS_TICK)
+  }, [])
 
   const startAutoPlay = useCallback(() => {
     if (intervalRef.current) clearInterval(intervalRef.current)
+    resetProgress()
     intervalRef.current = setInterval(() => {
       setDirection(1)
       setCurrent((prev) => (prev + 1) % total)
-    }, 8000)
-  }, [total])
+      resetProgress()
+    }, AUTOPLAY_MS)
+  }, [total, resetProgress])
 
   useEffect(() => {
     if (total <= 1) return
     startAutoPlay()
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)
+      if (progressRef.current) clearInterval(progressRef.current)
     }
   }, [total, startAutoPlay])
 
@@ -74,94 +92,192 @@ export default function TestimonialsCarousel({
   if (total === 0) return null
 
   const headingText = heading ? getLocalizedField(heading, locale) : ''
+  const t = testimonials[current]
 
   const slideVariants = {
-    enter: (dir: number) => ({ x: dir > 0 ? 300 : -300, opacity: 0 }),
-    center: { x: 0, opacity: 1 },
-    exit: (dir: number) => ({ x: dir > 0 ? -300 : 300, opacity: 0 }),
+    enter: (dir: number) => ({
+      x: dir > 0 ? 80 : -80,
+      opacity: 0,
+      filter: 'blur(4px)',
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      filter: 'blur(0px)',
+    },
+    exit: (dir: number) => ({
+      x: dir > 0 ? -80 : 80,
+      opacity: 0,
+      filter: 'blur(4px)',
+    }),
   }
 
   return (
-    <section className="py-20 bg-secondary-50">
-      <div className="container-padding">
-        {headingText && (
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            {headingText}
-          </h2>
-        )}
+    <section className="relative py-24 md:py-32 overflow-hidden bg-warm-50">
+      {/* Subtle background texture -- diagonal fine lines */}
+      <div
+        className="absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage:
+            'repeating-linear-gradient(135deg, transparent, transparent 10px, rgba(0,0,0,1) 10px, rgba(0,0,0,1) 11px)',
+        }}
+      />
 
+      {/* Accent glow -- top-right corner, very subtle */}
+      <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-primary-200/30 blur-3xl pointer-events-none" />
+
+      <div className="container-padding relative z-10">
+        {/* Header row: label + heading + counter */}
+        <div className="max-w-5xl mx-auto mb-16 md:mb-20">
+          <div className="flex items-end justify-between gap-8">
+            <div>
+              <motion.span
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className="inline-block text-xs font-semibold tracking-[0.25em] uppercase text-primary-600 mb-4"
+              >
+                Testimonials
+              </motion.span>
+              {headingText && (
+                <motion.h2
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                  className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary-800 tracking-tight leading-[1.1]"
+                >
+                  {headingText}
+                </motion.h2>
+              )}
+            </div>
+
+            {/* Slide counter -- editorial style */}
+            {total > 1 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="hidden md:flex items-baseline gap-1 text-secondary-400 font-display shrink-0"
+              >
+                <span className="text-3xl font-bold text-secondary-800 tabular-nums">
+                  {String(current + 1).padStart(2, '0')}
+                </span>
+                <span className="text-sm mx-1 text-secondary-400">/</span>
+                <span className="text-sm tabular-nums text-secondary-400">
+                  {String(total).padStart(2, '0')}
+                </span>
+              </motion.div>
+            )}
+          </div>
+
+          {/* Thin separator line */}
+          <div className="mt-8 h-px bg-secondary-200" />
+        </div>
+
+        {/* Main testimonial area */}
         <div
-          className="relative max-w-3xl mx-auto"
+          className="relative max-w-5xl mx-auto"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          {/* Navigation arrows */}
-          {total > 1 && (
-            <>
-              <button
-                onClick={goPrev}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 z-10 p-2 rounded-full bg-white shadow-md hover:bg-primary-50 transition-colors"
-                aria-label="Previous testimonial"
-              >
-                <ChevronLeft className="w-5 h-5 text-secondary-700" />
-              </button>
-              <button
-                onClick={goNext}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 z-10 p-2 rounded-full bg-white shadow-md hover:bg-primary-50 transition-colors"
-                aria-label="Next testimonial"
-              >
-                <ChevronRight className="w-5 h-5 text-secondary-700" />
-              </button>
-            </>
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
+            {/* Left column: oversized quote mark */}
+            <div className="hidden md:flex md:col-span-2 justify-end pt-2">
+              <Quote
+                className="w-16 h-16 text-primary-300/40"
+                strokeWidth={1}
+              />
+            </div>
 
-          {/* Carousel content */}
-          <div className="overflow-hidden">
-            <AnimatePresence mode="wait" custom={direction}>
-              <motion.div
-                key={current}
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.4, ease: 'easeInOut' }}
-                className="glass-card p-8 md:p-12 text-center"
-              >
-                <Quote className="w-10 h-10 text-primary-300 mx-auto mb-6" />
-                <blockquote className="text-lg md:text-xl text-gray-700 mb-6 italic leading-relaxed">
-                  &ldquo;{getLocalizedField(testimonials[current].quote, locale)}&rdquo;
-                </blockquote>
-                <div>
-                  <p className="font-semibold text-secondary-800">
-                    {testimonials[current].authorName}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {getLocalizedField(testimonials[current].authorTitle, locale)}
-                    {testimonials[current].companyName && (
-                      <> &mdash; {testimonials[current].companyName}</>
-                    )}
-                  </p>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+            {/* Right column: quote content */}
+            <div className="md:col-span-10 min-h-[280px] md:min-h-[240px] relative">
+              <AnimatePresence mode="wait" custom={direction}>
+                <motion.div
+                  key={current}
+                  custom={direction}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+                >
+                  {/* The quote itself -- large, confident, no quotes wrapper needed */}
+                  <blockquote className="text-xl md:text-2xl lg:text-[1.75rem] text-secondary-700 leading-relaxed md:leading-[1.6] font-light tracking-[-0.01em] mb-10">
+                    &ldquo;{getLocalizedField(t.quote, locale)}&rdquo;
+                  </blockquote>
+
+                  {/* Attribution -- separated by a small accent bar */}
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-px bg-accent-400" />
+                    <div>
+                      <p className="text-sm font-semibold text-secondary-800 tracking-wide">
+                        {t.authorName}
+                      </p>
+                      <p className="text-sm text-secondary-500 mt-0.5">
+                        {getLocalizedField(t.authorTitle, locale)}
+                        {t.companyName && (
+                          <span className="text-secondary-400">
+                            {' '}&mdash; {t.companyName}
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
 
-          {/* Dot indicators */}
+          {/* Bottom controls */}
           {total > 1 && (
-            <div className="flex justify-center gap-2 mt-6">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goTo(index)}
-                  className={`w-2.5 h-2.5 rounded-full transition-all ${
-                    index === current
-                      ? 'bg-primary-500 w-6'
-                      : 'bg-gray-300 hover:bg-gray-400'
-                  }`}
-                  aria-label={`Go to testimonial ${index + 1}`}
-                />
-              ))}
+            <div className="mt-14 md:mt-16 max-w-5xl mx-auto">
+              <div className="flex items-center gap-6">
+                {/* Navigation arrows -- minimal, inline */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={goPrev}
+                    className="group w-10 h-10 flex items-center justify-center border border-secondary-200 rounded-full transition-all duration-300 hover:border-secondary-400 hover:bg-secondary-50"
+                    aria-label="Previous testimonial"
+                  >
+                    <ChevronLeft className="w-4 h-4 text-secondary-400 group-hover:text-secondary-700 transition-colors" />
+                  </button>
+                  <button
+                    onClick={goNext}
+                    className="group w-10 h-10 flex items-center justify-center border border-secondary-200 rounded-full transition-all duration-300 hover:border-secondary-400 hover:bg-secondary-50"
+                    aria-label="Next testimonial"
+                  >
+                    <ChevronRight className="w-4 h-4 text-secondary-400 group-hover:text-secondary-700 transition-colors" />
+                  </button>
+                </div>
+
+                {/* Progress segments -- one per testimonial */}
+                <div className="flex-1 flex items-center gap-1.5">
+                  {testimonials.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => goTo(index)}
+                      className="relative flex-1 h-[2px] bg-secondary-200 overflow-hidden cursor-pointer group"
+                      aria-label={`Go to testimonial ${index + 1}`}
+                    >
+                      {/* Hover highlight */}
+                      <span className="absolute inset-0 bg-secondary-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      {/* Active fill or progress bar */}
+                      {index < current && (
+                        <span className="absolute inset-0 bg-secondary-400" />
+                      )}
+                      {index === current && (
+                        <motion.span
+                          className="absolute inset-y-0 left-0 bg-accent-400"
+                          style={{ width: `${progress}%` }}
+                        />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>

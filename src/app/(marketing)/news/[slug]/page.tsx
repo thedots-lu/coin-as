@@ -103,7 +103,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
           </div>
 
           {item.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-10 pt-6 border-t border-gray-200">
+            <div className="flex flex-wrap gap-2 mt-10 pt-6 border-t border-slate-200">
               {item.tags.map((tag) => (
                 <Badge key={tag}>{tag}</Badge>
               ))}

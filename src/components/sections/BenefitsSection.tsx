@@ -14,7 +14,7 @@ export default function BenefitsSection({ section, locale }: BenefitsSectionProp
   const heading = getLocalizedField(section.heading, locale)
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-warm-50">
       <div className="container-padding">
         {heading && (
           <AnimatedSection animation="slideUp" className="text-center mb-16">
@@ -37,7 +37,7 @@ export default function BenefitsSection({ section, locale }: BenefitsSectionProp
                   <h3 className="text-lg font-semibold text-secondary-800 mb-2">
                     {title}
                   </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-secondary-600 text-sm leading-relaxed">
                     {description}
                   </p>
                 </div>

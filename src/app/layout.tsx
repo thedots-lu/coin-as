@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { Geist } from "next/font/google";
+import { Geist, Sora } from "next/font/google";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const sora = Sora({subsets:['latin'],variable:'--font-display',weight:['400','500','600','700']});
 
 export const metadata: Metadata = {
   title: {
@@ -20,14 +21,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="font-[family-name:var(--font-inter)] text-gray-800 bg-white antialiased">
+    <html lang="en" className={cn("font-sans", geist.variable, sora.variable)}>
+      <body className="text-slate-800 bg-warm-50 antialiased">
         {children}
       </body>
     </html>

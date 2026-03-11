@@ -107,7 +107,7 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
                 ? 'Bericht verzonden!'
                 : 'Message sent!'}
             </h3>
-            <p className="text-gray-600">
+            <p className="text-secondary-600">
               {confirmationMsg || (locale === 'fr'
                 ? 'Nous vous recontacterons dans les plus brefs delais.'
                 : locale === 'nl'
@@ -126,14 +126,14 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Subject */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-secondary-700 mb-1">
               {getLocalizedField(labels.subject, locale)} *
             </label>
             <select
               value={formData.subject}
               onChange={(e) => handleChange('subject', e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all bg-white"
+              className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all bg-white"
             >
               <option value="">
                 {locale === 'fr' ? '-- Choisissez un sujet --' : locale === 'nl' ? '-- Kies een onderwerp --' : '-- Select a subject --'}
@@ -151,18 +151,18 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-secondary-700 mb-1">
                 {getLocalizedField(labels.company, locale)}
               </label>
               <input
                 type="text"
                 value={formData.company}
                 onChange={(e) => handleChange('company', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-secondary-700 mb-1">
                 {getLocalizedField(labels.name, locale)} *
               </label>
               <input
@@ -170,25 +170,25 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
                 value={formData.name}
                 onChange={(e) => handleChange('name', e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-secondary-700 mb-1">
                 {getLocalizedField(labels.phone, locale)}
               </label>
               <input
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => handleChange('phone', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-secondary-700 mb-1">
                 {getLocalizedField(labels.email, locale)} *
               </label>
               <input
@@ -196,21 +196,21 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
               />
             </div>
           </div>
 
           {/* Country */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-secondary-700 mb-1">
               {getLocalizedField(labels.country, locale)} *
             </label>
             <select
               value={formData.country}
               onChange={(e) => handleChange('country', e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all bg-white"
+              className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all bg-white"
             >
               <option value="">
                 {locale === 'fr' ? '-- Choisissez un pays --' : locale === 'nl' ? '-- Kies een land --' : '-- Select a country --'}
@@ -227,7 +227,7 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-secondary-700 mb-1">
               {getLocalizedField(labels.message, locale)} *
             </label>
             <textarea
@@ -235,7 +235,7 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
               onChange={(e) => handleChange('message', e.target.value)}
               required
               rows={5}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all resize-y"
+              className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all resize-y"
             />
           </div>
 
@@ -247,9 +247,9 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
               checked={formData.gdprConsent}
               onChange={(e) => handleChange('gdprConsent', e.target.checked)}
               required
-              className="mt-1 h-4 w-4 border-gray-300 rounded text-primary-500 focus:ring-primary-500"
+              className="mt-1 h-4 w-4 border-secondary-300 rounded text-primary-500 focus:ring-primary-500"
             />
-            <label htmlFor="gdpr-consent" className="text-sm text-gray-600">
+            <label htmlFor="gdpr-consent" className="text-sm text-secondary-600">
               {gdprText}
             </label>
           </div>
@@ -259,7 +259,7 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
           )}
 
           {privacyText && (
-            <p className="text-xs text-gray-500">{privacyText}</p>
+            <p className="text-xs text-secondary-500">{privacyText}</p>
           )}
 
           <Button type="submit" variant="primary" className="w-full md:w-auto">

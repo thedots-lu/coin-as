@@ -61,7 +61,7 @@ export default async function ServicePage({
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             {getLocalizedField(service.title, 'en')}
           </h1>
-          <p className="text-xl text-gray-200 max-w-3xl mx-auto">
+          <p className="text-xl text-slate-200 max-w-3xl mx-auto">
             {getLocalizedField(service.heroSubtitle, 'en')}
           </p>
         </div>
@@ -71,7 +71,7 @@ export default async function ServicePage({
       <section className="py-16">
         <div className="container-padding">
           <div className="max-w-4xl mx-auto">
-            <p className="text-lg text-gray-600 leading-relaxed">
+            <p className="text-lg text-slate-600 leading-relaxed">
               {getLocalizedField(service.overview, 'en')}
             </p>
           </div>
@@ -89,7 +89,7 @@ export default async function ServicePage({
           <h2 className="text-3xl font-bold text-white mb-4">Interested in this service?</h2>
           <a
             href="/contact"
-            className="inline-block bg-white text-primary-600 hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-medium shadow-lg transition-all duration-300"
+            className="inline-block bg-white text-primary-600 hover:bg-slate-100 px-8 py-4 rounded-lg text-lg font-medium shadow-lg transition-all duration-300"
           >
             Contact us
           </a>

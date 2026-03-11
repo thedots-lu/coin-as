@@ -17,7 +17,7 @@ export default async function CookiesPolicyPage() {
   if (!pageData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Cookies policy page not found.</p>
+        <p className="text-slate-500">Cookies policy page not found.</p>
       </div>
     )
   }

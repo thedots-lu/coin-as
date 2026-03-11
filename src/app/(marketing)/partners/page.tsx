@@ -46,7 +46,7 @@ export default async function PartnersPage() {
 
       {/* Technology Partners */}
       {technologyPartners.length > 0 && (
-        <section className="py-16 bg-gray-50">
+        <section className="py-16 bg-slate-50">
           <div className="container-padding max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold mb-8">Technology Partners</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -62,7 +62,7 @@ export default async function PartnersPage() {
       {partners.length === 0 && (
         <section className="py-20">
           <div className="container-padding max-w-6xl mx-auto text-center">
-            <p className="text-gray-500 text-lg">Partner information coming soon.</p>
+            <p className="text-slate-500 text-lg">Partner information coming soon.</p>
           </div>
         </section>
       )}
@@ -71,7 +71,7 @@ export default async function PartnersPage() {
       <section className="py-16">
         <div className="container-padding max-w-4xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">Interested in partnering with COIN?</h2>
-          <p className="text-gray-600 mb-6 max-w-xl mx-auto">
+          <p className="text-slate-600 mb-6 max-w-xl mx-auto">
             Join our ecosystem and collaborate with us to deliver best-in-class business continuity solutions.
           </p>
           <Link href="/partners/become-partner" className="btn-primary inline-block">
@@ -87,7 +87,7 @@ function PartnerCard({ partner }: { partner: import('@/lib/types/partner').Partn
   const description = getLocalizedField(partner.description)
 
   const content = (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
+    <div className="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
       <div className="flex items-center justify-center h-20 mb-4">
         <Image
           src={partner.logoUrl}
@@ -99,7 +99,7 @@ function PartnerCard({ partner }: { partner: import('@/lib/types/partner').Partn
       </div>
       <h3 className="text-lg font-semibold text-center mb-2">{partner.name}</h3>
       {description && (
-        <p className="text-gray-600 text-sm text-center flex-1">{description}</p>
+        <p className="text-slate-600 text-sm text-center flex-1">{description}</p>
       )}
       {partner.websiteUrl && (
         <p className="text-primary-600 text-sm text-center mt-4 font-medium">

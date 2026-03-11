@@ -5,8 +5,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-inter: "Inter", sans-serif;
-  --font-poppins: "Poppins", sans-serif;
+  --font-display: "Sora", sans-serif;
+
+  --color-warm-50: #FAFAF8;
+  --color-warm-100: #F5F5F0;
 
   --color-primary-50: #f0f7ff;
   --color-primary-100: #e0effe;
@@ -15,9 +17,10 @@
   --color-primary-400: #38b6fb;
   --color-primary-500: #0e9eef;
   --color-primary-600: #0080cb;
-  --color-primary-700: #0068a5;
-  --color-primary-800: #005c89;
-  --color-primary-900: #064c72;
+  --color-primary-700: #005da0;
+  --color-primary-800: #004a80;
+  --color-primary-900: #003a66;
+  --color-primary-950: #00253f;
 
   --color-secondary-50: #f5f7fa;
   --color-secondary-100: #ebeef3;
@@ -30,16 +33,19 @@
   --color-secondary-800: #304357;
   --color-secondary-900: #2c3a4b;
 
-  --color-accent-50: #fdf5f5;
-  --color-accent-100: #fbe8e7;
-  --color-accent-200: #f9d8d3;
-  --color-accent-300: #f4b8b0;
-  --color-accent-400: #ea8d7f;
-  --color-accent-500: #df6d57;
-  --color-accent-600: #c94b38;
-  --color-accent-700: #a53828;
-  --color-accent-800: #883225;
-  --color-accent-900: #702f25;
+  --color-accent-50: #FFFBEB;
+  --color-accent-100: #FEF3C7;
+  --color-accent-200: #FDE68A;
+  --color-accent-300: #FCD34D;
+  --color-accent-400: #FBBF24;
+  --color-accent-500: #F59E0B;
+  --color-accent-600: #D97706;
+  --color-accent-700: #B45309;
+  --color-accent-800: #92400E;
+  --color-accent-900: #78350F;
+
+  --color-surface-dark: #0b1a2e;
+  --color-surface-darkest: #060e1a;
 }
 
 /* Base styles */
@@ -48,14 +54,14 @@ html {
 }
 
 body {
-  font-family: var(--font-inter);
-  color: #1f2937;
-  background-color: white;
+  color: #1e293b;
+  background-color: var(--color-warm-50);
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-poppins);
+  font-family: var(--font-display);
   font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 /* Component classes */
@@ -329,6 +335,7 @@ h1, h2, h3, h4, h5, h6 {
 
 @theme inline {
   --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);

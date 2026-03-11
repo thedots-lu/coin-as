@@ -29,7 +29,7 @@ export default function CookieBanner() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.3 }}
-          className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg"
+          className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-secondary-200 shadow-lg"
         >
           <div className="container-padding py-4">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">

@@ -19,7 +19,7 @@ export default function RichTextBlock({ section, locale }: RichTextBlockProps) {
         )}
         {body && (
           <div
-            className="text-gray-700 leading-relaxed text-lg"
+            className="text-secondary-700 leading-relaxed text-lg"
             style={{ whiteSpace: 'pre-line' }}
           >
             {body}

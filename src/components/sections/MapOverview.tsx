@@ -12,7 +12,7 @@ export default function MapOverview({ section, locale }: MapOverviewProps) {
   const body = getLocalizedField(section.body, locale)
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20">
       <div className="container-padding">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           {section.mapImageUrl && (
@@ -31,7 +31,7 @@ export default function MapOverview({ section, locale }: MapOverviewProps) {
           <div className={section.mapImageUrl ? 'lg:w-1/2' : 'max-w-3xl mx-auto'}>
             {body && (
               <div
-                className="text-gray-700 leading-relaxed text-lg"
+                className="text-secondary-700 leading-relaxed text-lg"
                 style={{ whiteSpace: 'pre-line' }}
               >
                 {body}

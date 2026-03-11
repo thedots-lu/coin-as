@@ -53,7 +53,7 @@ export default function Timeline({ section, locale }: TimelineProps) {
                   <div className="glass-card p-6 w-full">
                     <Badge className="mb-3">{event.year}</Badge>
                     <h3 className="text-lg font-semibold mb-2">{title}</h3>
-                    <p className="text-gray-600">{description}</p>
+                    <p className="text-secondary-600">{description}</p>
                   </div>
                 </div>
               </AnimatedSection>

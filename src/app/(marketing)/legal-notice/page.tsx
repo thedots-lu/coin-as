@@ -17,7 +17,7 @@ export default async function LegalNoticePage() {
   if (!pageData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Legal notice page not found.</p>
+        <p className="text-slate-500">Legal notice page not found.</p>
       </div>
     )
   }

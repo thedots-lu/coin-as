@@ -12,7 +12,7 @@ interface ProcessPipelineProps {
 
 export default function ProcessPipeline({ section, locale }: ProcessPipelineProps) {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20">
       <div className="container-padding">
         {/* Desktop: horizontal pipeline */}
         <div className="hidden md:flex items-start justify-between relative">
@@ -34,7 +34,7 @@ export default function ProcessPipeline({ section, locale }: ProcessPipelineProp
                   {index + 1}
                 </div>
                 <h3 className="text-lg font-semibold mb-2">{title}</h3>
-                <p className="text-sm text-gray-600">{description}</p>
+                <p className="text-sm text-secondary-600">{description}</p>
               </AnimatedSection>
             )
           })}
@@ -62,7 +62,7 @@ export default function ProcessPipeline({ section, locale }: ProcessPipelineProp
                   </div>
                   <div className="pt-2">
                     <h3 className="text-lg font-semibold mb-1">{title}</h3>
-                    <p className="text-sm text-gray-600">{description}</p>
+                    <p className="text-sm text-secondary-600">{description}</p>
                   </div>
                 </AnimatedSection>
               )

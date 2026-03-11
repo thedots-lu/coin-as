@@ -15,7 +15,7 @@ export default function FeaturesSection({ section, locale }: FeaturesSectionProp
   const heading = getLocalizedField(section.heading, locale)
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-warm-100/60">
       <div className="container-padding">
         {heading && (
           <AnimatedSection animation="slideUp" className="text-center mb-16">

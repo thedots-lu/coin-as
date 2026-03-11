@@ -39,7 +39,7 @@ export default async function ServicesPage() {
         <div className="absolute inset-0 bg-gradient-to-br from-secondary-900/80 via-secondary-800/70 to-primary-900/80" />
         <div className="container-padding text-center relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Our Services</h1>
-          <p className="text-xl text-gray-200 max-w-3xl mx-auto">
+          <p className="text-xl text-slate-200 max-w-3xl mx-auto">
             Comprehensive business continuity solutions for the BeNeLux
           </p>
         </div>
@@ -59,11 +59,11 @@ export default async function ServicesPage() {
                     href={`/services/${service.slug}`}
                     className="group"
                   >
-                    <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 h-full border border-gray-100 hover:-translate-y-1">
+                    <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 h-full border border-slate-100 hover:-translate-y-1">
                       <h3 className="text-xl font-semibold mb-3 group-hover:text-primary-500 transition-colors">
                         {getLocalizedField(service.title, 'en')}
                       </h3>
-                      <p className="text-gray-600">
+                      <p className="text-slate-600">
                         {getLocalizedField(service.overview, 'en')}
                       </p>
                     </div>

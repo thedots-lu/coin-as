@@ -16,7 +16,7 @@ export default function CustomersSection({ section, locale }: CustomersSectionPr
   const body = getLocalizedField(section.body, locale)
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-warm-100/60">
       <div className="container-padding">
         {section.imageUrl && (
           <AnimatedSection animation="slideUp" className="mb-12">
@@ -49,7 +49,7 @@ export default function CustomersSection({ section, locale }: CustomersSectionPr
 
         {body && (
           <AnimatedSection animation="slideUp" className="text-center mb-16">
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">{body}</p>
+            <p className="text-lg text-secondary-600 max-w-2xl mx-auto">{body}</p>
           </AnimatedSection>
         )}
 
@@ -73,7 +73,7 @@ export default function CustomersSection({ section, locale }: CustomersSectionPr
           </div>
         ) : (
           <div className="text-center">
-            <p className="text-gray-500">
+            <p className="text-secondary-500">
               Trusted by leading organizations across the BeNeLux.
             </p>
           </div>

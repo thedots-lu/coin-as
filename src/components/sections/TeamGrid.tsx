@@ -18,7 +18,7 @@ export default function TeamGrid({ section, locale, teamMembers }: TeamGridProps
   const body = getLocalizedField(section.body, locale)
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-warm-100/60">
       <div className="container-padding">
         {section.imageUrl && (
           <AnimatedSection animation="slideUp" className="mb-12">
@@ -51,7 +51,7 @@ export default function TeamGrid({ section, locale, teamMembers }: TeamGridProps
 
         {body && (
           <AnimatedSection animation="slideUp" className="text-center mb-16">
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">{body}</p>
+            <p className="text-lg text-secondary-600 max-w-2xl mx-auto">{body}</p>
           </AnimatedSection>
         )}
 
@@ -86,7 +86,7 @@ export default function TeamGrid({ section, locale, teamMembers }: TeamGridProps
                       </p>
                     )}
                     {bio && (
-                      <p className="text-gray-600 text-sm leading-relaxed flex-grow">
+                      <p className="text-secondary-600 text-sm leading-relaxed flex-grow">
                         {bio}
                       </p>
                     )}
@@ -108,7 +108,7 @@ export default function TeamGrid({ section, locale, teamMembers }: TeamGridProps
             })}
           </div>
         ) : (
-          <p className="text-center text-gray-500">No team members to display.</p>
+          <p className="text-center text-secondary-500">No team members to display.</p>
         )}
       </div>
     </section>

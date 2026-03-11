@@ -47,7 +47,7 @@ export default async function NewsPage() {
                   <Link
                     key={item.id}
                     href={`/news/${slug}`}
-                    className="group block bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                    className="group block bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow duration-300"
                   >
                     {item.imageUrl && (
                       <div className="relative h-48 overflow-hidden">
@@ -61,7 +61,7 @@ export default async function NewsPage() {
                     )}
                     <div className="p-6">
                       <div className="flex items-center gap-2 mb-3">
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-slate-500">
                           {formatDate(item.publishedAt)}
                         </span>
                       </div>
@@ -69,7 +69,7 @@ export default async function NewsPage() {
                         {title}
                       </h3>
                       {excerpt && (
-                        <p className="text-gray-600 text-sm line-clamp-3">{excerpt}</p>
+                        <p className="text-slate-600 text-sm line-clamp-3">{excerpt}</p>
                       )}
                       {item.tags.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-4">
@@ -89,7 +89,7 @@ export default async function NewsPage() {
 
       {/* Events Section */}
       {eventItems.length > 0 && (
-        <section className="py-16 bg-gray-50">
+        <section className="py-16 bg-slate-50">
           <div className="container-padding max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold mb-8">Events</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -105,7 +105,7 @@ export default async function NewsPage() {
                   <Link
                     key={item.id}
                     href={`/news/${slug}`}
-                    className="group block bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                    className="group block bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow duration-300"
                   >
                     {item.imageUrl && (
                       <div className="relative h-48 overflow-hidden">
@@ -121,7 +121,7 @@ export default async function NewsPage() {
                       <div className="flex items-center gap-2 mb-3">
                         <Badge variant="accent" className="text-xs">Event</Badge>
                         {item.eventDate && (
-                          <span className="text-sm text-gray-500">
+                          <span className="text-sm text-slate-500">
                             {formatDate(item.eventDate)}
                           </span>
                         )}
@@ -130,10 +130,10 @@ export default async function NewsPage() {
                         {title}
                       </h3>
                       {location && (
-                        <p className="text-sm text-gray-500 mb-2">{location}</p>
+                        <p className="text-sm text-slate-500 mb-2">{location}</p>
                       )}
                       {excerpt && (
-                        <p className="text-gray-600 text-sm line-clamp-3">{excerpt}</p>
+                        <p className="text-slate-600 text-sm line-clamp-3">{excerpt}</p>
                       )}
                     </div>
                   </Link>
@@ -148,7 +148,7 @@ export default async function NewsPage() {
       {allNews.length === 0 && (
         <section className="py-20">
           <div className="container-padding max-w-6xl mx-auto text-center">
-            <p className="text-gray-500 text-lg">No news or events available at the moment.</p>
+            <p className="text-slate-500 text-lg">No news or events available at the moment.</p>
           </div>
         </section>
       )}

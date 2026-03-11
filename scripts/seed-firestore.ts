@@ -184,7 +184,7 @@ function pageHome() {
         ],
         primaryButtonText: ls('Contact us'),
         primaryButtonLink: '/contact',
-        secondaryButtonText: ls('Read more about continuity test and training'),
+        secondaryButtonText: ls('Our services'),
         secondaryButtonLink: '/services/training',
         backgroundImageUrl: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1920&q=80',
       },
@@ -233,7 +233,7 @@ function pageHome() {
         body: ls(
           'COIN has over 20 years of experience in business continuity. Yet, each year brings its share of new risks as well as technological challenges and opportunities. Together with our partners, we continuously develop innovative and robust solutions that improve the resiliency of our customers in an increasingly complex business and regulatory environment.',
         ),
-        imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80',
+        imageUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80',
       },
       {
         type: 'flexible_services',

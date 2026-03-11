@@ -56,7 +56,7 @@ export default async function KnowledgeHubPage() {
 
       {/* Case Studies Section */}
       {caseStudies.length > 0 && (
-        <section className="py-16 bg-gray-50">
+        <section className="py-16 bg-slate-50">
           <div className="container-padding max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold mb-8">Case Studies</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -72,7 +72,7 @@ export default async function KnowledgeHubPage() {
       {allArticles.length === 0 && (
         <section className="py-20">
           <div className="container-padding max-w-6xl mx-auto text-center">
-            <p className="text-gray-500 text-lg">No articles available at the moment.</p>
+            <p className="text-slate-500 text-lg">No articles available at the moment.</p>
           </div>
         </section>
       )}
@@ -89,7 +89,7 @@ function ArticleCard({ article }: { article: import('@/lib/types/article').Artic
   return (
     <Link
       href={`/knowledge-hub/${slug}`}
-      className="group block bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-300"
+      className="group block bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow duration-300"
     >
       {article.imageUrl && (
         <div className="relative h-48 overflow-hidden">
@@ -104,7 +104,7 @@ function ArticleCard({ article }: { article: import('@/lib/types/article').Artic
       <div className="p-6">
         <div className="flex items-center gap-2 mb-3">
           <Badge className="text-xs">{categoryLabel}</Badge>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-slate-500">
             {formatDate(article.publishedAt)}
           </span>
         </div>
@@ -112,7 +112,7 @@ function ArticleCard({ article }: { article: import('@/lib/types/article').Artic
           {title}
         </h3>
         {excerpt && (
-          <p className="text-gray-600 text-sm line-clamp-3">{excerpt}</p>
+          <p className="text-slate-600 text-sm line-clamp-3">{excerpt}</p>
         )}
         {article.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-4">

@@ -30,7 +30,7 @@ export default function Button({
     outline:
       'border-2 border-current bg-transparent hover:bg-white/10 focus:ring-white/30',
     ghost:
-      'bg-transparent hover:bg-gray-100 text-gray-700 focus:ring-gray-300',
+      'bg-transparent hover:bg-secondary-100 text-secondary-700 focus:ring-secondary-300',
   }
 
   const classes = `${baseClasses} ${variantClasses[variant]} ${className}`

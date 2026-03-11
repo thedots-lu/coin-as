@@ -19,7 +19,7 @@ export default async function ContactPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-3xl font-bold mb-4">Contact Us</h1>
-          <p className="text-gray-500">Contact page is being set up. Please check back soon.</p>
+          <p className="text-slate-500">Contact page is being set up. Please check back soon.</p>
         </div>
       </div>
     )

@@ -34,28 +34,28 @@ export default function BecomePartnerPage() {
                   <span className="shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-sm font-bold">1</span>
                   <div>
                     <h3 className="font-semibold mb-1">20+ years of expertise</h3>
-                    <p className="text-gray-600 text-sm">Benefit from our deep experience in business continuity across the BeNeLux.</p>
+                    <p className="text-slate-600 text-sm">Benefit from our deep experience in business continuity across the BeNeLux.</p>
                   </div>
                 </li>
                 <li className="flex gap-3">
                   <span className="shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-sm font-bold">2</span>
                   <div>
                     <h3 className="font-semibold mb-1">Established client network</h3>
-                    <p className="text-gray-600 text-sm">Access our extensive network of enterprise clients seeking continuity solutions.</p>
+                    <p className="text-slate-600 text-sm">Access our extensive network of enterprise clients seeking continuity solutions.</p>
                   </div>
                 </li>
                 <li className="flex gap-3">
                   <span className="shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-sm font-bold">3</span>
                   <div>
                     <h3 className="font-semibold mb-1">Complementary services</h3>
-                    <p className="text-gray-600 text-sm">Combine your expertise with our consulting, training, and infrastructure services.</p>
+                    <p className="text-slate-600 text-sm">Combine your expertise with our consulting, training, and infrastructure services.</p>
                   </div>
                 </li>
                 <li className="flex gap-3">
                   <span className="shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-sm font-bold">4</span>
                   <div>
                     <h3 className="font-semibold mb-1">Joint market development</h3>
-                    <p className="text-gray-600 text-sm">Collaborate on marketing, events, and business development initiatives.</p>
+                    <p className="text-slate-600 text-sm">Collaborate on marketing, events, and business development initiatives.</p>
                   </div>
                 </li>
               </ul>
@@ -65,17 +65,17 @@ export default function BecomePartnerPage() {
             <div>
               <h2 className="text-2xl font-bold mb-6">Partnership types</h2>
               <div className="space-y-6">
-                <div className="bg-gray-50 rounded-xl p-6">
+                <div className="bg-slate-50 rounded-xl p-6">
                   <h3 className="font-semibold text-lg mb-2">Business Partner</h3>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-slate-600 text-sm">
                     For organizations offering complementary consulting, training, or advisory services
                     in the business continuity and risk management space. Together we can offer
                     comprehensive solutions to our clients.
                   </p>
                 </div>
-                <div className="bg-gray-50 rounded-xl p-6">
+                <div className="bg-slate-50 rounded-xl p-6">
                   <h3 className="font-semibold text-lg mb-2">Technology Partner</h3>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-slate-600 text-sm">
                     For technology vendors and solution providers whose products enhance business
                     continuity, disaster recovery, or cyber resilience capabilities. Integrate your
                     technology into our service offerings.
@@ -88,10 +88,10 @@ export default function BecomePartnerPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-slate-50">
         <div className="container-padding max-w-3xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">Ready to get started?</h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-slate-600 mb-6">
             Contact us to discuss how we can work together to deliver exceptional business continuity solutions.
           </p>
           <Link href="/contact" className="btn-primary inline-block">

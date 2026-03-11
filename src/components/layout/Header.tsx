@@ -41,16 +41,27 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 bg-white transition-shadow duration-300 ${
-        isScrolled ? 'shadow-md' : ''
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? 'bg-white/70 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-white/20'
+          : ''
       }`}
     >
-      <div className="container-padding">
+      {/* Dark gradient backdrop when on hero -- ensures white text readability over FloatingLines */}
+      {!isScrolled && (
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(6,14,26,0.7) 0%, rgba(6,14,26,0.3) 60%, transparent 100%)',
+          }}
+        />
+      )}
+      <div className="container-padding relative">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <Shield className="h-8 w-8 text-primary-500 transition-transform duration-300 group-hover:scale-110" />
-            <span className="text-2xl font-bold font-[family-name:var(--font-poppins)] text-secondary-800">
+            <Shield className={`h-8 w-8 transition-all duration-300 group-hover:scale-110 ${isScrolled ? 'text-primary-500' : 'text-white'}`} />
+            <span className={`text-2xl font-bold font-[family-name:var(--font-poppins)] transition-colors duration-300 ${isScrolled ? 'text-secondary-800' : 'text-white'}`}>
               {siteConfig?.siteName ?? 'COIN'}
             </span>
           </Link>
@@ -59,7 +70,7 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
           <nav className="hidden lg:flex items-center gap-1">
             <Link
               href="/"
-              className="nav-link px-4 py-2 text-secondary-600 hover:text-primary-500 font-medium transition-colors duration-200 block"
+              className={`nav-link px-4 py-2 font-medium transition-colors duration-200 block ${isScrolled ? 'text-secondary-600 hover:text-primary-500' : 'text-white/90 hover:text-white'}`}
             >
               Home
             </Link>
@@ -78,7 +89,7 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
                   >
                     {hasChildren ? (
                       <button
-                        className="nav-link flex items-center gap-1 px-4 py-2 text-secondary-600 hover:text-primary-500 font-medium transition-colors duration-200"
+                        className={`nav-link flex items-center gap-1 px-4 py-2 font-medium transition-colors duration-200 ${isScrolled ? 'text-secondary-600 hover:text-primary-500' : 'text-white/90 hover:text-white'}`}
                         onClick={() => handleMenuOpen(item.path)}
                         type="button"
                       >
@@ -92,7 +103,7 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
                     ) : (
                       <Link
                         href={item.path}
-                        className="nav-link px-4 py-2 text-secondary-600 hover:text-primary-500 font-medium transition-colors duration-200 block"
+                        className={`nav-link px-4 py-2 font-medium transition-colors duration-200 block ${isScrolled ? 'text-secondary-600 hover:text-primary-500' : 'text-white/90 hover:text-white'}`}
                       >
                         {label || 'Link'}
                       </Link>
@@ -110,7 +121,7 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
               })}
             <button
               type="button"
-              className="p-2 text-secondary-600 hover:text-primary-500 transition-colors"
+              className={`p-2 transition-colors ${isScrolled ? 'text-secondary-600 hover:text-primary-500' : 'text-white/90 hover:text-white'}`}
               aria-label="Search"
             >
               <Search className="h-5 w-5" />
@@ -119,7 +130,7 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-2 text-secondary-600 hover:text-primary-500 transition-colors"
+            className={`lg:hidden p-2 transition-colors ${isScrolled ? 'text-secondary-600 hover:text-primary-500' : 'text-white/90 hover:text-white'}`}
             onClick={handleMobileToggle}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             type="button"

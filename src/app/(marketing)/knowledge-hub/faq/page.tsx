@@ -106,10 +106,10 @@ export default function FAQPage() {
       <FAQAccordion items={faqItems} locale="en" />
 
       {/* CTA */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-slate-50">
         <div className="container-padding max-w-3xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">Still have questions?</h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-slate-600 mb-6">
             Our team of experts is ready to help you with your business continuity needs.
           </p>
           <a

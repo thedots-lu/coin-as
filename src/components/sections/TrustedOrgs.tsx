@@ -45,7 +45,7 @@ export default function TrustedOrgs({ logoUrls, heading, locale }: TrustedOrgsPr
   const allLogos = [...logoUrls, ...logoUrls]
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16">
       <div className="container-padding">
         {headingText && (
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">

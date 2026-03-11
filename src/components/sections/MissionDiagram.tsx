@@ -28,7 +28,7 @@ export default function MissionDiagram({ section, locale }: MissionDiagramProps)
   ]
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-warm-50">
       <div className="container-padding">
         {section.imageUrl && (
           <AnimatedSection animation="slideUp" className="mb-12">
@@ -61,7 +61,7 @@ export default function MissionDiagram({ section, locale }: MissionDiagramProps)
 
         {body && (
           <AnimatedSection animation="slideUp" className="text-center mb-16">
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">{body}</p>
+            <p className="text-lg text-secondary-600 max-w-2xl mx-auto">{body}</p>
           </AnimatedSection>
         )}
 
@@ -97,9 +97,9 @@ export default function MissionDiagram({ section, locale }: MissionDiagramProps)
                 })}
                 {/* Center connecting arrows (visual indicator of cycle) */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center">
+                  <div className="w-20 h-20 rounded-full border-2 border-dashed border-secondary-300 flex items-center justify-center">
                     <svg
-                      className="w-8 h-8 text-gray-400 animate-spin"
+                      className="w-8 h-8 text-secondary-400 animate-spin"
                       style={{ animationDuration: '8s' }}
                       viewBox="0 0 24 24"
                       fill="none"
@@ -124,7 +124,7 @@ export default function MissionDiagram({ section, locale }: MissionDiagramProps)
                   </div>
                   {index < steps.length - 1 && (
                     <svg
-                      className="w-5 h-5 text-gray-400 mx-1 flex-shrink-0"
+                      className="w-5 h-5 text-secondary-400 mx-1 flex-shrink-0"
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >

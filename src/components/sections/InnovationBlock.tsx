@@ -1,8 +1,10 @@
+'use client'
+
 import Image from 'next/image'
 import { getLocalizedField } from '@/lib/locale'
 import { InnovationSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
-import { Lightbulb } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 interface InnovationBlockProps {
   section: InnovationSection
@@ -14,45 +16,134 @@ export default function InnovationBlock({ section, locale }: InnovationBlockProp
   const body = getLocalizedField(section.body, locale)
 
   return (
-    <section className="py-24 bg-white">
-      <div className="container-padding">
-        <div className="flex flex-col lg:flex-row items-center gap-12 max-w-6xl mx-auto">
-          <div className={section.imageUrl ? 'lg:w-1/2' : 'max-w-3xl mx-auto'}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center">
-                <Lightbulb className="w-5 h-5 text-primary-600" />
+    <section className="relative py-28 md:py-36 bg-white overflow-hidden">
+      {/* Architectural grid lines -- subtle background texture */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              'repeating-linear-gradient(90deg, var(--color-secondary-800) 0px, var(--color-secondary-800) 1px, transparent 1px, transparent 120px)',
+          }}
+        />
+      </div>
+
+      {/* Large decorative year marker */}
+      <motion.div
+        initial={{ opacity: 0, x: -60 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: '-100px' }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className="absolute top-12 md:top-16 left-6 md:left-12 select-none pointer-events-none"
+      >
+        <span
+          className="text-[8rem] md:text-[12rem] lg:text-[16rem] font-display font-bold leading-none tracking-tighter"
+          style={{ color: 'var(--color-primary-100)' }}
+        >
+          20
+        </span>
+      </motion.div>
+
+      <div className="container-padding relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-start gap-16 lg:gap-20">
+            {/* Text column -- offset down for asymmetry */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className={section.imageUrl ? 'lg:w-[45%] lg:pt-12' : 'max-w-3xl mx-auto'}
+            >
+              {/* Stacked label with vertical accent */}
+              <div className="flex items-stretch gap-4 mb-8">
+                <div
+                  className="w-1 rounded-full shrink-0"
+                  style={{
+                    background: 'linear-gradient(to bottom, var(--color-primary-500), var(--color-primary-200))',
+                  }}
+                />
+                <div className="flex flex-col justify-center">
+                  <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary-500 font-display">
+                    Since 2004
+                  </span>
+                  <span className="text-xs tracking-[0.15em] uppercase text-secondary-400 mt-0.5">
+                    Proven Track Record
+                  </span>
+                </div>
               </div>
-              <div className="h-px flex-grow bg-gradient-to-r from-primary-200 to-transparent" />
-            </div>
-            {heading && (
-              <h2 className="text-3xl md:text-4xl font-bold text-secondary-800 mb-6">{heading}</h2>
-            )}
-            {body && (
-              <p className="text-gray-600 leading-relaxed text-lg">{body}</p>
+
+              {heading && (
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary-800 mb-8 leading-[1.1] tracking-tight">
+                  {heading}
+                </h2>
+              )}
+
+              {body && (
+                <p className="text-secondary-500 leading-relaxed text-lg md:text-xl max-w-xl">
+                  {body}
+                </p>
+              )}
+
+              {/* Horizontal rule with data points feel */}
+              <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                className="mt-10 origin-left"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-px flex-grow bg-gradient-to-r from-primary-300 via-primary-200 to-transparent" />
+                  <div className="w-2 h-2 rounded-full bg-primary-400" />
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* Image column -- full-bleed feel with diagonal clip */}
+            {section.imageUrl && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true, margin: '-80px' }}
+                transition={{ duration: 1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                className="lg:w-[55%] w-full"
+              >
+                <div className="relative group">
+                  {/* Shadow layer offset for depth */}
+                  <div
+                    className="absolute -bottom-4 -right-4 w-full h-full rounded-xl"
+                    style={{ background: 'var(--color-primary-100)' }}
+                  />
+                  <div className="relative rounded-xl overflow-hidden">
+                    <div className="aspect-[16/10] relative">
+                      <Image
+                        src={section.imageUrl}
+                        alt={heading || ''}
+                        fill
+                        className="object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-[1.03]"
+                        sizes="(max-width: 1024px) 100vw, 55vw"
+                      />
+                      {/* Cool-tone overlay for editorial cohesion */}
+                      <div
+                        className="absolute inset-0 mix-blend-multiply opacity-15 transition-opacity duration-700 group-hover:opacity-5"
+                        style={{
+                          background: 'linear-gradient(160deg, var(--color-primary-700), transparent 60%)',
+                        }}
+                      />
+                    </div>
+                    {/* Top accent stripe */}
+                    <div
+                      className="absolute top-0 left-0 right-0 h-1"
+                      style={{
+                        background: 'linear-gradient(90deg, var(--color-primary-500), var(--color-primary-300), transparent)',
+                      }}
+                    />
+                  </div>
+                </div>
+              </motion.div>
             )}
           </div>
-          {section.imageUrl && (
-            <div className="lg:w-1/2">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl group">
-                <div className="aspect-[4/3] relative">
-                  <Image
-                    src={section.imageUrl}
-                    alt={heading || ''}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                  />
-                  {/* Subtle color overlay */}
-                  <div
-                    className="absolute inset-0 opacity-20 mix-blend-multiply transition-opacity duration-500 group-hover:opacity-10"
-                    style={{ background: 'linear-gradient(135deg, var(--color-primary-600), var(--color-secondary-600))' }}
-                  />
-                </div>
-                {/* Bottom gradient edge */}
-                <div className="absolute bottom-0 left-0 right-0 h-1" style={{ background: 'linear-gradient(90deg, var(--color-primary-500), var(--color-secondary-500))' }} />
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </section>

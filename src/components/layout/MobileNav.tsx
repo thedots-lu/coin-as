@@ -52,7 +52,7 @@ export default function MobileNav({ navItems, isOpen, onClose }: MobileNavProps)
                   const isExpanded = expandedItem === item.path
 
                   return (
-                    <div key={item.path} className="border-b border-gray-100">
+                    <div key={item.path} className="border-b border-secondary-100">
                       {hasChildren ? (
                         <>
                           <button
@@ -75,7 +75,7 @@ export default function MobileNav({ navItems, isOpen, onClose }: MobileNavProps)
                                 animate={{ height: 'auto', opacity: 1 }}
                                 exit={{ height: 0, opacity: 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="overflow-hidden bg-gray-50"
+                                className="overflow-hidden bg-warm-50"
                               >
                                 {item.children
                                   .sort((a, b) => a.order - b.order)
