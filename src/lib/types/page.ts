@@ -149,6 +149,7 @@ export interface MapOverviewSection {
   order: number
   body: LocaleString
   mapImageUrl: string | null
+  mapEmbedUrl?: string | null
   isoBadgeUrl: string | null
 }
 
@@ -170,6 +171,10 @@ export interface SiteGallerySection {
     country: LocaleString
     imageUrl: string
     description: LocaleString
+    address?: string
+    phone?: string
+    capacity?: LocaleString
+    mapUrl?: string
   }>
 }
 

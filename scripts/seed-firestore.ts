@@ -509,7 +509,8 @@ function pageLocations() {
         body: ls(
           'COIN offers business continuity services in The Netherlands, Luxembourg and Belgium and is the only business continuity specialist providing consistent level of services across the BeNeLux. The services are delivered at COIN business centers and at customer premises.\n\nCOIN operates 2 redundant shared business continuity sites in Luxembourg, one shared site near Amsterdam, as well as a customer dedicated site in Belgium.\n\nEach shared site features a crisis management room, single customer dedicated recovery offices and multi-customers rooms with a range of facility and IT options. Each site is equipped with high resilient power and IT systems, multiple telecom service provider access, as well as physical and digital security solutions and processes compliant with ISO 27001.',
         ),
-        mapImageUrl: 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=800&q=80',
+        mapImageUrl: null,
+        mapEmbedUrl: 'https://maps.google.com/maps?q=50.5,4.8&t=&z=7&ie=UTF8&iwloc=&output=embed',
         isoBadgeUrl: null,
       },
       {
@@ -563,7 +564,8 @@ function pageLocations() {
             description: ls(
               'COIN Netherlands headquarters and primary business continuity centre, strategically located near Amsterdam Airport Schiphol. The facility offers dedicated and shared recovery rooms, a crisis management suite, and co-location services for Dutch and international clients.',
             ),
-            capacity: ls('Recovery workplaces, crisis management rooms, co-location racks'),
+            capacity: ls('Recovery workplaces · Crisis management rooms · Co-location'),
+            mapUrl: 'https://maps.google.com/?q=Tupolevlaan+41,+1119+PA+Schiphol-Rijk,+Netherlands',
           },
           {
             name: ls('Münsbach'),
@@ -576,6 +578,7 @@ function pageLocations() {
               'COIN\'s primary Luxembourg facility, a TIER-3 certified data centre and business continuity centre with 500 recovery workplaces and 30 parking spaces. Co-location infrastructure is powered in partnership with LuxConnect. The site serves Luxembourg\'s financial sector and CSSF-regulated organisations.',
             ),
             capacity: ls('500 recovery workplaces · 30 parking · TIER-3 · ISO 27001'),
+            mapUrl: 'https://maps.google.com/?q=6B+rue+Gabriel+Lippmann,+L-5365+Munsbach,+Luxembourg',
           },
           {
             name: ls('Contern'),
@@ -588,6 +591,7 @@ function pageLocations() {
               'COIN\'s second Luxembourg site, located in Contern approximately 10 minutes from Münsbach. The facility provides 250 recovery workplaces and 20 parking spaces, offering geographic redundancy for organisations requiring dual-site recovery arrangements within Luxembourg.',
             ),
             capacity: ls('250 recovery workplaces · 20 parking · 10 min from Münsbach'),
+            mapUrl: 'https://maps.google.com/?q=Zone+Industrielle+Contern,+Luxembourg',
           },
         ],
       },
