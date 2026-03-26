@@ -52,7 +52,7 @@ const SITES = [
     detail: '500 workplaces · TIER-3 · ISO 27001',
     x: 338,
     y: 458,
-    color: '#004779',
+    color: '#A51218',
     labelDir: 'left' as const,
   },
   {
