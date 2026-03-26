@@ -507,7 +507,7 @@ function pageLocations() {
         type: 'map_overview',
         order: 1,
         body: ls(
-          'COIN offers business continuity services in The Netherlands, Luxembourg and Belgium and is the only business continuity specialist providing consistent level of services across the BeNeLux. The services are delivered at COIN business centers and at customer premises.\n\nCOIN operates 2 redundant shared business continuity sites in Luxembourg, one shared site near Amsterdam, as well as a customer dedicated site in Belgium.\n\nEach shared site features a crisis management room, single customer dedicated recovery offices and multi-customers rooms with a range of facility and IT options. Each site is equipped with high resilient power and IT systems, multiple telecom service provider access, as well as physical and digital security solutions and processes compliant with ISO 27001.',
+          'COIN offers business continuity services in The Netherlands, Luxembourg and Belgium and is the only business continuity specialist providing consistent level of services across the BeNeLux. The services are delivered at COIN business centers and at customer premises.\n\nCOIN operates 4 resilience centres: 2 redundant shared sites in Luxembourg (Münsbach & Contern), one shared site near Amsterdam Schiphol-Rijk, and a dedicated site near Brussels Airport (Machelen, Belgium).\n\nEach site features a crisis management room, dedicated and shared recovery offices with a range of facility and IT options. All sites are equipped with high-resilient power and IT systems, multiple telecom provider access, and physical/digital security compliant with ISO 27001.',
         ),
         mapImageUrl: null,
         mapEmbedUrl: 'https://maps.google.com/maps?q=50.5,4.8&t=&z=7&ie=UTF8&iwloc=&output=embed',
@@ -592,6 +592,19 @@ function pageLocations() {
             ),
             capacity: ls('250 recovery workplaces · 20 parking · 10 min from Münsbach'),
             mapUrl: 'https://maps.google.com/?q=Zone+Industrielle+Contern,+Luxembourg',
+          },
+          {
+            name: ls('Machelen'),
+            country: ls('Belgium'),
+            address: 'De Kleetlaan 12B, 1831 Machelen',
+            phone: '+32 2 513 36 18',
+            imageUrl:
+              'https://images.pexels.com/photos/380768/pexels-photo-380768.jpeg?auto=compress&cs=tinysrgb&w=800',
+            description: ls(
+              'COIN\'s dedicated business continuity centre in Belgium, strategically located near Brussels Airport (Machelen). The facility serves Belgian organisations requiring a dedicated recovery environment, providing exclusive workplaces and crisis management facilities to clients in the Brussels region.',
+            ),
+            capacity: ls('Dedicated recovery workplaces · Crisis management · Near Brussels Airport'),
+            mapUrl: 'https://maps.google.com/?q=De+Kleetlaan+12B,+1831+Machelen,+Belgium',
           },
         ],
       },

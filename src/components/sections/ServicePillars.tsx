@@ -7,7 +7,7 @@ import { ServicePillarsSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
 import AnimatedSection from '@/components/ui/AnimatedSection'
 import Link from 'next/link'
-import { BookOpen, Building2, ShieldCheck, ArrowRight } from 'lucide-react'
+import { BookOpen, Building2, ShieldCheck, Lightbulb, ArrowRight } from 'lucide-react'
 import BlurText from '@/components/reactbits/BlurText'
 
 const pillarConfig = [
@@ -22,7 +22,7 @@ const pillarConfig = [
     Icon: Building2,
     accentColor: 'var(--color-accent-400)',
     accentColorRgb: '251, 191, 36',
-    glowPosition: '85% 50%',
+    glowPosition: '85% 15%',
     number: '02',
   },
   {
@@ -31,6 +31,13 @@ const pillarConfig = [
     accentColorRgb: '125, 205, 253',
     glowPosition: '15% 85%',
     number: '03',
+  },
+  {
+    Icon: Lightbulb,
+    accentColor: '#e05d2a',
+    accentColorRgb: '224, 93, 42',
+    glowPosition: '85% 85%',
+    number: '04',
   },
 ]
 
@@ -284,14 +291,13 @@ export default function ServicePillars({ section, locale }: ServicePillarsProps)
           </div>
         </AnimatedSection>
 
-        {/* Pillar cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-7 max-w-6xl mx-auto">
+        {/* Pillar cards — 2×2 grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-7 max-w-4xl mx-auto">
           {section.pillars.map((pillar, index) => (
             <AnimatedSection
               key={index}
               animation="slideUp"
-              delay={index * 0.15}
-              className={index === 1 ? 'md:-translate-y-4' : ''}
+              delay={index * 0.12}
             >
               <PillarCard
                 pillar={pillar}

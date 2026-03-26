@@ -43,6 +43,15 @@ const locations = [
     phone: '+352 357 05 30',
     capacity: '250 recovery workplaces · 10 min from Münsbach',
   },
+  {
+    name: 'Machelen',
+    country: 'Belgium',
+    lat: 50.908,
+    lng: 4.454,
+    address: 'De Kleetlaan 12B, 1831 Machelen',
+    phone: '+32 2 513 36 18',
+    capacity: 'Dedicated recovery workplaces · Near Brussels Airport',
+  },
 ]
 
 export default function LocationsMap() {
