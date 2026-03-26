@@ -9,6 +9,12 @@ export const revalidate = 300
 export const metadata: Metadata = {
   title: 'Partners',
   description: 'Discover our network of business and technology partners in the business continuity ecosystem.',
+  alternates: { canonical: 'https://coin-bc.com/partners' },
+  openGraph: {
+    title: 'Our Partners | COIN AS',
+    description: 'Discover our network of business and technology partners in the business continuity ecosystem.',
+    url: 'https://coin-bc.com/partners',
+  },
 }
 
 export default async function PartnersPage() {

@@ -248,6 +248,21 @@ export interface RichTextSection {
   body: LocaleString
 }
 
+export interface FeaturedCarouselSection {
+  type: 'featured_carousel'
+  order: number
+  heading: LocaleString
+  subtitle: LocaleString
+  items: Array<{
+    label: LocaleString       // e.g. "Focus du mois", "Événement", "Nouveauté"
+    title: LocaleString
+    description: LocaleString
+    imageUrl: string | null
+    linkText: LocaleString
+    linkHref: string
+  }>
+}
+
 export type PageSection =
   | HeroSection
   | ServicePillarsSection
@@ -274,6 +289,7 @@ export type PageSection =
   | ProcessPipelineSection
   | BusinessCaseSection
   | RichTextSection
+  | FeaturedCarouselSection
 
 export interface SeoMeta {
   metaTitle: LocaleString

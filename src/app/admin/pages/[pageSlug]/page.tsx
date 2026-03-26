@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
+import { dbAdmin as db } from '@/lib/firebase/config'
 import { PageDocument, PageSection } from '@/lib/types/page'
 import { LocaleString, createEmptyLocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'

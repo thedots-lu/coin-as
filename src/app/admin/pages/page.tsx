@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { collection, getDocs } from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
+import { dbAdmin as db } from '@/lib/firebase/config'
 import { PageDocument } from '@/lib/types/page'
 import Link from 'next/link'
 

@@ -12,7 +12,7 @@ import {
   query,
   Timestamp,
 } from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
+import { dbAdmin as db } from '@/lib/firebase/config'
 import { NewsItem } from '@/lib/types/news'
 import NewsForm from '@/components/admin/NewsForm'
 

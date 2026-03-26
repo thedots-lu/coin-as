@@ -12,7 +12,7 @@ import {
   query,
   Timestamp,
 } from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
+import { dbAdmin as db } from '@/lib/firebase/config'
 import { TeamMember } from '@/lib/types/team'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'

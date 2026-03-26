@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { collection, getCountFromServer } from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
+import { dbAdmin as db } from '@/lib/firebase/config'
 import Link from 'next/link'
 
 interface Stats {
@@ -12,6 +12,7 @@ interface Stats {
   partners: number
   team: number
   pages: number
+  whitePapers: number
 }
 
 const quickActions = [
@@ -19,18 +20,19 @@ const quickActions = [
   { label: 'Manage News', href: '/admin/news', description: 'Create and edit news articles' },
   { label: 'Manage Services', href: '/admin/services', description: 'Edit service details' },
   { label: 'Manage Articles', href: '/admin/articles', description: 'Knowledge hub articles' },
+  { label: 'White Papers', href: '/admin/white-papers', description: 'Downloadable PDFs and guides' },
   { label: 'Manage Partners', href: '/admin/partners', description: 'Business and tech partners' },
   { label: 'Manage Team', href: '/admin/team', description: 'Team members' },
 ]
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<Stats>({ news: 0, articles: 0, services: 0, partners: 0, team: 0, pages: 0 })
+  const [stats, setStats] = useState<Stats>({ news: 0, articles: 0, services: 0, partners: 0, team: 0, pages: 0, whitePapers: 0 })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchStats() {
       try {
-        const collections = ['news', 'articles', 'services', 'partners', 'team', 'pages'] as const
+        const collections = ['news', 'articles', 'services', 'partners', 'team', 'pages', 'white_papers'] as const
         const counts = await Promise.all(
           collections.map(async (col) => {
             const snapshot = await getCountFromServer(collection(db, col))
@@ -44,6 +46,7 @@ export default function AdminDashboard() {
           partners: counts[3],
           team: counts[4],
           pages: counts[5],
+          whitePapers: counts[6],
         })
       } catch (err) {
         console.error('Error fetching stats:', err)
@@ -61,6 +64,7 @@ export default function AdminDashboard() {
     { label: 'Services', count: stats.services, color: 'bg-primary-700' },
     { label: 'Partners', count: stats.partners, color: 'bg-accent-700' },
     { label: 'Team Members', count: stats.team, color: 'bg-secondary-700' },
+    { label: 'White Papers', count: stats.whitePapers, color: 'bg-coin-red-500' },
   ]
 
   return (

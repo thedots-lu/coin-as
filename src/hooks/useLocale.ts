@@ -1,11 +1,16 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Locale } from '@/lib/types/locale'
 import { getLocaleFromCookie, setLocaleCookie } from '@/lib/locale'
 
 export function useLocale() {
-  const [locale, setLocaleState] = useState<Locale>(() => getLocaleFromCookie())
+  // Start with 'en' to match SSR, then sync from cookie after mount
+  const [locale, setLocaleState] = useState<Locale>('en')
+
+  useEffect(() => {
+    setLocaleState(getLocaleFromCookie())
+  }, [])
 
   const setLocale = useCallback((newLocale: Locale) => {
     setLocaleCookie(newLocale)

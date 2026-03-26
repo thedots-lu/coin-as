@@ -8,10 +8,27 @@ export interface Article {
   excerpt: LocaleString
   slug: LocaleString
   imageUrl: string | null
-  category: 'resource' | 'case_study'
+  videoUrl?: string | null    // YouTube or Vimeo URL for vlog entries
+  category: 'resource' | 'case_study' | 'vlog'
   published: boolean
   publishedAt: Timestamp | Date | null
   author: string
+  tags: string[]
+  createdAt: Timestamp | Date
+  updatedAt: Timestamp | Date
+}
+
+export interface WhitePaper {
+  id: string
+  title: LocaleString
+  description: LocaleString
+  category: string            // e.g. 'cyber_resilience', 'business_continuity', 'regulatory'
+  fileUrl: string             // Firebase Storage URL
+  thumbnailUrl: string | null
+  pages?: number
+  published: boolean
+  publishedAt: Timestamp | Date | null
+  downloadCount?: number
   tags: string[]
   createdAt: Timestamp | Date
   updatedAt: Timestamp | Date

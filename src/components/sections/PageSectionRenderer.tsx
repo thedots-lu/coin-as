@@ -28,6 +28,7 @@ import MissionStatement from '@/components/sections/MissionStatement'
 import ValuesGrid from '@/components/sections/ValuesGrid'
 import BenefitsSection from '@/components/sections/BenefitsSection'
 import BusinessCase from '@/components/sections/BusinessCase'
+import FeaturedCarousel from '@/components/sections/FeaturedCarousel'
 
 interface PageSectionRendererProps {
   sections: PageSection[]
@@ -112,6 +113,8 @@ export default function PageSectionRenderer({
             return <BenefitsSection key={key} section={section} locale={locale} />
           case 'business_case':
             return <BusinessCase key={key} section={section} locale={locale} />
+          case 'featured_carousel':
+            return <FeaturedCarousel key={key} section={section} locale={locale} />
           default:
             return null
         }

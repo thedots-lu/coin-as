@@ -12,7 +12,7 @@ import {
   query,
   Timestamp,
 } from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
+import { dbAdmin as db } from '@/lib/firebase/config'
 import { Article } from '@/lib/types/article'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'
@@ -30,7 +30,7 @@ export default function AdminArticlesPage() {
   const [excerpt, setExcerpt] = useState<LocaleString>(createEmptyLocaleString())
   const [slug, setSlug] = useState<LocaleString>(createEmptyLocaleString())
   const [imageUrl, setImageUrl] = useState('')
-  const [category, setCategory] = useState<'resource' | 'case_study'>('resource')
+  const [category, setCategory] = useState<'resource' | 'case_study' | 'vlog'>('resource')
   const [published, setPublished] = useState(false)
   const [author, setAuthor] = useState('')
   const [tags, setTags] = useState('')

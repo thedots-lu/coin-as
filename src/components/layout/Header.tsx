@@ -2,9 +2,10 @@
 
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
-import { Shield, ChevronDown, Menu, X, Search } from 'lucide-react'
+import { Shield, ChevronDown, Menu, X, Search, Globe } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useScrollPosition } from '@/hooks/useScrollPosition'
+import { useLocale } from '@/hooks/useLocale'
 import { getLocalizedField } from '@/lib/locale'
 import MegaMenu from '@/components/layout/MegaMenu'
 import MobileNav from '@/components/layout/MobileNav'
@@ -20,8 +21,7 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
   const { isScrolled } = useScrollPosition()
   const [openMenu, setOpenMenu] = useState<string | null>(null)
   const [mobileOpen, setMobileOpen] = useState(false)
-
-  const locale = 'en'
+  const { locale, setLocale } = useLocale()
 
   const handleMenuOpen = useCallback((path: string) => {
     setOpenMenu((prev) => (prev === path ? null : path))
@@ -39,6 +39,8 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
     setMobileOpen(false)
   }, [])
 
+  const textClass = isScrolled ? 'text-secondary-600 hover:text-primary-500' : 'text-white/90 hover:text-white'
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -47,7 +49,7 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
           : ''
       }`}
     >
-      {/* Dark gradient backdrop when on hero -- ensures white text readability over FloatingLines */}
+      {/* Dark gradient backdrop when on hero */}
       {!isScrolled && (
         <div
           className="absolute inset-0 pointer-events-none"
@@ -61,17 +63,14 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
             <Shield className={`h-8 w-8 transition-all duration-300 group-hover:scale-110 ${isScrolled ? 'text-primary-500' : 'text-white'}`} />
-            <span className={`text-2xl font-bold font-[family-name:var(--font-poppins)] transition-colors duration-300 ${isScrolled ? 'text-secondary-800' : 'text-white'}`}>
+            <span className={`text-2xl font-bold transition-colors duration-300 ${isScrolled ? 'text-secondary-800' : 'text-white'}`}>
               {siteConfig?.siteName ?? 'COIN'}
             </span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1">
-            <Link
-              href="/"
-              className={`nav-link px-4 py-2 font-medium transition-colors duration-200 block ${isScrolled ? 'text-secondary-600 hover:text-primary-500' : 'text-white/90 hover:text-white'}`}
-            >
+            <Link href="/" className={`nav-link px-4 py-2 font-medium transition-colors duration-200 block ${textClass}`}>
               Home
             </Link>
             {navItems
@@ -89,7 +88,7 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
                   >
                     {hasChildren ? (
                       <button
-                        className={`nav-link flex items-center gap-1 px-4 py-2 font-medium transition-colors duration-200 ${isScrolled ? 'text-secondary-600 hover:text-primary-500' : 'text-white/90 hover:text-white'}`}
+                        className={`nav-link flex items-center gap-1 px-4 py-2 font-medium transition-colors duration-200 ${textClass}`}
                         onClick={() => handleMenuOpen(item.path)}
                         type="button"
                       >
@@ -103,7 +102,7 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
                     ) : (
                       <Link
                         href={item.path}
-                        className={`nav-link px-4 py-2 font-medium transition-colors duration-200 block ${isScrolled ? 'text-secondary-600 hover:text-primary-500' : 'text-white/90 hover:text-white'}`}
+                        className={`nav-link px-4 py-2 font-medium transition-colors duration-200 block ${textClass}`}
                       >
                         {label || 'Link'}
                       </Link>
@@ -119,18 +118,48 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
                   </div>
                 )
               })}
+
+            {/* Search */}
             <button
               type="button"
-              className={`p-2 transition-colors ${isScrolled ? 'text-secondary-600 hover:text-primary-500' : 'text-white/90 hover:text-white'}`}
+              className={`p-2 transition-colors ${textClass}`}
               aria-label="Search"
             >
               <Search className="h-5 w-5" />
             </button>
+
+            {/* FR / EN Language switcher */}
+            <div className={`flex items-center gap-1 border rounded-full px-2 py-1 ml-1 ${isScrolled ? 'border-secondary-200' : 'border-white/30'}`}>
+              <Globe className={`h-3.5 w-3.5 ${isScrolled ? 'text-secondary-400' : 'text-white/60'}`} />
+              <button
+                type="button"
+                onClick={() => setLocale('fr')}
+                className={`text-xs font-semibold px-1.5 py-0.5 rounded-full transition-all ${
+                  locale === 'fr'
+                    ? 'bg-primary-500 text-white'
+                    : `${isScrolled ? 'text-secondary-500 hover:text-primary-500' : 'text-white/70 hover:text-white'}`
+                }`}
+              >
+                FR
+              </button>
+              <span className={`text-xs ${isScrolled ? 'text-secondary-300' : 'text-white/30'}`}>|</span>
+              <button
+                type="button"
+                onClick={() => setLocale('en')}
+                className={`text-xs font-semibold px-1.5 py-0.5 rounded-full transition-all ${
+                  locale === 'en'
+                    ? 'bg-primary-500 text-white'
+                    : `${isScrolled ? 'text-secondary-500 hover:text-primary-500' : 'text-white/70 hover:text-white'}`
+                }`}
+              >
+                EN
+              </button>
+            </div>
           </nav>
 
           {/* Mobile Menu Button */}
           <button
-            className={`lg:hidden p-2 transition-colors ${isScrolled ? 'text-secondary-600 hover:text-primary-500' : 'text-white/90 hover:text-white'}`}
+            className={`lg:hidden p-2 transition-colors ${textClass}`}
             onClick={handleMobileToggle}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             type="button"

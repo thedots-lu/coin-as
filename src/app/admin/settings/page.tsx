@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { doc, getDoc, setDoc, Timestamp } from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
+import { dbAdmin as db } from '@/lib/firebase/config'
 import { SiteConfig } from '@/lib/types/site-config'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'

@@ -66,9 +66,20 @@ function navigationMain() {
   return {
     items: [
       {
+        label: ls('Challenges'),
+        path: '/challenges',
+        order: 0,
+        children: [
+          { label: ls('Banking & Finance'), path: '/challenges/banking-finance', order: 0 },
+          { label: ls('Insurance'), path: '/challenges/insurance', order: 1 },
+          { label: ls('Utilities & Energy'), path: '/challenges/utilities-energy', order: 2 },
+          { label: ls('Government & Public'), path: '/challenges/government-public', order: 3 },
+        ],
+      },
+      {
         label: ls('Services'),
         path: '/services',
-        order: 0,
+        order: 1,
         children: [
           { label: ls('Consulting & Training'), path: '/services/consultancy', order: 0 },
           { label: ls('Business Continuity Centres'), path: '/services/business-continuity', order: 1 },
@@ -78,9 +89,9 @@ function navigationMain() {
         ],
       },
       {
-        label: ls('Ressources'),
+        label: ls('Resources'),
         path: '/knowledge-hub',
-        order: 1,
+        order: 2,
         children: [
           { label: ls('Articles'), path: '/knowledge-hub', order: 0 },
           { label: ls('News & Events'), path: '/news', order: 1 },
@@ -91,7 +102,7 @@ function navigationMain() {
       {
         label: ls('About Us'),
         path: '/about',
-        order: 2,
+        order: 3,
         children: [
           { label: ls('Our Mission'), path: '/about#mission', order: 0 },
           { label: ls('Our Values'), path: '/about#values', order: 1 },
@@ -101,7 +112,7 @@ function navigationMain() {
           { label: ls('History'), path: '/about#history', order: 5 },
         ],
       },
-      { label: ls('Contact'), path: '/contact', order: 3, children: null },
+      { label: ls('Contact'), path: '/contact', order: 4, children: null },
     ],
     ...ts(),
   };
@@ -227,8 +238,46 @@ function pageHome() {
         ],
       },
       {
-        type: 'innovation',
+        type: 'featured_carousel',
         order: 2,
+        heading: ls('Latest from COIN AS'),
+        subtitle: ls('News, events and monthly highlights from our business continuity experts'),
+        items: [
+          {
+            label: ls('Monthly Focus'),
+            title: ls('DORA Compliance: Are You Ready for January 2025?'),
+            description: ls(
+              'The Digital Operational Resilience Act is now in force. Financial institutions in the EU must demonstrate tested business continuity plans, documented ICT risk management, and recovery capabilities. COIN AS helps you get compliant — fast.',
+            ),
+            imageUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80',
+            linkText: ls('Read more'),
+            linkHref: '/knowledge-hub',
+          },
+          {
+            label: ls('New Service'),
+            title: ls('Secure COIN Key: Work Securely from Anywhere After a Cyber Attack'),
+            description: ls(
+              'Our Secure COIN Key turns any computer into a fully managed corporate workstation. When ransomware hits and laptops are quarantined, your teams are back online in minutes — not days.',
+            ),
+            imageUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80',
+            linkText: ls('Discover the solution'),
+            linkHref: '/services/cyber-resilience',
+          },
+          {
+            label: ls('Event'),
+            title: ls('Business Continuity Exercise at Our Amsterdam Centre'),
+            description: ls(
+              'Our Amsterdam Resilience Centre hosts 100+ disaster recovery exercises per year. Book a full-day simulation for your team and test your BCP in a real-world environment with expert COIN AS facilitators.',
+            ),
+            imageUrl: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80',
+            linkText: ls('Book an exercise'),
+            linkHref: '/contact',
+          },
+        ],
+      },
+      {
+        type: 'innovation',
+        order: 3,
         heading: ls('Innovation in Business Continuity'),
         body: ls(
           'COIN has over 20 years of experience in business continuity. Yet, each year brings its share of new risks as well as technological challenges and opportunities. Together with our partners, we continuously develop innovative and robust solutions that improve the resiliency of our customers in an increasingly complex business and regulatory environment.',
@@ -237,7 +286,7 @@ function pageHome() {
       },
       {
         type: 'flexible_services',
-        order: 3,
+        order: 4,
         heading: ls('Flexible Services - Customized SLA'),
         body: ls(
           'COIN adjusts to your needs and constraints. We know business continuity objectives and regulatory requirements depend on your business, country, and resources available in your organisation. We can offer this unique level of flexibility because business continuity is our core business and we have experience with 300+ customers in various industries.',
@@ -246,7 +295,7 @@ function pageHome() {
       },
       {
         type: 'mission_statement',
-        order: 4,
+        order: 5,
         heading: ls('Your business continuity is our mission'),
         body: ls(
           "COIN teams know exactly what it means for customers with critical operations to be stricken by disrupting events such as loss of telecom line, power cuts, ransomware or pandemics. Our experts will be your first line of defence to prevent unforeseen events to disrupt your business and they are committed to be your last line of defence when you'll need to resort to contingency measures and call upon COIN's business continuity services.",
@@ -255,7 +304,7 @@ function pageHome() {
       },
       {
         type: 'stats',
-        order: 5,
+        order: 6,
         stats: [
           { value: 20, suffix: '+', label: ls('Years of Experience') },
           { value: 300, suffix: '+', label: ls('Customers') },
@@ -265,12 +314,12 @@ function pageHome() {
       },
       {
         type: 'testimonials_ref',
-        order: 6,
+        order: 7,
         heading: ls('What our clients say'),
       },
       {
         type: 'cta_banner',
-        order: 7,
+        order: 8,
         heading: ls('Ready to strengthen your business continuity?'),
         buttonText: ls('Contact us today'),
         buttonLink: '/contact',
@@ -1163,6 +1212,68 @@ async function seedPages(db: Firestore) {
   }
 }
 
+async function seedWhitePapers(db: Firestore) {
+  console.log('[8/8] Seeding white_papers...');
+  const deleted = await deleteCollection(db, 'white_papers');
+  if (deleted > 0) console.log(`  -> deleted ${deleted} existing white_papers`);
+
+  const papers = [
+    {
+      title: ls('DORA Compliance Guide for Financial Institutions'),
+      description: ls('A practical guide to achieving Digital Operational Resilience Act compliance: scope, requirements, timelines, and how COIN AS can help your organisation meet the January 2025 deadline.'),
+      category: 'regulatory',
+      fileUrl: '',
+      thumbnailUrl: null,
+      pages: 24,
+      published: true,
+      publishedAt: new Date('2024-11-01'),
+      downloadCount: 0,
+      tags: ['DORA', 'NIS2', 'Financial', 'Compliance'],
+    },
+    {
+      title: ls('Business Continuity Planning: A Step-by-Step Guide'),
+      description: ls('From risk assessment to BCP testing — a comprehensive methodology guide for Business Continuity Managers based on 20 years of BeNeLux experience.'),
+      category: 'business_continuity',
+      fileUrl: '',
+      thumbnailUrl: null,
+      pages: 36,
+      published: true,
+      publishedAt: new Date('2024-09-15'),
+      downloadCount: 0,
+      tags: ['BCP', 'Methodology', 'Risk Assessment'],
+    },
+    {
+      title: ls('Ransomware Recovery Playbook'),
+      description: ls('When ransomware strikes, every minute counts. This playbook covers the first 72 hours: isolation, assessment, recovery options, and how COIN AS Secure COIN Keys can restore operations without paying the ransom.'),
+      category: 'cyber_resilience',
+      fileUrl: '',
+      thumbnailUrl: null,
+      pages: 18,
+      published: true,
+      publishedAt: new Date('2025-01-10'),
+      downloadCount: 0,
+      tags: ['Ransomware', 'Cyber', 'Recovery', 'COIN Key'],
+    },
+    {
+      title: ls('Business Continuity for the Financial Sector in Luxembourg'),
+      description: ls('Regulatory overview and practical guidance for Luxembourg-based financial institutions: CSSF requirements, DORA, and how dual-site resilience centres in Münsbach and Contern protect your operations.'),
+      category: 'case_study',
+      fileUrl: '',
+      thumbnailUrl: null,
+      pages: 20,
+      published: true,
+      publishedAt: new Date('2025-02-01'),
+      downloadCount: 0,
+      tags: ['Luxembourg', 'CSSF', 'Finance', 'Recovery'],
+    },
+  ];
+
+  for (const paper of papers) {
+    const ref = await addDoc(collection(db, 'white_papers'), { ...paper, ...ts() });
+    console.log(`  -> white_papers/${ref.id} written (${paper.title.en})`);
+  }
+}
+
 async function seedServices(db: Firestore) {
   console.log('[4/7] Seeding services...');
   const services = servicesData();
@@ -1235,10 +1346,11 @@ async function main() {
   await seedTestimonials(db);
   await seedTeamMembers(db);
   await seedPartners(db);
+  await seedWhitePapers(db);
 
   console.log('');
   console.log('=== Seeding complete ===');
-  console.log('Collections seeded: site_config, navigation, pages, services, testimonials, team_members, partners');
+  console.log('Collections seeded: site_config, navigation, pages, services, testimonials, team_members, partners, white_papers');
   // Force exit since Firebase client SDK keeps connections open
   process.exit(0);
 }

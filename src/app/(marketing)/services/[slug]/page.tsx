@@ -47,7 +47,7 @@ export default async function ServicePage({
           <>
             <Image
               src={service.heroImageUrl}
-              alt=""
+              alt={getLocalizedField(service.title, 'en')}
               fill
               className="object-cover"
               priority

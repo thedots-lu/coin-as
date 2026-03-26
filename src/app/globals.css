@@ -5,47 +5,74 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-display: "Sora", sans-serif;
+  --font-display: "Sora", Arial, sans-serif;
 
   --color-warm-50: #FAFAF8;
   --color-warm-100: #F5F5F0;
 
-  --color-primary-50: #f0f7ff;
-  --color-primary-100: #e0effe;
-  --color-primary-200: #bae0fd;
-  --color-primary-300: #7dcdfd;
-  --color-primary-400: #38b6fb;
-  --color-primary-500: #0e9eef;
-  --color-primary-600: #0080cb;
-  --color-primary-700: #005da0;
-  --color-primary-800: #004a80;
-  --color-primary-900: #003a66;
-  --color-primary-950: #00253f;
+  /* COIN AS Primary — Navy Blue (0, 71, 121) */
+  --color-primary-50: #f0f5fa;
+  --color-primary-100: #d6e4f0;
+  --color-primary-200: #adc9e2;
+  --color-primary-300: #73a8cd;
+  --color-primary-400: #3b7eb0;
+  --color-primary-500: #004779;
+  --color-primary-600: #003d69;
+  --color-primary-700: #003058;
+  --color-primary-800: #002445;
+  --color-primary-900: #001830;
+  --color-primary-950: #000f1e;
 
+  /* COIN AS Secondary — Dark Navy (for text/backgrounds) */
   --color-secondary-50: #f5f7fa;
   --color-secondary-100: #ebeef3;
   --color-secondary-200: #d2dae6;
   --color-secondary-300: #a9bacd;
-  --color-secondary-400: #7994b0;
-  --color-secondary-500: #5b7a99;
-  --color-secondary-600: #46607e;
-  --color-secondary-700: #394d65;
-  --color-secondary-800: #304357;
-  --color-secondary-900: #2c3a4b;
+  --color-secondary-400: #6a8ba8;
+  --color-secondary-500: #3d6080;
+  --color-secondary-600: #2a4d6b;
+  --color-secondary-700: #1e3a54;
+  --color-secondary-800: #142840;
+  --color-secondary-900: #0a1a2c;
 
-  --color-accent-50: #FFFBEB;
-  --color-accent-100: #FEF3C7;
-  --color-accent-200: #FDE68A;
-  --color-accent-300: #FCD34D;
-  --color-accent-400: #FBBF24;
-  --color-accent-500: #F59E0B;
-  --color-accent-600: #D97706;
-  --color-accent-700: #B45309;
-  --color-accent-800: #92400E;
-  --color-accent-900: #78350F;
+  /* COIN AS Accent — Olive Green (0, 153, 0) */
+  --color-accent-50: #f0fff0;
+  --color-accent-100: #c6f6c6;
+  --color-accent-200: #8eea8e;
+  --color-accent-300: #52d652;
+  --color-accent-400: #22be22;
+  --color-accent-500: #009900;
+  --color-accent-600: #007a00;
+  --color-accent-700: #005c00;
+  --color-accent-800: #003d00;
+  --color-accent-900: #002200;
 
-  --color-surface-dark: #0b1a2e;
-  --color-surface-darkest: #060e1a;
+  /* COIN AS Red (165, 18, 24) */
+  --color-coin-red-50: #fdf2f2;
+  --color-coin-red-100: #fce0e1;
+  --color-coin-red-200: #f8b8ba;
+  --color-coin-red-300: #f28285;
+  --color-coin-red-400: #e94c50;
+  --color-coin-red-500: #A51218;
+  --color-coin-red-600: #8a0e13;
+  --color-coin-red-700: #6e0b0f;
+  --color-coin-red-800: #52080b;
+  --color-coin-red-900: #360507;
+
+  /* COIN AS Light Gray (165, 165, 165) */
+  --color-coin-gray-50: #fafafa;
+  --color-coin-gray-100: #f0f0f0;
+  --color-coin-gray-200: #e0e0e0;
+  --color-coin-gray-300: #cccccc;
+  --color-coin-gray-400: #a5a5a5;
+  --color-coin-gray-500: #8a8a8a;
+  --color-coin-gray-600: #6e6e6e;
+  --color-coin-gray-700: #545454;
+  --color-coin-gray-800: #3a3a3a;
+  --color-coin-gray-900: #222222;
+
+  --color-surface-dark: #001830;
+  --color-surface-darkest: #000f1e;
 }
 
 /* Base styles */
@@ -168,7 +195,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .text-gradient {
-  background: linear-gradient(to right, var(--color-primary-500), var(--color-secondary-500));
+  background: linear-gradient(to right, var(--color-primary-500), var(--color-accent-500));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -382,8 +409,12 @@ h1, h2, h3, h4, h5, h6 {
   }
   body {
     @apply bg-background text-foreground;
+    font-family: Arial, Helvetica, sans-serif;
   }
   html {
-    @apply font-sans;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display), Arial, Helvetica, sans-serif;
   }
 }

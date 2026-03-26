@@ -11,6 +11,12 @@ export const revalidate = 300
 export const metadata: Metadata = {
   title: 'News & Events',
   description: 'Stay up to date with the latest news and events from COIN, your business continuity partner.',
+  alternates: { canonical: 'https://coin-bc.com/news' },
+  openGraph: {
+    title: 'News & Events | COIN AS',
+    description: 'Stay up to date with the latest news and events from COIN, your business continuity partner.',
+    url: 'https://coin-bc.com/news',
+  },
 }
 
 export default async function NewsPage() {
