@@ -64,7 +64,7 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
             <img
               src="https://www.coin-as.com/wp-content/uploads/sites/2/2022/11/coin-availability-services-logo.svg"
               alt="COIN Availability Services"
-              className={`h-10 w-auto transition-all duration-300 group-hover:opacity-80 ${!isScrolled ? 'brightness-0 invert' : ''}`}
+              className="h-9 w-auto transition-opacity duration-300 group-hover:opacity-80"
             />
           </Link>
 

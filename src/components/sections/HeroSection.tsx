@@ -8,7 +8,8 @@ import { HeroSection as HeroSectionType } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
 import Button from '@/components/ui/Button'
 import CircularText from '@/components/reactbits/CircularText'
-import { ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react'
+import BlurText from '@/components/reactbits/BlurText'
+import { ShieldCheck, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react'
 
 // ---------------------------------------------------------------------------
 // Carousel slides — technology, resilience, data centres, recovery workspaces
@@ -134,15 +135,15 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
         style={{ opacity }}
       >
         <div className="max-w-3xl">
-          {/* Heading — clean fade-up on mount */}
-          <motion.h1
+          {/* Heading — word-by-word blur reveal */}
+          <BlurText
+            text={heading || ''}
+            delay={120}
+            animateBy="words"
+            direction="bottom"
+            stepDuration={0.45}
             className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {heading}
-          </motion.h1>
+          />
 
           {/* Rotating bullet points */}
           {section.bulletPoints && section.bulletPoints.length > 0 && (
@@ -246,6 +247,20 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
             </span>
           </motion.div>
         </AnimatePresence>
+
+        {/* Scroll down indicator */}
+        <div
+          className="absolute bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-0.5 cursor-pointer select-none"
+          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+          aria-label="Scroll down"
+          role="button"
+          tabIndex={0}
+        >
+          <span className="text-[9px] font-semibold tracking-[0.25em] uppercase text-white/50">
+            Scroll
+          </span>
+          <ChevronDown className="w-5 h-5 text-white/50 animate-bounce" />
+        </div>
 
         {/* NIS2 & DORA READY spinning badge */}
         <motion.div

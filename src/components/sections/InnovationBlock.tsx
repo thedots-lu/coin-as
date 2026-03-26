@@ -28,21 +28,6 @@ export default function InnovationBlock({ section, locale }: InnovationBlockProp
         />
       </div>
 
-      {/* Large decorative year marker */}
-      <motion.div
-        initial={{ opacity: 0, x: -60 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true, margin: '-100px' }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute top-12 md:top-16 left-6 md:left-12 select-none pointer-events-none"
-      >
-        <span
-          className="text-[8rem] md:text-[12rem] lg:text-[16rem] font-display font-bold leading-none tracking-tighter"
-          style={{ color: 'var(--color-primary-100)' }}
-        >
-          20
-        </span>
-      </motion.div>
 
       <div className="container-padding relative z-10">
         <div className="max-w-7xl mx-auto">
