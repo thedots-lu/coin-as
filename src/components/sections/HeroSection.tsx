@@ -1,15 +1,42 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
 import { getLocalizedField } from '@/lib/locale'
 import { HeroSection as HeroSectionType } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
 import Button from '@/components/ui/Button'
-import BlurText from '@/components/reactbits/BlurText'
 import CircularText from '@/components/reactbits/CircularText'
-import FloatingLines from '@/components/reactbits/FloatingLines'
-import { ShieldCheck } from 'lucide-react'
+import { ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react'
+
+// ---------------------------------------------------------------------------
+// Carousel slides — technology, resilience, data centres, recovery workspaces
+// ---------------------------------------------------------------------------
+const SLIDES = [
+  {
+    src: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1920&q=80',
+    alt: 'Data centre server room with blue LED lighting',
+    label: 'Data Centres',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80',
+    alt: 'Modern disaster recovery workspace with multiple workstations',
+    label: 'Recovery Workplaces',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1920&q=80',
+    alt: 'Cybersecurity and network resilience concept',
+    label: 'Cyber Resilience',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80',
+    alt: 'Global digital infrastructure and connectivity',
+    label: 'Business Continuity',
+  },
+]
+
+const INTERVAL = 5500
 
 interface HeroSectionProps {
   section: HeroSectionType
@@ -17,24 +44,38 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ section, locale }: HeroSectionProps) {
+  const [current, setCurrent] = useState(0)
   const [currentBullet, setCurrentBullet] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
   })
-
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
 
+  const next = useCallback(() => setCurrent((p) => (p + 1) % SLIDES.length), [])
+  const prev = useCallback(() => setCurrent((p) => (p - 1 + SLIDES.length) % SLIDES.length), [])
+
+  // Auto-advance carousel
+  const resetTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current)
+    timerRef.current = setInterval(next, INTERVAL)
+  }, [next])
+
+  useEffect(() => {
+    resetTimer()
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+  }, [resetTimer])
+
+  // Rotating bullet points
   useEffect(() => {
     if (!section.bulletPoints || section.bulletPoints.length <= 1) return
-
-    const interval = setInterval(() => {
-      setCurrentBullet((prev) => (prev + 1) % section.bulletPoints.length)
-    }, 3000)
-
-    return () => clearInterval(interval)
+    const id = setInterval(() => {
+      setCurrentBullet((p) => (p + 1) % section.bulletPoints.length)
+    }, 3500)
+    return () => clearInterval(id)
   }, [section.bulletPoints])
 
   const heading = getLocalizedField(section.heading, locale)
@@ -45,35 +86,65 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
     <section
       ref={containerRef}
       className="relative min-h-screen flex items-center overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, var(--color-surface-darkest) 0%, var(--color-surface-dark) 50%, var(--color-surface-darkest) 100%)' }}
     >
-      {/* FloatingLines overlay */}
+      {/* ------------------------------------------------------------------ */}
+      {/* Background image carousel                                           */}
+      {/* ------------------------------------------------------------------ */}
       <div className="absolute inset-0 z-0">
-        <FloatingLines
-          linesGradient={['#1e90ff', '#00bfff', '#4169e1', '#87ceeb']}
-          lineCount={4}
-          lineDistance={4}
-          bendRadius={3}
-          bendStrength={-0.3}
-          animationSpeed={0.8}
-          mixBlendMode="screen"
+        <AnimatePresence initial={false}>
+          <motion.div
+            key={current}
+            className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: 'easeInOut' }}
+          >
+            <Image
+              src={SLIDES[current].src}
+              alt={SLIDES[current].alt}
+              fill
+              priority={current === 0}
+              sizes="100vw"
+              className="object-cover"
+            />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Gradient overlay — strong left for readability, fades right */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(105deg, rgba(4,10,20,0.92) 0%, rgba(4,10,20,0.78) 40%, rgba(4,10,20,0.45) 70%, rgba(4,10,20,0.25) 100%)',
+          }}
+        />
+        {/* Bottom vignette */}
+        <div
+          className="absolute inset-x-0 bottom-0 h-32"
+          style={{ background: 'linear-gradient(to top, rgba(4,10,20,0.6), transparent)' }}
         />
       </div>
 
+      {/* ------------------------------------------------------------------ */}
+      {/* Hero content                                                        */}
+      {/* ------------------------------------------------------------------ */}
       <motion.div
-        className="container-padding relative z-10 py-32 text-left"
+        className="container-padding relative z-10 py-32 w-full"
         style={{ opacity }}
       >
         <div className="max-w-3xl">
-          <BlurText
-            text={heading || ''}
+          {/* Heading — clean fade-up on mount */}
+          <motion.h1
             className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight"
-            delay={80}
-            animateBy="words"
-            direction="top"
-            stepDuration={0.4}
-          />
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {heading}
+          </motion.h1>
 
+          {/* Rotating bullet points */}
           {section.bulletPoints && section.bulletPoints.length > 0 && (
             <div className="h-16 mb-10 flex items-center">
               <AnimatePresence mode="wait">
@@ -92,11 +163,12 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
             </div>
           )}
 
+          {/* CTA buttons */}
           <motion.div
             className="flex flex-col sm:flex-row gap-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
           >
             {primaryBtnText && (
               <Button href={section.primaryButtonLink} variant="primary" className="text-lg px-8 py-4">
@@ -111,15 +183,78 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
           </motion.div>
         </div>
 
+        {/* ---------------------------------------------------------------- */}
+        {/* Carousel controls — bottom                                       */}
+        {/* ---------------------------------------------------------------- */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6">
+          {/* Prev */}
+          <button
+            type="button"
+            onClick={() => { prev(); resetTimer() }}
+            aria-label="Previous slide"
+            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 border border-white/20 flex items-center justify-center transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4 text-white" />
+          </button>
+
+          {/* Dots */}
+          <div className="flex items-center gap-2">
+            {SLIDES.map((slide, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => { setCurrent(i); resetTimer() }}
+                aria-label={slide.label}
+                className="relative flex items-center justify-center"
+              >
+                <span
+                  className="block rounded-full transition-all duration-300"
+                  style={{
+                    width: i === current ? 28 : 8,
+                    height: 8,
+                    backgroundColor: i === current ? 'var(--color-accent-500)' : 'rgba(255,255,255,0.35)',
+                  }}
+                />
+              </button>
+            ))}
+          </div>
+
+          {/* Next */}
+          <button
+            type="button"
+            onClick={() => { next(); resetTimer() }}
+            aria-label="Next slide"
+            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 border border-white/20 flex items-center justify-center transition-colors"
+          >
+            <ChevronRight className="w-4 h-4 text-white" />
+          </button>
+        </div>
+
+        {/* Slide label — bottom right */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`label-${current}`}
+            className="absolute bottom-8 right-8 md:right-12 hidden md:flex items-center gap-2"
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.4 }}
+          >
+            <span className="w-4 h-[2px] bg-accent-500 rounded-full" />
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/60">
+              {SLIDES[current].label}
+            </span>
+          </motion.div>
+        </AnimatePresence>
+
         {/* NIS2 & DORA READY spinning badge */}
         <motion.div
-          className="absolute bottom-12 right-8 md:bottom-12 md:right-12 w-[100px] h-[100px] md:w-[120px] md:h-[120px]"
+          className="absolute bottom-20 right-8 md:bottom-16 md:right-12 w-[100px] h-[100px] md:w-[120px] md:h-[120px]"
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 1.5, type: 'spring' }}
+          transition={{ duration: 0.6, delay: 1.2, type: 'spring' }}
         >
           <div className="relative w-full h-full">
-            {/* Center shield icon */}
             <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
               <div
                 className="w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center backdrop-blur-sm border border-accent-400/30"
@@ -128,7 +263,6 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
                 <ShieldCheck className="w-5 h-5 md:w-6 md:h-6 text-accent-400" />
               </div>
             </div>
-            {/* Spinning text */}
             <CircularText
               text="NIS2 & DORA READY * COMPLIANT * "
               spinDuration={18}
