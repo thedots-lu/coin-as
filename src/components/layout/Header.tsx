@@ -2,10 +2,9 @@
 
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
-import { Shield, ChevronDown, Menu, X, Search, Globe } from 'lucide-react'
+import { Shield, ChevronDown, Menu, X, Search } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useScrollPosition } from '@/hooks/useScrollPosition'
-import { useLocale } from '@/hooks/useLocale'
 import { getLocalizedField } from '@/lib/locale'
 import MegaMenu from '@/components/layout/MegaMenu'
 import MobileNav from '@/components/layout/MobileNav'
@@ -21,7 +20,7 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
   const { isScrolled } = useScrollPosition()
   const [openMenu, setOpenMenu] = useState<string | null>(null)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const { locale, setLocale } = useLocale()
+  const locale = 'en'
 
   const handleMenuOpen = useCallback((path: string) => {
     setOpenMenu((prev) => (prev === path ? null : path))
@@ -127,34 +126,6 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
             >
               <Search className="h-5 w-5" />
             </button>
-
-            {/* FR / EN Language switcher */}
-            <div className={`flex items-center gap-1 border rounded-full px-2 py-1 ml-1 ${isScrolled ? 'border-secondary-200' : 'border-white/30'}`}>
-              <Globe className={`h-3.5 w-3.5 ${isScrolled ? 'text-secondary-400' : 'text-white/60'}`} />
-              <button
-                type="button"
-                onClick={() => setLocale('fr')}
-                className={`text-xs font-semibold px-1.5 py-0.5 rounded-full transition-all ${
-                  locale === 'fr'
-                    ? 'bg-primary-500 text-white'
-                    : `${isScrolled ? 'text-secondary-500 hover:text-primary-500' : 'text-white/70 hover:text-white'}`
-                }`}
-              >
-                FR
-              </button>
-              <span className={`text-xs ${isScrolled ? 'text-secondary-300' : 'text-white/30'}`}>|</span>
-              <button
-                type="button"
-                onClick={() => setLocale('en')}
-                className={`text-xs font-semibold px-1.5 py-0.5 rounded-full transition-all ${
-                  locale === 'en'
-                    ? 'bg-primary-500 text-white'
-                    : `${isScrolled ? 'text-secondary-500 hover:text-primary-500' : 'text-white/70 hover:text-white'}`
-                }`}
-              >
-                EN
-              </button>
-            </div>
           </nav>
 
           {/* Mobile Menu Button */}
