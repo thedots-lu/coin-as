@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
-import { Shield, ChevronDown, Menu, X, Search } from 'lucide-react'
+import { ChevronDown, Menu, X, Search } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useScrollPosition } from '@/hooks/useScrollPosition'
 import { getLocalizedField } from '@/lib/locale'
@@ -60,11 +60,12 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
       <div className="container-padding relative">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <Shield className={`h-8 w-8 transition-all duration-300 group-hover:scale-110 ${isScrolled ? 'text-primary-500' : 'text-white'}`} />
-            <span className={`text-2xl font-bold transition-colors duration-300 ${isScrolled ? 'text-secondary-800' : 'text-white'}`}>
-              {siteConfig?.siteName ?? 'COIN'}
-            </span>
+          <Link href="/" className="flex items-center group">
+            <img
+              src="https://www.coin-as.com/wp-content/uploads/sites/2/2022/11/coin-availability-services-logo.svg"
+              alt="COIN Availability Services"
+              className={`h-10 w-auto transition-all duration-300 group-hover:opacity-80 ${!isScrolled ? 'brightness-0 invert' : ''}`}
+            />
           </Link>
 
           {/* Desktop Navigation */}

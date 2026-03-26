@@ -424,9 +424,15 @@ function pageAbout() {
           ls('Healthcare'),
           ls('Telecoms & Technology'),
         ],
-        customerNames: [
-          'Deutsche Bank', 'HSBC', 'Citibank', 'Eurocontrol',
-          'BNP Paribas', 'ING', 'Engie', 'Proximus',
+        logoUrls: [
+          'https://www.coin-as.com/wp-content/uploads/2019/05/eurocontrol-logo-180x180.jpg',
+          'https://www.coin-as.com/wp-content/uploads/2017/12/Generali-logo-180x180.jpg',
+          'https://www.coin-as.com/wp-content/uploads/2018/05/atradius-logo-vierkant-180x180.jpg',
+          'https://www.coin-as.com/wp-content/uploads/2017/12/ROBECO-180x180.jpg',
+          'https://www.coin-as.com/wp-content/uploads/2018/01/friesland-campina-180x180.jpg',
+          'https://www.coin-as.com/wp-content/uploads/2017/12/CEB_web-180x180.jpg',
+          'https://www.coin-as.com/wp-content/uploads/2018/01/ams-vierkant2-180x180.jpg',
+          'https://www.coin-as.com/wp-content/uploads/2017/12/british-american-tabacco-180x180.jpg',
         ],
       },
       {
