@@ -28,7 +28,7 @@ const sectors = [
       'Zero RPO/RTO for critical trading systems',
       'Regulatory audit readiness',
     ],
-    image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80',
+    image: '/images/coin/coin-fotosharonwillems-33.webp',
     color: 'primary',
   },
   {
@@ -44,7 +44,7 @@ const sectors = [
       'Remote workforce enablement',
       'Business continuity plan testing',
     ],
-    image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80',
+    image: '/images/coin/coin-fotosharonwillems-58.webp',
     color: 'accent',
   },
   {
@@ -60,7 +60,7 @@ const sectors = [
       'SCADA/OT system continuity',
       'Multi-site crisis coordination',
     ],
-    image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&q=80',
+    image: '/images/coin/co-location-area-munsbach.webp',
     color: 'coin-red',
   },
   {
@@ -76,7 +76,7 @@ const sectors = [
       'Secure data handling',
       'Pandemic and civil unrest preparedness',
     ],
-    image: 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=800&q=80',
+    image: '/images/coin/coin-fotosharonwillems-26.webp',
     color: 'secondary',
   },
 ]
@@ -87,8 +87,8 @@ export default function ChallengesPage() {
       {/* Hero */}
       <section className="relative overflow-hidden text-white py-24">
         <Image
-          src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1920&q=80"
-          alt="Business continuity challenges"
+          src="/images/coin/coin-fotosharonwillems-36.webp"
+          alt="COIN AS team discussing ransomware attack response strategy"
           fill
           className="object-cover"
           priority

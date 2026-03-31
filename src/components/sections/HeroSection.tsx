@@ -16,23 +16,23 @@ import { ShieldCheck, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-reac
 // ---------------------------------------------------------------------------
 const SLIDES = [
   {
-    src: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1920&q=80',
-    alt: 'Data centre server room with blue LED lighting',
+    src: '/images/coin/co-location-area-munsbach.webp',
+    alt: 'COIN AS co-location server room in Münsbach with blue LED lighting',
     label: 'Data Centres',
   },
   {
-    src: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80',
-    alt: 'Modern disaster recovery workspace with multiple workstations',
+    src: '/images/coin/coin-luxembourg-contern-recovery-office-small-2.webp',
+    alt: 'COIN AS recovery workplaces at Contern with staff operating at workstations',
     label: 'Recovery Workplaces',
   },
   {
-    src: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1920&q=80',
-    alt: 'Cybersecurity and network resilience concept',
+    src: '/images/coin/coin-luxembourg-common-area-2.webp',
+    alt: 'COIN AS secure server corridor with resilient infrastructure',
     label: 'Cyber Resilience',
   },
   {
-    src: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80',
-    alt: 'Global digital infrastructure and connectivity',
+    src: '/images/coin/coin-fotosharonwillems-26.webp',
+    alt: 'COIN AS team presenting a Business Continuity Plan in meeting room',
     label: 'Business Continuity',
   },
 ]
@@ -142,7 +142,7 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
             animateBy="words"
             direction="bottom"
             stepDuration={0.45}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight"
+            className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-8 leading-tight"
           />
 
           {/* Rotating bullet points */}

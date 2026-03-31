@@ -23,7 +23,7 @@ const challengeData: Record<string, ChallengeData> = {
     slug: 'banking-finance',
     title: 'Banking & Finance',
     subtitle: 'Staying resilient under DORA, NIS2, CSSF & DNB requirements',
-    heroImage: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1920&q=80',
+    heroImage: '/images/coin/coin-fotosharonwillems-33.webp',
     intro:
       'Financial institutions are among the most targeted organizations for cyber attacks and face the strictest regulatory requirements for operational resilience. COIN AS has been serving the financial sector for over 20 years.',
     context:
@@ -101,7 +101,7 @@ const challengeData: Record<string, ChallengeData> = {
     slug: 'insurance',
     title: 'Insurance',
     subtitle: 'Operational resilience when claims surge and offices close',
-    heroImage: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1920&q=80',
+    heroImage: '/images/coin/coin-fotosharonwillems-58.webp',
     intro:
       'Insurance companies face a unique paradox: the exact events that disrupt their operations — storms, floods, pandemics — are also when client demand peaks. COIN AS ensures your claims and underwriting teams keep running.',
     context:
@@ -159,7 +159,7 @@ const challengeData: Record<string, ChallengeData> = {
     slug: 'utilities-energy',
     title: 'Utilities & Energy',
     subtitle: 'Protecting critical infrastructure under NIS2',
-    heroImage: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1920&q=80',
+    heroImage: '/images/coin/co-location-area-munsbach.webp',
     intro:
       'Energy grids, water networks, and utility operators are classified as critical infrastructure — making them prime targets for sophisticated cyber attacks and subject to the NIS2 directive\'s strictest requirements.',
     context:
@@ -217,7 +217,7 @@ const challengeData: Record<string, ChallengeData> = {
     slug: 'government-public',
     title: 'Government & Public Sector',
     subtitle: 'Continuity of essential public services and emergency management',
-    heroImage: 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1920&q=80',
+    heroImage: '/images/coin/coin-fotosharonwillems-26.webp',
     intro:
       'Public sector organizations — from tax authorities to emergency services — bear a duty to citizens that cannot be interrupted. COIN AS supports government agencies with the infrastructure and expertise to maintain essential services under any circumstances.',
     context:
