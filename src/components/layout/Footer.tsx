@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Shield, Linkedin, Phone, Mail, ArrowUpRight } from 'lucide-react'
+import { Linkedin, Phone, Mail, ArrowUpRight } from 'lucide-react'
 import { getLocalizedField } from '@/lib/locale'
 import type { FooterNavigation } from '@/lib/types/navigation'
 import type { SiteConfig } from '@/lib/types/site-config'
@@ -37,11 +37,12 @@ export default function Footer({ footerNav, siteConfig }: FooterProps) {
       <div className="relative container-padding pt-14 pb-10">
         {/* Brand row: Logo + description */}
         <div className="mb-10">
-          <Link href="/" className="inline-flex items-center gap-3 mb-5 group">
-            <Shield className="h-7 w-7 text-accent-400 transition-transform duration-500 group-hover:rotate-12" />
-            <span className="text-3xl font-bold tracking-tight font-display">
-              {siteConfig?.siteName ?? 'COIN'}
-            </span>
+          <Link href="/" className="inline-block mb-5 group">
+            <img
+              src="/images/coin/coin-logo-negative.png"
+              alt="COIN Availability Services"
+              className="h-10 w-auto transition-opacity duration-300 group-hover:opacity-80"
+            />
           </Link>
 
           {description && (

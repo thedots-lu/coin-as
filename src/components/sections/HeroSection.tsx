@@ -9,10 +9,10 @@ import { Locale } from '@/lib/types/locale'
 import Button from '@/components/ui/Button'
 import CircularText from '@/components/reactbits/CircularText'
 import BlurText from '@/components/reactbits/BlurText'
-import { ShieldCheck, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 
 // ---------------------------------------------------------------------------
-// Carousel slides — technology, resilience, data centres, recovery workspaces
+// Carousel slides
 // ---------------------------------------------------------------------------
 const SLIDES = [
   {
@@ -59,7 +59,6 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
   const next = useCallback(() => setCurrent((p) => (p + 1) % SLIDES.length), [])
   const prev = useCallback(() => setCurrent((p) => (p - 1 + SLIDES.length) % SLIDES.length), [])
 
-  // Auto-advance carousel
   const resetTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current)
     timerRef.current = setInterval(next, INTERVAL)
@@ -70,7 +69,6 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [resetTimer])
 
-  // Rotating bullet points
   useEffect(() => {
     if (!section.bulletPoints || section.bulletPoints.length <= 1) return
     const id = setInterval(() => {
@@ -86,20 +84,18 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen flex items-center overflow-hidden"
+      className="relative h-[85vh] min-h-[600px] max-h-[900px] flex items-center overflow-hidden"
     >
-      {/* ------------------------------------------------------------------ */}
-      {/* Background image carousel                                           */}
-      {/* ------------------------------------------------------------------ */}
+      {/* Background carousel */}
       <div className="absolute inset-0 z-0">
         <AnimatePresence initial={false}>
           <motion.div
             key={current}
             className="absolute inset-0"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.2, ease: 'easeInOut' }}
+            transition={{ duration: 1.4, ease: 'easeInOut' }}
           >
             <Image
               src={SLIDES[current].src}
@@ -112,183 +108,173 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
           </motion.div>
         </AnimatePresence>
 
-        {/* Gradient overlay — strong left for readability, fades right */}
+        {/* Overlay — navy gradient from left */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(105deg, rgba(4,10,20,0.92) 0%, rgba(4,10,20,0.78) 40%, rgba(4,10,20,0.45) 70%, rgba(4,10,20,0.25) 100%)',
+              'linear-gradient(100deg, rgba(0,71,121,0.92) 0%, rgba(0,71,121,0.75) 35%, rgba(0,40,70,0.50) 60%, rgba(0,30,55,0.35) 100%)',
           }}
         />
-        {/* Bottom vignette */}
+        {/* Bottom fade */}
         <div
-          className="absolute inset-x-0 bottom-0 h-32"
-          style={{ background: 'linear-gradient(to top, rgba(4,10,20,0.6), transparent)' }}
+          className="absolute inset-x-0 bottom-0 h-40"
+          style={{ background: 'linear-gradient(to top, rgba(0,40,70,0.7), transparent)' }}
         />
       </div>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Hero content                                                        */}
-      {/* ------------------------------------------------------------------ */}
+      {/* Content */}
       <motion.div
-        className="container-padding relative z-10 py-32 w-full"
+        className="container-padding relative z-10 w-full"
         style={{ opacity }}
       >
-        <div className="max-w-3xl">
-          {/* Heading — word-by-word blur reveal */}
-          <BlurText
-            text={heading || ''}
-            delay={120}
-            animateBy="words"
-            direction="bottom"
-            stepDuration={0.45}
-            className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-8 leading-tight"
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          {/* Left — text content */}
+          <div className="lg:col-span-8 xl:col-span-7">
+            {/* Overline */}
+            <motion.div
+              className="flex items-center gap-3 mb-6"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="w-10 h-[2px] bg-accent-400" />
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent-300">
+                Business Continuity & Cyber Resilience
+              </span>
+            </motion.div>
 
-          {/* Rotating bullet points */}
-          {section.bulletPoints && section.bulletPoints.length > 0 && (
-            <div className="h-16 mb-10 flex items-center">
-              <AnimatePresence mode="wait">
-                <motion.p
-                  key={currentBullet}
-                  className="text-xl md:text-2xl max-w-2xl"
-                  style={{ color: 'rgba(186, 210, 255, 0.9)' }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  {getLocalizedField(section.bulletPoints[currentBullet], locale)}
-                </motion.p>
-              </AnimatePresence>
-            </div>
-          )}
+            {/* Heading — BlurText animation */}
+            <BlurText
+              text={heading || ''}
+              delay={120}
+              animateBy="words"
+              direction="bottom"
+              stepDuration={0.45}
+              className="text-3xl md:text-4xl lg:text-[2.75rem] font-bold text-white mb-6 leading-[1.15] tracking-tight"
+            />
 
-          {/* CTA buttons */}
-          <motion.div
-            className="flex flex-col sm:flex-row gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-          >
-            {primaryBtnText && (
-              <Button href={section.primaryButtonLink} variant="primary" className="text-lg px-8 py-4">
-                {primaryBtnText}
-              </Button>
+            {/* Rotating bullet points */}
+            {section.bulletPoints && section.bulletPoints.length > 0 && (
+              <div className="h-14 mb-8 flex items-center">
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={currentBullet}
+                    className="text-lg md:text-xl max-w-xl leading-relaxed text-white/80"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -16 }}
+                    transition={{ duration: 0.45 }}
+                  >
+                    {getLocalizedField(section.bulletPoints[currentBullet], locale)}
+                  </motion.p>
+                </AnimatePresence>
+              </div>
             )}
-            {secondaryBtnText && (
-              <Button href={section.secondaryButtonLink} variant="outline" className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-secondary-800">
-                {secondaryBtnText}
-              </Button>
-            )}
-          </motion.div>
+
+            {/* CTA buttons */}
+            <motion.div
+              className="flex flex-col sm:flex-row gap-3"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.6 }}
+            >
+              {primaryBtnText && (
+                <Button href={section.primaryButtonLink} variant="primary" className="text-base px-7 py-3.5 !bg-accent-500 hover:!bg-accent-600 !shadow-accent-500/25">
+                  {primaryBtnText}
+                </Button>
+              )}
+              {secondaryBtnText && (
+                <Button href={section.secondaryButtonLink} variant="outline" className="text-base px-7 py-3.5 border-white/40 text-white hover:bg-white hover:text-primary-800">
+                  {secondaryBtnText}
+                </Button>
+              )}
+            </motion.div>
+          </div>
+
+          {/* Right — NIS2/DORA badge */}
+          <div className="hidden lg:flex lg:col-span-4 xl:col-span-5 justify-end items-center">
+            <motion.div
+              className="w-[140px] h-[140px]"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 1.2, type: 'spring' }}
+            >
+              <div className="relative w-full h-full">
+                <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                  <div className="w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-sm overflow-hidden">
+                    <img
+                      src="/images/coin/coin-sigle.svg"
+                      alt="COIN AS"
+                      className="w-12 h-12"
+                    />
+                  </div>
+                </div>
+                <CircularText
+                  text="NIS2 & DORA READY * COMPLIANT * "
+                  spinDuration={18}
+                  onHover="speedUp"
+                  className="text-white"
+                  radius={42}
+                  fontSize={11}
+                />
+              </div>
+            </motion.div>
+          </div>
         </div>
+      </motion.div>
 
-        {/* ---------------------------------------------------------------- */}
-        {/* Carousel controls — bottom                                       */}
-        {/* ---------------------------------------------------------------- */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6">
-          {/* Prev */}
-          <button
-            type="button"
-            onClick={() => { prev(); resetTimer() }}
-            aria-label="Previous slide"
-            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 border border-white/20 flex items-center justify-center transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4 text-white" />
-          </button>
+      {/* Bottom bar — carousel controls + slide info */}
+      <div className="absolute bottom-0 inset-x-0 z-20">
+        <div className="container-padding py-5 flex items-center justify-between">
+          {/* Slide label */}
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={`label-${current}`}
+              className="text-xs font-semibold uppercase tracking-[0.15em] text-white/50 hidden sm:block"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.3 }}
+            >
+              {SLIDES[current].label}
+            </motion.span>
+          </AnimatePresence>
 
           {/* Dots */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 mx-auto sm:mx-0">
             {SLIDES.map((slide, i) => (
               <button
                 key={i}
                 type="button"
                 onClick={() => { setCurrent(i); resetTimer() }}
                 aria-label={slide.label}
-                className="relative flex items-center justify-center"
               >
                 <span
                   className="block rounded-full transition-all duration-300"
                   style={{
-                    width: i === current ? 28 : 8,
-                    height: 8,
-                    backgroundColor: i === current ? 'var(--color-accent-500)' : 'rgba(255,255,255,0.35)',
+                    width: i === current ? 24 : 6,
+                    height: 6,
+                    backgroundColor: i === current ? 'var(--color-accent-500)' : 'rgba(255,255,255,0.3)',
                   }}
                 />
               </button>
             ))}
           </div>
 
-          {/* Next */}
-          <button
-            type="button"
-            onClick={() => { next(); resetTimer() }}
-            aria-label="Next slide"
-            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 border border-white/20 flex items-center justify-center transition-colors"
+          {/* Scroll hint */}
+          <div
+            className="hidden sm:flex items-center gap-1.5 cursor-pointer"
+            onClick={() => window.scrollTo({ top: window.innerHeight * 0.85, behavior: 'smooth' })}
+            role="button"
+            tabIndex={0}
           >
-            <ChevronRight className="w-4 h-4 text-white" />
-          </button>
-        </div>
-
-        {/* Slide label — bottom right */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={`label-${current}`}
-            className="absolute bottom-8 right-8 md:right-12 hidden md:flex items-center gap-2"
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -10 }}
-            transition={{ duration: 0.4 }}
-          >
-            <span className="w-4 h-[2px] bg-accent-500 rounded-full" />
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/60">
-              {SLIDES[current].label}
-            </span>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Scroll down indicator */}
-        <div
-          className="absolute bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-0.5 cursor-pointer select-none"
-          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
-          aria-label="Scroll down"
-          role="button"
-          tabIndex={0}
-        >
-          <span className="text-[9px] font-semibold tracking-[0.25em] uppercase text-white/50">
-            Scroll
-          </span>
-          <ChevronDown className="w-5 h-5 text-white/50 animate-bounce" />
-        </div>
-
-        {/* NIS2 & DORA READY spinning badge */}
-        <motion.div
-          className="absolute bottom-20 right-8 md:bottom-16 md:right-12 w-[100px] h-[100px] md:w-[120px] md:h-[120px]"
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 1.2, type: 'spring' }}
-        >
-          <div className="relative w-full h-full">
-            <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-              <div
-                className="w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center backdrop-blur-sm border border-accent-400/30"
-                style={{ background: 'rgba(251,191,36,0.1)' }}
-              >
-                <ShieldCheck className="w-5 h-5 md:w-6 md:h-6 text-accent-400" />
-              </div>
-            </div>
-            <CircularText
-              text="NIS2 & DORA READY * COMPLIANT * "
-              spinDuration={18}
-              onHover="speedUp"
-              className="text-white"
-              radius={34}
-              fontSize={10}
-            />
+            <span className="text-[10px] font-medium tracking-widest uppercase text-white/40">Scroll</span>
+            <ChevronDown className="w-4 h-4 text-white/40 animate-bounce" />
           </div>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
+
     </section>
   )
 }

@@ -31,7 +31,7 @@ export default function MobileNav({ navItems, isOpen, onClose }: MobileNavProps)
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 top-20 bg-black/40 z-40 lg:hidden"
+            className="fixed inset-0 top-20 bg-black/40 z-[60] lg:hidden"
             onClick={onClose}
           />
 
@@ -41,7 +41,7 @@ export default function MobileNav({ navItems, isOpen, onClose }: MobileNavProps)
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="fixed top-20 right-0 bottom-0 w-80 max-w-[85vw] bg-white shadow-xl z-50 overflow-y-auto lg:hidden"
+            className="fixed top-20 right-0 bottom-0 w-80 max-w-[85vw] bg-white shadow-xl z-[70] overflow-y-auto lg:hidden"
           >
             <div className="py-4">
               {navItems

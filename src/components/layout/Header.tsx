@@ -38,33 +38,24 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
     setMobileOpen(false)
   }, [])
 
-  const textClass = isScrolled ? 'text-secondary-600 hover:text-primary-500' : 'text-white/90 hover:text-white'
+  const textClass = isScrolled ? 'text-secondary-600 hover:text-primary-500' : 'text-primary-700 hover:text-primary-500'
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? 'bg-white/70 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-white/20'
-          : ''
+          : 'bg-white border-b border-gray-100'
       }`}
     >
-      {/* Dark gradient backdrop when on hero */}
-      {!isScrolled && (
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: 'linear-gradient(to bottom, rgba(6,14,26,0.7) 0%, rgba(6,14,26,0.3) 60%, transparent 100%)',
-          }}
-        />
-      )}
       <div className="container-padding relative">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center group">
             <img
-              src="https://www.coin-as.com/wp-content/uploads/sites/2/2022/11/coin-availability-services-logo.svg"
-              alt="COIN Availability Services"
-              className="h-9 w-auto transition-opacity duration-300 group-hover:opacity-80"
+              src="/images/coin/coin-logo-header.png"
+              alt="COIN Business Continuity Innovation"
+              className="h-10 w-auto transition-opacity duration-300 group-hover:opacity-80"
             />
           </Link>
 

@@ -202,7 +202,7 @@ function pageHome() {
       {
         type: 'service_pillars',
         order: 1,
-        heading: ls('We enable customers to improve their resilience in four key areas'),
+        heading: ls('We enable customers to improve their resilience in three key areas'),
         subtitle: ls(
           'COIN has a unique blend of competences in Business Continuity, Digital Workplaces, Facility Management, High Resiliency Systems and Security. We are dedicated to helping organisations with mission critical employees prepare for, respond to, and recover from any disruption.',
         ),
@@ -291,7 +291,7 @@ function pageHome() {
         body: ls(
           'COIN has over 20 years of experience in business continuity. Yet, each year brings its share of new risks as well as technological challenges and opportunities. Together with our partners, we continuously develop innovative and robust solutions that improve the resiliency of our customers in an increasingly complex business and regulatory environment.',
         ),
-        imageUrl: '/images/coin/coin-fotosharonwillems-44.webp',
+        imageUrl: '/images/coin/coin-fotosharonwillems-16.webp',
       },
       {
         type: 'flexible_services',
