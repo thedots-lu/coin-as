@@ -33,7 +33,8 @@ export default function Button({
       'bg-transparent hover:bg-secondary-100 text-secondary-700 focus:ring-secondary-300',
   }
 
-  const classes = `${baseClasses} ${variantClasses[variant]} ${className}`
+  const disabledClasses = disabled ? 'opacity-40 cursor-not-allowed pointer-events-none' : ''
+  const classes = `${baseClasses} ${variantClasses[variant]} ${disabledClasses} ${className}`
 
   if (href) {
     return (

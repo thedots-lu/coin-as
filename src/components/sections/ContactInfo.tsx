@@ -13,7 +13,7 @@ export default function ContactInfo({ section, locale }: ContactInfoProps) {
   const subtitle = getLocalizedField(section.subtitle, locale)
 
   return (
-    <section className="py-16 bg-gradient-to-br from-warm-50 to-primary-50/20">
+    <section className="pt-16 pb-6 bg-gradient-to-br from-warm-50 to-primary-50/20">
       <div className="container-padding max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-secondary-800 mb-4">{heading}</h1>

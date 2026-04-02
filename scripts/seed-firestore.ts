@@ -65,17 +65,18 @@ function siteConfigGlobal() {
 function navigationMain() {
   return {
     items: [
-      {
-        label: ls('Challenges'),
-        path: '/challenges',
-        order: 0,
-        children: [
-          { label: ls('Banking & Finance'), path: '/challenges/banking-finance', order: 0 },
-          { label: ls('Insurance'), path: '/challenges/insurance', order: 1 },
-          { label: ls('Utilities & Energy'), path: '/challenges/utilities-energy', order: 2 },
-          { label: ls('Government & Public'), path: '/challenges/government-public', order: 3 },
-        ],
-      },
+      // NOTE: Challenges hidden from nav per client request — pages still exist at /challenges/*
+      // {
+      //   label: ls('Challenges'),
+      //   path: '/challenges',
+      //   order: 0,
+      //   children: [
+      //     { label: ls('Banking & Finance'), path: '/challenges/banking-finance', order: 0 },
+      //     { label: ls('Insurance'), path: '/challenges/insurance', order: 1 },
+      //     { label: ls('Utilities & Energy'), path: '/challenges/utilities-energy', order: 2 },
+      //     { label: ls('Government & Public'), path: '/challenges/government-public', order: 3 },
+      //   ],
+      // },
       {
         label: ls('Services'),
         path: '/services',
