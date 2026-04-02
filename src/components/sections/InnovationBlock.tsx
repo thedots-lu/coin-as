@@ -16,14 +16,14 @@ export default function InnovationBlock({ section, locale }: InnovationBlockProp
   const body = getLocalizedField(section.body, locale)
 
   return (
-    <section className="relative py-28 md:py-36 bg-white overflow-hidden">
+    <section className="relative py-28 md:py-36 overflow-hidden" style={{ background: 'var(--color-primary-950)' }}>
       {/* Architectural grid lines -- subtle background texture */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
         <div
           className="absolute inset-0"
           style={{
             backgroundImage:
-              'repeating-linear-gradient(90deg, var(--color-secondary-800) 0px, var(--color-secondary-800) 1px, transparent 1px, transparent 120px)',
+              'repeating-linear-gradient(90deg, rgba(255,255,255,0.5) 0px, rgba(255,255,255,0.5) 1px, transparent 1px, transparent 120px)',
           }}
         />
       </div>
@@ -49,23 +49,23 @@ export default function InnovationBlock({ section, locale }: InnovationBlockProp
                   }}
                 />
                 <div className="flex flex-col justify-center">
-                  <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary-500 font-display">
+                  <span className="text-xs font-semibold tracking-[0.2em] uppercase text-accent-400 font-display">
                     Since 2004
                   </span>
-                  <span className="text-xs tracking-[0.15em] uppercase text-secondary-400 mt-0.5">
+                  <span className="text-xs tracking-[0.15em] uppercase text-primary-300 mt-0.5">
                     Proven Track Record
                   </span>
                 </div>
               </div>
 
               {heading && (
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary-800 mb-8 leading-[1.1] tracking-tight">
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-8 leading-[1.1] tracking-tight">
                   {heading}
                 </h2>
               )}
 
               {body && (
-                <p className="text-secondary-500 leading-relaxed text-lg md:text-xl max-w-xl">
+                <p className="text-primary-200 leading-relaxed text-lg md:text-xl max-w-xl">
                   {body}
                 </p>
               )}
@@ -79,8 +79,8 @@ export default function InnovationBlock({ section, locale }: InnovationBlockProp
                 className="mt-10 origin-left"
               >
                 <div className="flex items-center gap-3">
-                  <div className="h-px flex-grow bg-gradient-to-r from-primary-300 via-primary-200 to-transparent" />
-                  <div className="w-2 h-2 rounded-full bg-primary-400" />
+                  <div className="h-px flex-grow bg-gradient-to-r from-primary-500/40 via-primary-400/20 to-transparent" />
+                  <div className="w-2 h-2 rounded-full bg-primary-400/60" />
                 </div>
               </motion.div>
             </motion.div>
@@ -98,7 +98,7 @@ export default function InnovationBlock({ section, locale }: InnovationBlockProp
                   {/* Shadow layer offset for depth */}
                   <div
                     className="absolute -bottom-4 -right-4 w-full h-full rounded-xl"
-                    style={{ background: 'var(--color-primary-100)' }}
+                    style={{ background: 'var(--color-primary-800)' }}
                   />
                   <div className="relative rounded-xl overflow-hidden">
                     <div className="aspect-[16/10] relative">

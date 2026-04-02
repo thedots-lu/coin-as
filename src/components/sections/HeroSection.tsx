@@ -1,43 +1,50 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
+import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { getLocalizedField } from '@/lib/locale'
 import { HeroSection as HeroSectionType } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
 import Button from '@/components/ui/Button'
 import CircularText from '@/components/reactbits/CircularText'
-import BlurText from '@/components/reactbits/BlurText'
-import { ChevronDown } from 'lucide-react'
 
 // ---------------------------------------------------------------------------
-// Carousel slides
+// Carousel slides — each has its own image, label, title, description
 // ---------------------------------------------------------------------------
 const SLIDES = [
   {
     src: '/images/coin/co-location-area-munsbach.webp',
-    alt: 'COIN AS co-location server room in Münsbach with blue LED lighting',
+    alt: 'COIN AS co-location server room',
     label: 'Data Centres',
+    title: 'Secure Co-location & Data Centres',
+    description: 'State-of-the-art facilities across BeNeLux with redundant power, cooling and connectivity.',
   },
   {
     src: '/images/coin/coin-luxembourg-contern-recovery-office-small-2.webp',
-    alt: 'COIN AS recovery workplaces at Contern with staff operating at workstations',
+    alt: 'COIN AS recovery workplaces at Contern',
     label: 'Recovery Workplaces',
+    title: '750+ Recovery Workplaces',
+    description: 'Fully equipped offices ready for immediate activation when disaster strikes.',
   },
   {
     src: '/images/coin/coin-luxembourg-common-area-2.webp',
-    alt: 'COIN AS secure server corridor with resilient infrastructure',
+    alt: 'COIN AS secure server corridor',
     label: 'Cyber Resilience',
+    title: 'Cyber Resilience & IT Recovery',
+    description: 'Comprehensive IT disaster recovery and cyber resilience solutions for your critical systems.',
   },
   {
     src: '/images/coin/coin-fotosharonwillems-26.webp',
-    alt: 'COIN AS team presenting a Business Continuity Plan in meeting room',
+    alt: 'COIN AS team presenting a Business Continuity Plan',
     label: 'Business Continuity',
+    title: 'BCP Consulting & Training',
+    description: 'Expert consulting to build, test and maintain your Business Continuity Plans. NIS2 & DORA ready.',
   },
 ]
 
-const INTERVAL = 5500
+const INTERVAL = 6000
 
 interface HeroSectionProps {
   section: HeroSectionType
@@ -45,236 +52,195 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ section, locale }: HeroSectionProps) {
-  const [current, setCurrent] = useState(0)
-  const [currentBullet, setCurrentBullet] = useState(0)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const [active, setActive] = useState(0)
+  const [paused, setPaused] = useState(false)
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  })
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
-
-  const next = useCallback(() => setCurrent((p) => (p + 1) % SLIDES.length), [])
-  const prev = useCallback(() => setCurrent((p) => (p - 1 + SLIDES.length) % SLIDES.length), [])
-
-  const resetTimer = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current)
-    timerRef.current = setInterval(next, INTERVAL)
-  }, [next])
+  const next = useCallback(() => setActive((i) => (i + 1) % SLIDES.length), [])
+  const prev = useCallback(() => setActive((i) => (i - 1 + SLIDES.length) % SLIDES.length), [])
 
   useEffect(() => {
-    resetTimer()
-    return () => { if (timerRef.current) clearInterval(timerRef.current) }
-  }, [resetTimer])
-
-  useEffect(() => {
-    if (!section.bulletPoints || section.bulletPoints.length <= 1) return
-    const id = setInterval(() => {
-      setCurrentBullet((p) => (p + 1) % section.bulletPoints.length)
-    }, 3500)
-    return () => clearInterval(id)
-  }, [section.bulletPoints])
+    if (paused || SLIDES.length <= 1) return
+    const timer = setInterval(next, INTERVAL)
+    return () => clearInterval(timer)
+  }, [paused, next])
 
   const heading = getLocalizedField(section.heading, locale)
   const primaryBtnText = getLocalizedField(section.primaryButtonText, locale)
   const secondaryBtnText = getLocalizedField(section.secondaryButtonText, locale)
+  const current = SLIDES[active]
 
   return (
-    <section
-      ref={containerRef}
-      className="relative h-[85vh] min-h-[600px] max-h-[900px] flex items-center overflow-hidden"
-    >
-      {/* Background carousel */}
-      <div className="absolute inset-0 z-0">
-        <AnimatePresence initial={false}>
-          <motion.div
-            key={current}
-            className="absolute inset-0"
-            initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.4, ease: 'easeInOut' }}
-          >
-            <Image
-              src={SLIDES[current].src}
-              alt={SLIDES[current].alt}
-              fill
-              priority={current === 0}
-              sizes="100vw"
-              className="object-cover"
-            />
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Overlay — navy gradient from left */}
+    <section className="pt-24 pb-12 bg-white">
+      <div className="container-padding">
+        {/* Main carousel card */}
         <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(100deg, rgba(0,71,121,0.92) 0%, rgba(0,71,121,0.75) 35%, rgba(0,40,70,0.50) 60%, rgba(0,30,55,0.35) 100%)',
-          }}
-        />
-        {/* Bottom fade */}
-        <div
-          className="absolute inset-x-0 bottom-0 h-40"
-          style={{ background: 'linear-gradient(to top, rgba(0,40,70,0.7), transparent)' }}
-        />
-      </div>
-
-      {/* Content */}
-      <motion.div
-        className="container-padding relative z-10 w-full"
-        style={{ opacity }}
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          {/* Left — text content */}
-          <div className="lg:col-span-8 xl:col-span-7">
-            {/* Overline */}
+          className="relative rounded-2xl overflow-hidden shadow-2xl"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
+          <AnimatePresence mode="wait">
             <motion.div
-              className="flex items-center gap-3 mb-6"
-              initial={{ opacity: 0, x: -20 }}
+              key={active}
+              initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={{ duration: 0.45, ease: 'easeInOut' }}
+              className="grid grid-cols-1 md:grid-cols-2 md:h-[480px]"
             >
-              <div className="w-10 h-[2px] bg-accent-400" />
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent-300">
-                Business Continuity & Cyber Resilience
-              </span>
-            </motion.div>
-
-            {/* Heading — BlurText animation */}
-            <BlurText
-              text={heading || ''}
-              delay={120}
-              animateBy="words"
-              direction="bottom"
-              stepDuration={0.45}
-              className="text-3xl md:text-4xl lg:text-[2.75rem] font-bold text-white mb-6 leading-[1.15] tracking-tight"
-            />
-
-            {/* Rotating bullet points */}
-            {section.bulletPoints && section.bulletPoints.length > 0 && (
-              <div className="h-14 mb-8 flex items-center">
-                <AnimatePresence mode="wait">
-                  <motion.p
-                    key={currentBullet}
-                    className="text-lg md:text-xl max-w-xl leading-relaxed text-white/80"
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -16 }}
-                    transition={{ duration: 0.45 }}
-                  >
-                    {getLocalizedField(section.bulletPoints[currentBullet], locale)}
-                  </motion.p>
-                </AnimatePresence>
+              {/* Left — Image */}
+              <div className="relative min-h-[280px] md:min-h-[460px]">
+                <Image
+                  src={current.src}
+                  alt={current.alt}
+                  fill
+                  priority={active === 0}
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover"
+                />
+                {/* Subtle gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black/10" />
               </div>
-            )}
 
-            {/* CTA buttons */}
-            <motion.div
-              className="flex flex-col sm:flex-row gap-3"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.6 }}
-            >
-              {primaryBtnText && (
-                <Button href={section.primaryButtonLink} variant="primary" className="text-base px-7 py-3.5 !bg-accent-500 hover:!bg-accent-600 !shadow-accent-500/25">
-                  {primaryBtnText}
-                </Button>
-              )}
-              {secondaryBtnText && (
-                <Button href={section.secondaryButtonLink} variant="outline" className="text-base px-7 py-3.5 border-white/40 text-white hover:bg-white hover:text-primary-800">
-                  {secondaryBtnText}
-                </Button>
-              )}
-            </motion.div>
-          </div>
+              {/* Right — Content panel */}
+              <div className="bg-primary-950 text-white p-8 md:p-12 lg:p-14 flex flex-col justify-center">
+                {/* Slide label */}
+                <span className="inline-block text-xs font-bold uppercase tracking-[0.2em] text-accent-400 mb-5 px-3 py-1 rounded-full border border-accent-500/30 w-fit">
+                  {current.label}
+                </span>
 
-          {/* Right — NIS2/DORA badge */}
-          <div className="hidden lg:flex lg:col-span-4 xl:col-span-5 justify-end items-center">
-            <motion.div
-              className="w-[140px] h-[140px]"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 1.2, type: 'spring' }}
-            >
-              <div className="relative w-full h-full">
-                <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-                  <div className="w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-sm overflow-hidden">
-                    <img
-                      src="/images/coin/coin-sigle.svg"
-                      alt="COIN AS"
-                      className="w-12 h-12"
-                    />
+                {/* Main heading (from Firestore) on first slide, slide title on others */}
+                <h1 className="text-2xl md:text-3xl lg:text-[2.2rem] font-bold mb-4 leading-[1.15] tracking-tight font-display">
+                  {active === 0 && heading ? heading : current.title}
+                </h1>
+
+                {/* Description */}
+                <p className="text-primary-200 leading-relaxed mb-8 text-base md:text-lg max-w-lg">
+                  {current.description}
+                </p>
+
+                {/* CTA buttons */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {primaryBtnText && (
+                    <Button
+                      href={section.primaryButtonLink}
+                      variant="primary"
+                      className="text-base px-7 py-3.5 !bg-accent-500 hover:!bg-accent-600 !shadow-accent-500/25"
+                    >
+                      {primaryBtnText}
+                    </Button>
+                  )}
+                  {secondaryBtnText && (
+                    <Button
+                      href={section.secondaryButtonLink}
+                      variant="outline"
+                      className="text-base px-7 py-3.5 border-white/30 text-white hover:bg-white hover:text-primary-800"
+                    >
+                      {secondaryBtnText}
+                    </Button>
+                  )}
+                </div>
+
+                {/* NIS2/DORA badge — hidden for now, keep for later
+                <div className="lg:flex justify-end mt-6">
+                  <div className="w-[110px] h-[110px]">
+                    <div className="relative w-full h-full">
+                      <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                        <div className="w-11 h-11 rounded-full flex items-center justify-center backdrop-blur-sm overflow-hidden">
+                          <img
+                            src="/images/coin/coin-sigle.svg"
+                            alt="COIN AS"
+                            className="w-9 h-9"
+                          />
+                        </div>
+                      </div>
+                      <CircularText
+                        text="NIS2 & DORA READY * COMPLIANT * "
+                        spinDuration={18}
+                        onHover="speedUp"
+                        className="text-white/60"
+                        radius={34}
+                        fontSize={9}
+                      />
+                    </div>
                   </div>
                 </div>
-                <CircularText
-                  text="NIS2 & DORA READY * COMPLIANT * "
-                  spinDuration={18}
-                  onHover="speedUp"
-                  className="text-white"
-                  radius={42}
-                  fontSize={11}
-                />
+                end hidden NIS2/DORA badge */}
               </div>
             </motion.div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Bottom bar — carousel controls + slide info */}
-      <div className="absolute bottom-0 inset-x-0 z-20">
-        <div className="container-padding py-5 flex items-center justify-between">
-          {/* Slide label */}
-          <AnimatePresence mode="wait">
-            <motion.span
-              key={`label-${current}`}
-              className="text-xs font-semibold uppercase tracking-[0.15em] text-white/50 hidden sm:block"
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.3 }}
-            >
-              {SLIDES[current].label}
-            </motion.span>
           </AnimatePresence>
 
-          {/* Dots */}
-          <div className="flex items-center gap-1.5 mx-auto sm:mx-0">
-            {SLIDES.map((slide, i) => (
+          {/* Prev/Next arrows */}
+          {SLIDES.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={prev}
+                aria-label="Previous"
+                className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 backdrop-blur-sm text-white rounded-full p-2 transition-all z-10"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                onClick={next}
+                aria-label="Next"
+                className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 backdrop-blur-sm text-white rounded-full p-2 transition-all z-10"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Dots progress */}
+        {SLIDES.length > 1 && (
+          <div className="flex items-center justify-center gap-3 mt-6">
+            {SLIDES.map((_, i) => (
               <button
                 key={i}
                 type="button"
-                onClick={() => { setCurrent(i); resetTimer() }}
-                aria-label={slide.label}
+                onClick={() => setActive(i)}
+                aria-label={`Slide ${i + 1}`}
+                className={`relative h-2 rounded-full transition-all duration-300 overflow-hidden ${
+                  i === active ? 'w-8 bg-primary-200' : 'w-2 bg-secondary-300 hover:bg-secondary-400'
+                }`}
               >
-                <span
-                  className="block rounded-full transition-all duration-300"
-                  style={{
-                    width: i === current ? 24 : 6,
-                    height: 6,
-                    backgroundColor: i === current ? 'var(--color-accent-500)' : 'rgba(255,255,255,0.3)',
-                  }}
-                />
+                {i === active && !paused && (
+                  <motion.span
+                    className="absolute inset-y-0 left-0 bg-primary-500 rounded-full"
+                    initial={{ width: '0%' }}
+                    animate={{ width: '100%' }}
+                    transition={{ duration: INTERVAL / 1000, ease: 'linear' }}
+                  />
+                )}
               </button>
             ))}
           </div>
+        )}
 
-          {/* Scroll hint */}
-          <div
-            className="hidden sm:flex items-center gap-1.5 cursor-pointer"
-            onClick={() => window.scrollTo({ top: window.innerHeight * 0.85, behavior: 'smooth' })}
-            role="button"
-            tabIndex={0}
-          >
-            <span className="text-[10px] font-medium tracking-widest uppercase text-white/40">Scroll</span>
-            <ChevronDown className="w-4 h-4 text-white/40 animate-bounce" />
-          </div>
+        {/* Tab cards (desktop) */}
+        <div className="hidden md:grid grid-cols-4 gap-4 mt-6">
+          {SLIDES.map((slide, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setActive(i)}
+              className={`text-left p-4 rounded-xl border-2 transition-all duration-200 ${
+                i === active
+                  ? 'border-primary-500 bg-primary-50'
+                  : 'border-transparent bg-secondary-50 hover:border-secondary-200'
+              }`}
+            >
+              <span className="block text-xs font-bold uppercase tracking-wider text-accent-600 mb-1">
+                {slide.label}
+              </span>
+              <span className={`font-semibold text-sm ${i === active ? 'text-primary-600' : 'text-secondary-600'}`}>
+                {slide.title}
+              </span>
+            </button>
+          ))}
         </div>
       </div>
-
     </section>
   )
 }

@@ -50,7 +50,7 @@ export default function MissionStatement({ section, locale }: MissionStatementPr
         style={{ background: 'linear-gradient(to bottom, transparent, var(--color-primary-400), transparent)' }}
       />
 
-      <div className="container-padding relative z-10 py-32 md:py-40 lg:py-48">
+      <div className="container-padding relative z-10 py-16 md:py-20 lg:py-24">
         <div className="max-w-7xl mx-auto">
           <div className="max-w-3xl">
             {/* Accent bar above heading */}
@@ -59,7 +59,7 @@ export default function MissionStatement({ section, locale }: MissionStatementPr
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true, margin: '-80px' }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="origin-left mb-10"
+              className="origin-left mb-6"
             >
               <div
                 className="w-20 h-1 rounded-full"
@@ -76,7 +76,7 @@ export default function MissionStatement({ section, locale }: MissionStatementPr
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-80px' }}
                 transition={{ duration: 0.9, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight mb-10"
+                className="text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.1] tracking-tight mb-6"
                 style={{ color: 'var(--color-warm-50)' }}
               >
                 {heading}

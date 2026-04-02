@@ -79,18 +79,19 @@ export default function PageSectionRenderer({
             return <RoomTypes key={key} section={section} locale={locale} />
           case 'site_gallery':
             return <SiteGallery key={key} section={section} locale={locale} />
-          case 'testimonials_ref':
-            if (testimonials && testimonials.length > 0) {
-              return (
-                <TestimonialsCarousel
-                  key={key}
-                  testimonials={testimonials}
-                  heading={section.heading}
-                  locale={locale}
-                />
-              )
-            }
-            return null
+          // Hidden for now
+          // case 'testimonials_ref':
+          //   if (testimonials && testimonials.length > 0) {
+          //     return (
+          //       <TestimonialsCarousel
+          //         key={key}
+          //         testimonials={testimonials}
+          //         heading={section.heading}
+          //         locale={locale}
+          //       />
+          //     )
+          //   }
+          //   return null
           case 'teams':
             return <TeamGrid key={key} section={section} locale={locale} teamMembers={teamMembers} />
           case 'partners_preview':
@@ -113,8 +114,9 @@ export default function PageSectionRenderer({
             return <BenefitsSection key={key} section={section} locale={locale} />
           case 'business_case':
             return <BusinessCase key={key} section={section} locale={locale} />
-          case 'featured_carousel':
-            return <FeaturedCarousel key={key} section={section} locale={locale} />
+          // Hidden for now — hero carousel replaces this
+          // case 'featured_carousel':
+          //   return <FeaturedCarousel key={key} section={section} locale={locale} />
           default:
             return null
         }

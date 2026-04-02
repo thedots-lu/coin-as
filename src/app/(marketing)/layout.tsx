@@ -28,9 +28,9 @@ export default async function MarketingLayout({ children }: { children: React.Re
 
       <main className="min-h-screen pt-20">
         <EventBanner
-          message="Join us at the COIN AS Business Continuity Summit — Amsterdam, June 2026"
-          linkText="Register now"
-          linkHref="/news"
+          message="NIS2 & DORA READY — Is your organisation compliant?"
+          linkText="Check your readiness"
+          linkHref="/challenges/nis2-dora-compliance"
         />
         {children}
       </main>
