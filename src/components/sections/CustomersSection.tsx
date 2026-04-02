@@ -14,10 +14,10 @@ interface CustomersSectionProps {
 export default function CustomersSection({ section, locale }: CustomersSectionProps) {
   const heading = getLocalizedField(section.heading, locale)
   const body = getLocalizedField(section.body, locale)
-  const logos = section.logoUrls ?? []
+  const logos = (section.logoUrls ?? []).filter((url) => url && url.length > 0)
 
   return (
-    <section className="py-20 bg-warm-100/60 overflow-hidden">
+    <section id="customers" className="py-20 bg-warm-100/60 overflow-hidden scroll-mt-24">
       <div className="container-padding">
         <AnimatedSection animation="slideUp" className="text-center mb-6">
           {heading && (

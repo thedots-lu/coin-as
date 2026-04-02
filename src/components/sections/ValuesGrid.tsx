@@ -12,7 +12,7 @@ export default function ValuesGrid({ section, locale }: ValuesGridProps) {
   const heading = getLocalizedField(section.heading, locale)
 
   return (
-    <section id="values" className="py-20 bg-warm-50">
+    <section id="values" className="py-20 bg-warm-50 scroll-mt-24">
       <div className="container-padding">
         {section.imageUrl && (
           <div className="relative w-full h-48 md:h-64 rounded-2xl overflow-hidden mb-12 shadow-lg group">

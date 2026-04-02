@@ -70,7 +70,7 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
   const current = SLIDES[active]
 
   return (
-    <section className="pt-24 pb-12 bg-white">
+    <section className="pt-4 pb-8 bg-white">
       <div className="container-padding">
         {/* Main carousel card */}
         <div

@@ -28,7 +28,7 @@ export default function MissionDiagram({ section, locale }: MissionDiagramProps)
   ]
 
   return (
-    <section className="py-20 bg-warm-50">
+    <section id="mission" className="py-20 bg-warm-50 scroll-mt-24">
       <div className="container-padding">
         {section.imageUrl && (
           <AnimatedSection animation="slideUp" className="mb-12">

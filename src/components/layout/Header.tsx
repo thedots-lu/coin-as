@@ -78,10 +78,9 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
                     onMouseLeave={handleMenuClose}
                   >
                     {hasChildren ? (
-                      <button
-                        className={`nav-link flex items-center gap-1 px-4 py-2 font-medium transition-colors duration-200 ${textClass}`}
-                        onClick={() => handleMenuOpen(item.path)}
-                        type="button"
+                      <Link
+                        href={item.path}
+                        className={`flex items-center gap-1 px-4 py-2 font-medium transition-colors duration-200 ${textClass}`}
                       >
                         {label || 'Menu'}
                         <ChevronDown
@@ -89,7 +88,7 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
                             openMenu === item.path ? 'rotate-180' : ''
                           }`}
                         />
-                      </button>
+                      </Link>
                     ) : (
                       <Link
                         href={item.path}

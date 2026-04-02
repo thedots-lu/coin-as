@@ -95,13 +95,19 @@ function PartnerCard({ partner }: { partner: import('@/lib/types/partner').Partn
   const content = (
     <div className="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
       <div className="flex items-center justify-center h-20 mb-4">
-        <Image
-          src={partner.logoUrl}
-          alt={partner.name}
-          width={160}
-          height={60}
-          className="object-contain max-h-16"
-        />
+        {partner.logoUrl ? (
+          <Image
+            src={partner.logoUrl}
+            alt={partner.name}
+            width={160}
+            height={60}
+            className="object-contain max-h-16"
+          />
+        ) : (
+          <div className="w-40 h-16 rounded bg-secondary-100 flex items-center justify-center text-secondary-400 text-sm font-medium">
+            {partner.name}
+          </div>
+        )}
       </div>
       <h3 className="text-lg font-semibold text-center mb-2">{partner.name}</h3>
       {description && (

@@ -15,7 +15,7 @@ export default function Timeline({ section, locale }: TimelineProps) {
   const heading = getLocalizedField(section.heading, locale)
 
   return (
-    <section className="py-20 bg-secondary-50">
+    <section id="history" className="py-20 bg-secondary-50 scroll-mt-24">
       <div className="container-padding">
         <AnimatedSection animation="slideUp" className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold">{heading}</h2>
