@@ -14,7 +14,7 @@ export default function MapOverview({ section, locale }: MapOverviewProps) {
   const body = getLocalizedField(section.body, locale)
 
   return (
-    <section className="py-20">
+    <section id="locations" className="py-20 scroll-mt-24">
       <div className="container-padding">
         {/* Intro text */}
         {body && (

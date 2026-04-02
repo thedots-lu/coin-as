@@ -110,7 +110,8 @@ function navigationMain() {
           { label: ls('Our Experts'), path: '/about#teams', order: 2 },
           { label: ls('Partners'), path: '/partners', order: 3 },
           { label: ls('Customers / References'), path: '/about#customers', order: 4 },
-          { label: ls('History'), path: '/about#history', order: 5 },
+          { label: ls('Our Locations'), path: '/about#locations', order: 5 },
+          { label: ls('History'), path: '/about#history', order: 6 },
         ],
       },
       { label: ls('Contact'), path: '/contact', order: 4, children: null },
@@ -448,8 +449,16 @@ function pageAbout() {
         ],
       },
       {
-        type: 'timeline',
+        type: 'map_overview',
         order: 6,
+        body: ls('COIN operates business continuity centres across Belgium, the Netherlands and Luxembourg, providing 750+ recovery workplaces and co-location facilities to keep your business running.'),
+        mapImageUrl: null,
+        mapEmbedUrl: null,
+        isoBadgeUrl: null,
+      },
+      {
+        type: 'timeline',
+        order: 7,
         heading: ls('Our History'),
         events: [
           {
@@ -971,7 +980,7 @@ function servicesData() {
     },
     {
       slug: 'satellite-offices',
-      title: ls('Satellite Offices & Co-location'),
+      title: ls('Satellite Offices'),
       shortTitle: ls('Satellite Offices'),
       category: 'centers',
       order: 5,
@@ -1033,6 +1042,51 @@ function servicesData() {
           body: ls(
             'After rebooting from a Secure COIN Key, any computer becomes a fully managed corporate workstation with access to your enterprise virtual infrastructure: Citrix Workspace App, VMware Horizon Client, Azure Virtual Desktop, Microsoft Teams, Remote Desktop, Chrome and more.\n\nOnce the security incident has been mitigated and laptops rebuilt, they can reconnect to the company\'s restored environment. This ensures complete operational continuity — without paying ransoms or waiting for hardware delivery.',
           ),
+        },
+      ],
+    },
+    {
+      slug: 'dedicated-recovery-site',
+      title: ls('Dedicated Recovery Site'),
+      shortTitle: ls('Dedicated Site'),
+      category: 'centers',
+      order: 6,
+      heroSubtitle: ls('A fully private, tailor-made disaster recovery facility — exclusively yours'),
+      heroImageUrl: '/images/coin/coin-luxembourg-contern-disaster-recovery-office-big.webp',
+      overview: ls(
+        'A Dedicated Recovery Site is a private, fully equipped disaster recovery facility designed to your exact specifications. Unlike shared workplaces, your dedicated site is permanently reserved, fully furnished, and ready for immediate activation 24/7.',
+      ),
+      sections: [
+        {
+          type: 'features_list',
+          order: 0,
+          heading: ls('Dedicated Site Features'),
+          features: [
+            {
+              title: ls('Fully Private & Secure'),
+              description: ls(
+                'Your own enclosed area with dedicated access control, individual badge per user, CCTV monitoring, and physical separation from other tenants. Designed according to your security requirements.',
+              ),
+            },
+            {
+              title: ls('Tailor-Made Design'),
+              description: ls(
+                'COIN manages floor design, project management, infrastructure, furniture, IT equipment, dedicated meeting rooms, and kitchenette. The space is configured to match your production environment.',
+              ),
+            },
+            {
+              title: ls('Always Ready — 24/7 Access'),
+              description: ls(
+                'Permanent 24/7 access with workplaces always "up and running". Suitable for critical users and regulated industries requiring immediate failover capability.',
+              ),
+            },
+            {
+              title: ls('Managed Operations'),
+              description: ls(
+                'COIN handles all facility management: redundant infrastructure, security management, site operations, cleaning, maintenance. You focus on your business continuity strategy.',
+              ),
+            },
+          ],
         },
       ],
     },
