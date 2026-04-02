@@ -13,7 +13,7 @@ export function generatePageMetadata(
   const metaDescription = seo ? getLocalizedField(seo.metaDescription, loc) : ''
 
   return {
-    title: metaTitle ? `${metaTitle} | COIN` : 'COIN - Business Continuity',
+    title: metaTitle || 'Business Continuity & Cyber Resilience',
     description: metaDescription || 'COIN - For over 20 years dedicated to business continuity in the BeNeLux',
     openGraph: {
       title: metaTitle || 'COIN',

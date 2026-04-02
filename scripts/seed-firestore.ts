@@ -176,7 +176,7 @@ function pageHome() {
     slug: 'home',
     title: ls('Home'),
     seo: {
-      metaTitle: ls('COIN - Business Continuity Innovation'),
+      metaTitle: ls('Business Continuity Innovation'),
       metaDescription: ls(
         'Test your business continuity plan with COIN. Over 20 years dedicated to business continuity in the BeNeLux.',
       ),
@@ -344,7 +344,7 @@ function pageAbout() {
     slug: 'about',
     title: ls('About Us'),
     seo: {
-      metaTitle: ls('About COIN - Business Continuity Experts'),
+      metaTitle: ls('About Us - Business Continuity Experts'),
       metaDescription: ls(
         "Learn about COIN's mission, teams, and 20+ years of experience in business continuity across the BeNeLux.",
       ),
@@ -495,7 +495,7 @@ function pageLocations() {
     slug: 'locations',
     title: ls('Our Locations'),
     seo: {
-      metaTitle: ls('COIN Locations - Business Continuity Centres'),
+      metaTitle: ls('Our Locations - Business Continuity Centres'),
       metaDescription: ls(
         "Discover COIN's business continuity centres across the BeNeLux: Schiphol-Rijk, Munsbach, and Contern.",
       ),
@@ -621,7 +621,7 @@ function pageContact() {
     slug: 'contact',
     title: ls('Contact'),
     seo: {
-      metaTitle: ls('Contact COIN'),
+      metaTitle: ls('Contact Us'),
       metaDescription: ls(
         'Get in touch with COIN for business continuity services in the BeNeLux.',
       ),
