@@ -56,12 +56,12 @@ export default function TrustedByMarquee() {
             {tripled.map((url, i) => (
               <div
                 key={i}
-                className="flex-shrink-0 flex items-center justify-center w-[180px] h-[80px]"
+                className="flex-shrink-0 flex items-center justify-center w-[280px] h-[120px]"
               >
                 <img
                   src={url}
                   alt=""
-                  className="max-h-[70px] max-w-[160px] object-contain grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+                  className="max-h-[110px] max-w-[250px] object-contain grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
                   loading="lazy"
                 />
               </div>
