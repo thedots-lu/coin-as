@@ -20,7 +20,8 @@ const SERVICE_COLUMNS = [
     image: '/images/coin/coin-fotosharonwillems-51.webp',
     imageAlt: 'COIN AS team collaborating around a table, overhead view',
     services: [
-      { name: 'Business Continuity', href: '/services/business-continuity' },
+      { name: 'BCP & BIA', href: '/services/business-continuity' },
+      { name: 'DRP Audit', href: '/services/crisis-management' },
       { name: 'NIS2 & DORA Compliance', href: '/services/nis2-dora' },
       { name: 'Consultancy', href: '/services/consultancy' },
       { name: 'Training & Exercises', href: '/services/training' },
