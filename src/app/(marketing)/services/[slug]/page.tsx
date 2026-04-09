@@ -4,6 +4,9 @@ import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
 import Image from 'next/image'
+import Link from 'next/link'
+import { FileText, ArrowRight } from 'lucide-react'
+import ServiceSubNav from '@/components/layout/ServiceSubNav'
 
 export const revalidate = 300
 
@@ -67,6 +70,9 @@ export default async function ServicePage({
         </div>
       </section>
 
+      {/* Service Sub-Navigation */}
+      <ServiceSubNav />
+
       {/* Overview */}
       <section className="py-16">
         <div className="container-padding">
@@ -77,6 +83,17 @@ export default async function ServicePage({
           </div>
         </div>
       </section>
+
+      {/* View Business Case link */}
+      <div className="container-padding -mt-8 mb-8">
+        <div className="max-w-4xl mx-auto">
+          <Link href="/knowledge-hub" className="inline-flex items-center gap-2 text-primary-500 hover:text-primary-600 font-medium transition-colors">
+            <FileText className="h-4 w-4" />
+            View Business Case
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </div>
 
       {/* Dynamic sections */}
       {service.sections && service.sections.length > 0 && (

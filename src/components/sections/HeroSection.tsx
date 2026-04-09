@@ -42,6 +42,13 @@ const SLIDES = [
     title: 'BCP Consulting & Training',
     description: 'Expert consulting to build, test and maintain your Business Continuity Plans. NIS2 & DORA ready.',
   },
+  {
+    src: '/images/coin/coin-fotosharonwillems-36.webp',
+    alt: 'COIN AS experts analyzing DORA compliance requirements',
+    label: 'DORA Readiness',
+    title: 'Free DORA Readiness Assessment',
+    description: 'Are you prepared for DORA? Take our free assessment to evaluate your organisation\'s digital operational resilience maturity and get a personalised compliance roadmap.',
+  },
 ]
 
 const INTERVAL = 6000
@@ -219,7 +226,7 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
         )}
 
         {/* Tab cards (desktop) */}
-        <div className="hidden md:grid grid-cols-4 gap-4 mt-6">
+        <div className="hidden md:grid grid-cols-5 gap-4 mt-6">
           {SLIDES.map((slide, i) => (
             <button
               key={i}

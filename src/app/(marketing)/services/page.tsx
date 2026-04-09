@@ -56,9 +56,9 @@ export default async function ServicesPage() {
   const services = await getPublishedServices()
 
   const categories = [
-    { key: 'consulting' as const, items: services.filter((s) => s.category === 'consulting' && s.slug !== 'overview') },
     { key: 'centers' as const, items: services.filter((s) => s.category === 'centers' && s.slug !== 'overview') },
     { key: 'cyber' as const, items: services.filter((s) => s.category === 'cyber' && s.slug !== 'overview') },
+    { key: 'consulting' as const, items: services.filter((s) => s.category === 'consulting' && s.slug !== 'overview') },
   ]
 
   return (

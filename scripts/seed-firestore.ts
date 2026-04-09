@@ -1558,6 +1558,61 @@ async function seedWhitePapers(db: Firestore) {
   }
 }
 
+async function seedArticles(db: Firestore) {
+  console.log('[9/9] Seeding articles...');
+  const deleted = await deleteCollection(db, 'articles');
+  if (deleted > 0) console.log(`  -> deleted ${deleted} existing articles`);
+
+  const articles = [
+    {
+      title: ls('Yearly Business Continuity Exercise — more than a compliance requirement'),
+      slug: { en: 'yearly-business-continuity-exercise', fr: '', nl: '' },
+      category: 'resource' as const,
+      excerpt: ls('Just as you repeat fire evacuation drills every year, disaster management scenarios must also be practised annually. Regular testing is the only way to ensure your organisation is prepared to address unpredictable events and resume operations as fast as possible.'),
+      content: ls(`Just as you repeat fire evacuation drills every year, disaster management scenarios must also be practised annually. It is of course more complex because you must test all procedures and means required to get back to business in case of disaster.
+
+The regular testing is the only way to get your organization as prepared as possible to address unpredictable events and resume operations as fast as possible. In every organization, large or small, many changes happen over a 12 months period, if not faster:
+
+- People who had been trained leave the organization and new employees and managers need to be trained. Roles and responsibilities change, if not full departments or business units and communication lines in case of crisis must be updated, documented and tested.
+- Process and procedures don't stay static nor your supply chain or logistics, which also calls for updating and testing collaboration with third parties.
+- And of course, your IT environment has gone through multiple changes like the software updates, new applications, telecom and services providers contracts.
+
+Your business continuity manager will address these changes in the updated business continuity plan, but you must ensure that these updates work in practice and that people are sufficiently familiar with their implementation.
+
+Some points to consider to perform the business continuity exercise:
+
+- How many scenarios and which one should be tested next time?
+- What level of disruption to the daily business can the exercise itself cause?
+- Do you perform it with your production systems and site, or at a training center?
+- How many and which employees, suppliers, customers should be involved?
+- Who should be trained and informed beforehand and who "got the surprise"?
+- Can the same person organize and run the exercise, provide guidance, monitor the progress and identify discrepancies with the BCP and improvement points?
+
+COIN experts are ready to help review your BCP training scenario and to assist running it.
+
+## COIN Services for Business Continuity Exercises
+
+### Consultancy Services
+- Consultancy services for design and performance of the yearly exercise
+- Independent monitoring of the exercise versus contingency plan
+- "Troublemaker" or injections of disrupting scenario points during the exercise
+
+### Training Center
+Our business continuity and crisis management center are the ideal location to perform your yearly BCP exercise, even if you don't actually intend to use our site in case of disaster. The site are equipped with all necessary facilities to and systems to run multiple scenarios and staffed with experienced manager who can provide the required assistance.`),
+      author: 'COIN AS',
+      tags: ['business-continuity', 'testing', 'training', 'compliance', 'exercise'],
+      published: true,
+      publishedAt: new Date('2025-03-15'),
+      imageUrl: '/images/coin/coin-fotosharonwillems-36.webp',
+    },
+  ];
+
+  for (const article of articles) {
+    const ref = await addDoc(collection(db, 'articles'), { ...article, ...ts() });
+    console.log(`  -> articles/${ref.id} written (${article.title.en})`);
+  }
+}
+
 async function seedServices(db: Firestore) {
   console.log('[4/7] Seeding services...');
   const services = servicesData();
@@ -1631,10 +1686,11 @@ async function main() {
   await seedTeamMembers(db);
   await seedPartners(db);
   await seedWhitePapers(db);
+  await seedArticles(db);
 
   console.log('');
   console.log('=== Seeding complete ===');
-  console.log('Collections seeded: site_config, navigation, pages, services, testimonials, team_members, partners, white_papers');
+  console.log('Collections seeded: site_config, navigation, pages, services, testimonials, team_members, partners, white_papers, articles');
   // Force exit since Firebase client SDK keeps connections open
   process.exit(0);
 }
