@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: 'Frequently asked questions about business continuity, NIS2, DORA, and COIN services.',
   alternates: { canonical: 'https://coin-bc.com/knowledge-hub/faq' },
   openGraph: {
-    title: 'FAQ — Business Continuity & COIN Services | COIN AS',
+    title: 'FAQ - Business Continuity & COIN Services | COIN AS',
     description: 'Frequently asked questions about business continuity, NIS2, DORA, and COIN services.',
     url: 'https://coin-bc.com/knowledge-hub/faq',
   },

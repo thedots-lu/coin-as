@@ -27,13 +27,13 @@ const challengeData: Record<string, ChallengeData> = {
     intro:
       'Financial institutions are among the most targeted organizations for cyber attacks and face the strictest regulatory requirements for operational resilience. COIN AS has been serving the financial sector for over 20 years.',
     context:
-      'The Digital Operational Resilience Act (DORA) and NIS2 directive have set new mandatory standards for financial institutions operating in the EU. Organizations must demonstrate that they can withstand, respond to, and recover from ICT-related disruptions — with documented, tested Business Continuity Plans and dedicated recovery infrastructure.',
+      'The Digital Operational Resilience Act (DORA) and NIS2 directive have set new mandatory standards for financial institutions operating in the EU. Organizations must demonstrate that they can withstand, respond to, and recover from ICT-related disruptions, with documented, tested Business Continuity Plans and dedicated recovery infrastructure.',
     regulations: [
-      'DORA (Digital Operational Resilience Act) — mandatory from January 2025',
-      'NIS2 Directive — critical sector cyber resilience requirements',
-      'CSSF (Luxembourg) — operational resilience guidelines',
-      'DNB (Netherlands) — business continuity requirements for financial institutions',
-      'NBB (Belgium) — circular on operational risk management',
+      'DORA (Digital Operational Resilience Act): mandatory from January 2025',
+      'NIS2 Directive: critical sector cyber resilience requirements',
+      'CSSF (Luxembourg): operational resilience guidelines',
+      'DNB (Netherlands): business continuity requirements for financial institutions',
+      'NBB (Belgium): circular on operational risk management',
     ],
     threats: [
       {
@@ -61,7 +61,7 @@ const challengeData: Record<string, ChallengeData> = {
       {
         title: 'Dedicated Recovery Workplaces',
         description:
-          'Permanent, dedicated and fully equipped recovery seats at our Münsbach, Contern, Antwerp, and Amsterdam centers — available 24/7, tested annually.',
+          'Permanent, dedicated and fully equipped recovery seats at our Münsbach, Contern, Antwerp, and Amsterdam centers. Available 24/7, tested annually.',
         href: '/services/recovery-workplaces',
       },
       {
@@ -79,7 +79,7 @@ const challengeData: Record<string, ChallengeData> = {
       {
         title: 'Crisis Management Rooms',
         description:
-          'Fully equipped, segregated crisis management facilities with redundant communications — ready for your incident command team within hours.',
+          'Fully equipped, segregated crisis management facilities with redundant communications. Ready for your incident command team within hours.',
         href: '/services/business-continuity',
       },
     ],
@@ -103,14 +103,14 @@ const challengeData: Record<string, ChallengeData> = {
     subtitle: 'Operational resilience when claims surge and offices close',
     heroImage: '/images/coin/coin-fotosharonwillems-58.webp',
     intro:
-      'Insurance companies face a unique paradox: the exact events that disrupt their operations — storms, floods, pandemics — are also when client demand peaks. COIN AS ensures your claims and underwriting teams keep running.',
+      'Insurance companies face a unique paradox: the exact events that disrupt their operations (storms, floods, pandemics) are also when client demand peaks. COIN AS ensures your claims and underwriting teams keep running.',
     context:
       'The insurance sector is increasingly regulated around operational resilience and data protection. With large claims-handling teams, distributed branch networks, and critical IT dependencies, insurers need tested and scalable business continuity solutions.',
     regulations: [
-      'Solvency II — operational risk and business continuity requirements',
-      'DORA — for insurance groups with significant IT dependencies',
-      'RGPD / GDPR — client data protection during incidents',
-      'EIOPA — supervisory guidelines on business continuity',
+      'Solvency II: operational risk and business continuity requirements',
+      'DORA: for insurance groups with significant IT dependencies',
+      'RGPD / GDPR: client data protection during incidents',
+      'EIOPA: supervisory guidelines on business continuity',
     ],
     threats: [
       {
@@ -139,7 +139,7 @@ const challengeData: Record<string, ChallengeData> = {
       {
         title: 'Secure BYOD Solutions',
         description:
-          'Secure COIN Keys allow your staff to work securely from any device — home, hotel, or COIN center — without compromising corporate security.',
+          'Secure COIN Keys allow your staff to work securely from any device (home, hotel, or COIN center) without compromising corporate security.',
         href: '/services/cyber-resilience',
       },
       {
@@ -161,14 +161,14 @@ const challengeData: Record<string, ChallengeData> = {
     subtitle: 'Protecting critical infrastructure under NIS2',
     heroImage: '/images/coin/co-location-area-munsbach.webp',
     intro:
-      'Energy grids, water networks, and utility operators are classified as critical infrastructure — making them prime targets for sophisticated cyber attacks and subject to the NIS2 directive\'s strictest requirements.',
+      'Energy grids, water networks, and utility operators are classified as critical infrastructure, making them prime targets for sophisticated cyber attacks and subject to the NIS2 directive\'s strictest requirements.',
     context:
-      'The NIS2 Directive places utility companies among the "essential entities" subject to the highest level of security and resilience obligations. Organizations must implement robust incident response, business continuity planning, and supply chain security — with mandatory reporting within 24 hours of a significant incident.',
+      'The NIS2 Directive places utility companies among the "essential entities" subject to the highest level of security and resilience obligations. Organizations must implement robust incident response, business continuity planning, and supply chain security, with mandatory reporting within 24 hours of a significant incident.',
     regulations: [
-      'NIS2 Directive — mandatory for essential and important entities',
-      'ENTSO-E / ENTSO-G — resilience requirements for energy operators',
+      'NIS2 Directive: mandatory for essential and important entities',
+      'ENTSO-E / ENTSO-G: resilience requirements for energy operators',
       'National energy regulator requirements (CREG, ACM, ILR)',
-      'RGPD — for smart grid and metering data',
+      'RGPD: for smart grid and metering data',
     ],
     threats: [
       {
@@ -191,7 +191,7 @@ const challengeData: Record<string, ChallengeData> = {
       {
         title: 'Dedicated Recovery Sites',
         description:
-          'Secure, physically separate recovery facilities for your operational control teams — with redundant power, connectivity, and 24/7 access.',
+          'Secure, physically separate recovery facilities for your operational control teams, with redundant power, connectivity, and 24/7 access.',
         href: '/services/recovery-workplaces',
       },
       {
@@ -219,14 +219,14 @@ const challengeData: Record<string, ChallengeData> = {
     subtitle: 'Continuity of essential public services and emergency management',
     heroImage: '/images/coin/coin-fotosharonwillems-26.webp',
     intro:
-      'Public sector organizations — from tax authorities to emergency services — bear a duty to citizens that cannot be interrupted. COIN AS supports government agencies with the infrastructure and expertise to maintain essential services under any circumstances.',
+      'Public sector organizations, from tax authorities to emergency services, bear a duty to citizens that cannot be interrupted. COIN AS supports government agencies with the infrastructure and expertise to maintain essential services under any circumstances.',
     context:
       'Government entities are increasingly targeted by ransomware and politically motivated attacks. Simultaneously, they face budget constraints and legacy IT environments. COIN AS provides pragmatic, cost-effective business continuity solutions designed for public sector realities.',
     regulations: [
-      'NIS2 — public administration entities as essential entities',
+      'NIS2: public administration entities as essential entities',
       'National civil security and crisis management legislation',
-      'RGPD — data protection for citizen data',
-      'ISO 27001 — information security management (COIN AS certified)',
+      'RGPD: data protection for citizen data',
+      'ISO 27001: information security management (COIN AS certified)',
     ],
     threats: [
       {
@@ -255,13 +255,13 @@ const challengeData: Record<string, ChallengeData> = {
       {
         title: 'Secure Satellite Offices',
         description:
-          'Permanent alternative office locations for distributed government teams — doubling as disaster recovery sites when needed.',
+          'Permanent alternative office locations for distributed government teams, doubling as disaster recovery sites when needed.',
         href: '/services/satellite-offices',
       },
       {
         title: 'Business Continuity Training',
         description:
-          'Awareness sessions and exercises for public sector teams — building a culture of resilience from the frontline to leadership.',
+          'Awareness sessions and exercises for public sector teams, building a culture of resilience from the frontline to leadership.',
         href: '/services/training',
       },
     ],
@@ -404,7 +404,7 @@ export default async function ChallengePage({ params }: { params: Promise<Params
             <div>
               <p className="font-bold text-slate-900">{data.testimonial.author}</p>
               <p className="text-slate-500 text-sm">
-                {data.testimonial.role} — {data.testimonial.company}
+                {data.testimonial.role}, {data.testimonial.company}
               </p>
             </div>
           </div>

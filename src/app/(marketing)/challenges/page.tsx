@@ -37,7 +37,7 @@ const sectors = [
     title: 'Insurance',
     subtitle: 'Operational Resilience · Claims Continuity',
     description:
-      'Insurance companies must remain operational during disasters — precisely when demand peaks. COIN AS provides the infrastructure and consultancy to keep your claims and underwriting teams running.',
+      'Insurance companies must remain operational during disasters, precisely when demand peaks. COIN AS provides the infrastructure and consultancy to keep your claims and underwriting teams running.',
     challenges: [
       'Maintaining service during catastrophic events',
       'Data protection and RGPD compliance',

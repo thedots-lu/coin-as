@@ -19,7 +19,7 @@ const SLIDES = [
     alt: 'COIN AS co-location server room',
     label: 'Data Centres',
     title: 'Secure Co-location & Data Centres',
-    description: 'State-of-the-art facilities across BeNeLux with redundant power, cooling and connectivity.',
+    description: 'Secure facilities across BeNeLux with redundant power, cooling and connectivity.',
   },
   {
     src: '/images/coin/coin-luxembourg-contern-recovery-office-small-2.webp',

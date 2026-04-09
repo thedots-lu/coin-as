@@ -55,7 +55,7 @@ function siteConfigGlobal() {
       address: 'Tupolevlaan 41, 1119 PA Schiphol-Rijk',
     },
     footerDescription: ls(
-      'COIN AS is the BeNeLux leader in business continuity and cyber resilience. For over 20 years, we design, build and operate services to ensure that organisations with mission critical employees can respond to any disruption — from cyber attacks to natural disasters.',
+      'COIN AS is the BeNeLux leader in business continuity and cyber resilience. For over 20 years, we design, build and operate services to ensure that organisations with mission critical employees can respond to any disruption, from cyber attacks to natural disasters.',
     ),
     copyright: ls('All rights reserved.'),
     ...ts(),
@@ -189,10 +189,10 @@ function pageHome() {
         order: 0,
         heading: ls('Business Continuity & Cyber Resilience for the BeNeLux'),
         bulletPoints: [
-          ls('20 years of experience — BeNeLux leader in Business Continuity'),
+          ls('20 years of experience - BeNeLux leader in Business Continuity'),
           ls('Over 300 customers across Banking, Insurance, Utilities and Government'),
           ls('4 Resilience Centres with 1,000+ workplaces across Belgium, Netherlands and Luxembourg'),
-          ls('ISO 27001/2022 certified — supporting 350+ Business Continuity Plans'),
+          ls('ISO 27001/2022 certified - supporting 350+ Business Continuity Plans'),
           ls('Senior experts who know what it means to manage disasters and critical situations'),
         ],
         primaryButtonText: ls('Contact us'),
@@ -213,7 +213,7 @@ function pageHome() {
           {
             title: ls('Business Continuity'),
             description: ls(
-              'Reduce the impact of external events that disrupt business — natural disasters, office unavailability, pandemics, social events, power cuts or telecom failure.',
+              'Reduce the impact of external events that disrupt business: natural disasters, office unavailability, pandemics, social events, power cuts or telecom failure.',
             ),
             tagline: ls('Prepare. Respond. Recover.'),
             imageUrl: '/images/coin/coin-fotosharonwillems-27.webp',
@@ -222,7 +222,7 @@ function pageHome() {
           {
             title: ls('Cyber Resilience'),
             description: ls(
-              'Prevent and restore from cyber incidents — ransomware, compromised laptops, compromised Active Directory, and data loss. Your teams back online in minutes, not days.',
+              'Prevent and restore from cyber incidents: ransomware, compromised laptops, compromised Active Directory, and data loss. Your teams back online in minutes, not days.',
             ),
             tagline: ls('Stay operational after any cyber attack'),
             imageUrl: '/images/coin/co-location-area-munsbach.webp',
@@ -240,7 +240,7 @@ function pageHome() {
           {
             title: ls('New Ways of Work'),
             description: ls(
-              'Well-being, efficiency and security for hybrid work models — combining main office, homeworking and alternate offices — for employees and freelancers alike.',
+              'Well-being, efficiency and security for hybrid work models, combining main office, homeworking and alternate offices, for employees and freelancers alike.',
             ),
             tagline: ls('Work securely from anywhere'),
             imageUrl: '/images/coin/luxembourg-munsbach-shared-seat-room-2.webp',
@@ -258,7 +258,7 @@ function pageHome() {
             label: ls('Monthly Focus'),
             title: ls('DORA Compliance: Are You Ready for January 2025?'),
             description: ls(
-              'The Digital Operational Resilience Act is now in force. Financial institutions in the EU must demonstrate tested business continuity plans, documented ICT risk management, and recovery capabilities. COIN AS helps you get compliant — fast.',
+              'The Digital Operational Resilience Act is now in force. Financial institutions in the EU must demonstrate tested business continuity plans, documented ICT risk management, and recovery capabilities. COIN AS helps you get compliant, fast.',
             ),
             imageUrl: '/images/coin/coin-fotosharonwillems-33.webp',
             linkText: ls('Read more'),
@@ -268,7 +268,7 @@ function pageHome() {
             label: ls('New Service'),
             title: ls('Secure COIN Key: Work Securely from Anywhere After a Cyber Attack'),
             description: ls(
-              'Our Secure COIN Key turns any computer into a fully managed corporate workstation. When ransomware hits and laptops are quarantined, your teams are back online in minutes — not days.',
+              'Our Secure COIN Key turns any computer into a fully managed corporate workstation. When ransomware hits and laptops are quarantined, your teams are back online in minutes, not days.',
             ),
             imageUrl: '/images/coin/coin-luxembourg-server-room-for-dedicated-site.webp',
             linkText: ls('Discover the solution'),
@@ -385,7 +385,7 @@ function pageAbout() {
         values: [
           { title: ls('Expertise'), description: ls('Over 20 years of hands-on experience in business continuity management, crisis response, and cyber resilience across the BeNeLux.') },
           { title: ls('Reliability'), description: ls('We deliver on our promises with 99.9% SLA uptime and round-the-clock support when our customers need it most.') },
-          { title: ls('Innovation'), description: ls('We continuously invest in cutting-edge technology and methodologies to stay ahead of evolving threats and disruptions.') },
+          { title: ls('Innovation'), description: ls('We continuously invest in new technology and methodologies to stay ahead of evolving threats and disruptions.') },
           { title: ls('Partnership'), description: ls('We build long-term relationships with our customers, becoming a trusted extension of their team rather than just a service provider.') },
           { title: ls('Integrity'), description: ls('We operate with transparency and honesty, providing candid assessments and practical recommendations.') },
         ],
@@ -415,7 +415,7 @@ function pageAbout() {
         order: 5,
         heading: ls('Our Customers'),
         body: ls(
-          'COIN customers are in industries in which time is of the essence and operational resilience is a business necessity, regardless of the size of their organisation. Our customers include banks, insurance companies, utilities, hospitals, emergency and rescue services, call centres and trading rooms — many of whom must comply with regulatory frameworks such as NIS2, DORA, or local regulation that impose alternate recovery sites or cyber resilience prevention and response measures.\n\nCOIN provides services to more than 250 organisations ranging from 10 employees up to 2,000 in Belgium, The Netherlands and Luxembourg.',
+          'COIN customers are in industries in which time is of the essence and operational resilience is a business necessity, regardless of the size of their organisation. Our customers include banks, insurance companies, utilities, hospitals, emergency and rescue services, call centres and trading rooms, many of whom must comply with regulatory frameworks such as NIS2, DORA, or local regulation that impose alternate recovery sites or cyber resilience prevention and response measures.\n\nCOIN provides services to more than 250 organisations ranging from 10 employees up to 2,000 in Belgium, The Netherlands and Luxembourg.',
         ),
         imageUrl: '/images/coin/coin-luxembourg-contern-recovery-office-small-2.webp',
         customerSectors: [
@@ -477,7 +477,7 @@ function pageAbout() {
           },
           {
             year: '2019',
-            title: ls('New Luxembourg Site — Münsbach'),
+            title: ls('New Luxembourg Site - Münsbach'),
             description: ls(
               'Opening of the COIN Münsbach centre (6B rue Gabriel Lippmann, L-5365), a TIER-3 facility with 500 recovery workplaces and co-location infrastructure powered by LuxConnect.',
             ),
@@ -653,11 +653,12 @@ function pageContact() {
         order: 0,
         heading: ls('Contact us'),
         subtitle: ls(
-          'COIN services customers in Luxembourg, The Netherlands and Belgium',
+          'COIN operates from 4 centres across the BeNeLux. Reach us directly.',
         ),
         phones: [
-          { label: ls('Nederlands, English'), number: '+31 88 26 46 000' },
-          { label: ls('Francais, Deutsch, English'), number: '+352 357 05 30' },
+          { label: ls('Netherlands'), number: '+31 88 26 46 000' },
+          { label: ls('Luxembourg'), number: '+352 357 05 30' },
+          { label: ls('Belgium'), number: '+32 2 513 36 18' },
         ],
       },
       {
@@ -777,7 +778,7 @@ function servicesData() {
           order: 0,
           heading: ls('Complete Business Continuity Solutions'),
           body: ls(
-            'From consulting and training to state-of-the-art recovery facilities and cyberresilience solutions, COIN provides everything you need to ensure your organisation can continue operating during any disruption.',
+            'From consulting and training to fully equipped recovery facilities and cyberresilience solutions, COIN provides everything you need to ensure your organisation can continue operating during any disruption.',
           ),
         },
       ],
@@ -830,7 +831,7 @@ function servicesData() {
           order: 1,
           heading: ls('Trusted by 300+ organisations across the BeNeLux'),
           body: ls(
-            'COIN supports 350+ Business Continuity Plans across Banking, Insurance, Utilities, Government and Healthcare sectors. Our experts know what it means for organisations with critical operations to be stricken by disrupting events — and are committed to being your first and last line of defence.',
+            'COIN supports 350+ Business Continuity Plans across Banking, Insurance, Utilities, Government and Healthcare sectors. Our experts know what it means for organisations with critical operations to be stricken by disrupting events, and are committed to being your first and last line of defence.',
           ),
         },
       ],
@@ -841,10 +842,10 @@ function servicesData() {
       shortTitle: ls('Crisis Management'),
       category: 'centers',
       order: 2,
-      heroSubtitle: ls('Dedicated infrastructure for crisis teams and dealing rooms — available 24/7'),
+      heroSubtitle: ls('Dedicated infrastructure for crisis teams and dealing rooms, available 24/7'),
       heroImageUrl: '/images/coin/coin-fotosharonwillems-36.webp',
       overview: ls(
-        'COIN provides specific infrastructure for critical activities — from fully equipped crisis management rooms for your senior management team, to dedicated dealing rooms and control rooms for trading floors and operations centres.',
+        'COIN provides specific infrastructure for critical activities, from fully equipped crisis management rooms for your senior management team, to dedicated dealing rooms and control rooms for trading floors and operations centres.',
       ),
       sections: [
         {
@@ -861,7 +862,7 @@ function servicesData() {
             {
               title: ls('Dedicated Dealing & Control Rooms'),
               description: ls(
-                'High availability and redundant infrastructure. IT infrastructure provided by COIN or the customer — including specific equipment such as turrets, large screens and Bloomberg keyboards. Bi-annual testing sessions included.',
+                'High availability and redundant infrastructure. IT infrastructure provided by COIN or the customer, including specific equipment such as turrets, large screens and Bloomberg keyboards. Bi-annual testing sessions included.',
               ),
             },
             {
@@ -886,10 +887,10 @@ function servicesData() {
       shortTitle: ls('Cyberresilience'),
       category: 'cyber',
       order: 3,
-      heroSubtitle: ls('Prevent and restore from cyber incidents — ransomware, compromised laptops, data loss'),
+      heroSubtitle: ls('Prevent and restore from cyber incidents: ransomware, compromised laptops, data loss'),
       heroImageUrl: '/images/coin/coin-luxembourg-common-area-2.webp',
       overview: ls(
-        'When a cyber attack strikes, every minute counts. COIN\'s cyber resilience solutions ensure your teams can continue operating — even when laptops are compromised, your Active Directory is down, or ransomware has encrypted your data.',
+        'When a cyber attack strikes, every minute counts. COIN\'s cyber resilience solutions ensure your teams can continue operating, even when laptops are compromised, your Active Directory is down, or ransomware has encrypted your data.',
       ),
       sections: [
         {
@@ -898,13 +899,13 @@ function servicesData() {
           heading: ls('Our Cyber Resilience Solutions'),
           features: [
             {
-              title: ls('Secure COIN Key — Virtual Desktops After a Cyber Attack'),
+              title: ls('Secure COIN Key - Virtual Desktops After a Cyber Attack'),
               description: ls(
-                'A USB key with an immutable, secure OS that turns any computer into a safe and centrally managed workstation. After rebooting from the Secure COIN Key, the device gets access to your Enterprise Virtual Infrastructure (Citrix, VMware Horizon, Azure Virtual Desktop, Microsoft Teams). When laptops are quarantined, your teams are back online in minutes — not days.',
+                'A USB key with an immutable, secure OS that turns any computer into a safe and centrally managed workstation. After rebooting from the Secure COIN Key, the device gets access to your Enterprise Virtual Infrastructure (Citrix, VMware Horizon, Azure Virtual Desktop, Microsoft Teams). When laptops are quarantined, your teams are back online in minutes, not days.',
               ),
             },
             {
-              title: ls('Secure Laptops — Up and Running Wherever Needed'),
+              title: ls('Secure Laptops - Up and Running Wherever Needed'),
               description: ls(
                 'Storage of fully pre-configured laptops at a safe location (access security, fire and flood proof). Including switch, WiFi access and firewall. Secure connectivity to your corporate network for updates and patching. Logistics services: delivery to COIN centres, transport to alternative locations or shipment to end-users.',
               ),
@@ -912,7 +913,7 @@ function servicesData() {
             {
               title: ls('Bulk Re-provisioning of Laptops'),
               description: ls(
-                'When the security incident has been mitigated, COIN assists with the rebuilding of all laptops with a clean, safe image — ensuring your entire workforce reconnects to a restored corporate environment.',
+                'When the security incident has been mitigated, COIN assists with the rebuilding of all laptops with a clean, safe image, ensuring your entire workforce reconnects to a restored corporate environment.',
               ),
             },
             {
@@ -934,7 +935,7 @@ function servicesData() {
       heroSubtitle: ls('1,000+ fully equipped recovery seats across 4 resilience centres in the BeNeLux'),
       heroImageUrl: '/images/coin/coin-luxembourg-contern-recovery-office-small-2.webp',
       overview: ls(
-        'COIN operates 4 resilience centres with over 1,000 recovery workplaces across Belgium, the Netherlands and Luxembourg. Each workplace is fully equipped and ready for invocation within hours — 24 hours a day, 7 days a week.',
+        'COIN operates 4 resilience centres with over 1,000 recovery workplaces across Belgium, the Netherlands and Luxembourg. Each workplace is fully equipped and ready for invocation within hours, 24 hours a day, 7 days a week.',
       ),
       sections: [
         {
@@ -945,7 +946,7 @@ function servicesData() {
             {
               title: ls('Dedicated Recovery Workplaces'),
               description: ls(
-                'Permanent 24/7 access — dedicated workplaces are always "up and running". Suitable for critical users. The dedicated area is designed according to your requirements: physical security, IT equipment, space partitioning, dedicated meeting room and kitchenette. Individual badge per user, all logs recorded. Minimum 3-year engagement.',
+                'Permanent 24/7 access. Dedicated workplaces are always "up and running". Suitable for critical users. The dedicated area is designed according to your requirements: physical security, IT equipment, space partitioning, dedicated meeting room and kitchenette. Individual badge per user, all logs recorded. Minimum 3-year engagement.',
               ),
             },
             {
@@ -984,10 +985,10 @@ function servicesData() {
       shortTitle: ls('Satellite Offices'),
       category: 'centers',
       order: 5,
-      heroSubtitle: ls('A second office — usable for daily work and disaster recovery'),
+      heroSubtitle: ls('A second office, usable for daily work and disaster recovery'),
       heroImageUrl: '/images/coin/coin-luxembourg-contern-disaster-recovery-office-small.webp',
       overview: ls(
-        'COIN\'s Satellite Office solution provides an alternative, tailored workplace for secure teamwork — usable as a permanent second office for hybrid work and instantly convertible into a disaster recovery facility when needed.',
+        'COIN\'s Satellite Office solution provides an alternative, tailored workplace for secure teamwork, usable as a permanent second office for hybrid work and instantly convertible into a disaster recovery facility when needed.',
       ),
       sections: [
         {
@@ -998,7 +999,7 @@ function servicesData() {
             {
               title: ls('Dual-Purpose: Second Office + Disaster Recovery'),
               description: ls(
-                'The satellite office combines work-life balance and productivity of your workforce. It can host temporary project teams or war rooms, and switch instantly to a full disaster recovery facility. All facilities are managed by COIN — you focus on your business.',
+                'The satellite office combines work-life balance and productivity of your workforce. It can host temporary project teams or war rooms, and switch instantly to a full disaster recovery facility. All facilities are managed by COIN so you can focus on your business.',
               ),
             },
             {
@@ -1008,7 +1009,7 @@ function servicesData() {
               ),
             },
             {
-              title: ls('Fast Implementation — 3 Months'),
+              title: ls('Fast Implementation - 3 Months'),
               description: ls(
                 'From contract signature to operational satellite office in 3 months. Available on temporary contracts or long-term agreements, adapted to your budget and growth plans.',
               ),
@@ -1029,7 +1030,7 @@ function servicesData() {
       shortTitle: ls('Virtual Workplaces'),
       category: 'cyber',
       order: 6,
-      heroSubtitle: ls('Secure virtual desktop infrastructure — work from anywhere after any incident'),
+      heroSubtitle: ls('Secure virtual desktop infrastructure - work from anywhere after any incident'),
       heroImageUrl: '/images/coin/coin-luxembourg-munsbach-reception-area-2.webp',
       overview: ls(
         'COIN\'s virtual workplace solutions provide secure, enterprise-managed desktop environments accessible from any device, anywhere. Combined with the Secure COIN Key, your teams can be operational within minutes after a cyber attack or physical site unavailability.',
@@ -1040,7 +1041,7 @@ function servicesData() {
           order: 0,
           heading: ls('Enterprise Virtual Infrastructure'),
           body: ls(
-            'After rebooting from a Secure COIN Key, any computer becomes a fully managed corporate workstation with access to your enterprise virtual infrastructure: Citrix Workspace App, VMware Horizon Client, Azure Virtual Desktop, Microsoft Teams, Remote Desktop, Chrome and more.\n\nOnce the security incident has been mitigated and laptops rebuilt, they can reconnect to the company\'s restored environment. This ensures complete operational continuity — without paying ransoms or waiting for hardware delivery.',
+            'After rebooting from a Secure COIN Key, any computer becomes a fully managed corporate workstation with access to your enterprise virtual infrastructure: Citrix Workspace App, VMware Horizon Client, Azure Virtual Desktop, Microsoft Teams, Remote Desktop, Chrome and more.\n\nOnce the security incident has been mitigated and laptops rebuilt, they can reconnect to the company\'s restored environment. This ensures complete operational continuity, without paying ransoms or waiting for hardware delivery.',
           ),
         },
       ],
@@ -1051,7 +1052,7 @@ function servicesData() {
       shortTitle: ls('Dedicated Site'),
       category: 'centers',
       order: 6,
-      heroSubtitle: ls('A fully private, tailor-made disaster recovery facility — exclusively yours'),
+      heroSubtitle: ls('A fully private, tailor-made disaster recovery facility, exclusively yours'),
       heroImageUrl: '/images/coin/coin-luxembourg-contern-disaster-recovery-office-big.webp',
       overview: ls(
         'A Dedicated Recovery Site is a private, fully equipped disaster recovery facility designed to your exact specifications. Unlike shared workplaces, your dedicated site is permanently reserved, fully furnished, and ready for immediate activation 24/7.',
@@ -1075,7 +1076,7 @@ function servicesData() {
               ),
             },
             {
-              title: ls('Always Ready — 24/7 Access'),
+              title: ls('Always Ready - 24/7 Access'),
               description: ls(
                 'Permanent 24/7 access with workplaces always "up and running". Suitable for critical users and regulated industries requiring immediate failover capability.',
               ),
@@ -1096,7 +1097,7 @@ function servicesData() {
       shortTitle: ls('Co-location'),
       category: 'centers',
       order: 7,
-      heroSubtitle: ls('Secure, resilient hosting for your critical IT infrastructure — TIER-3, green electricity'),
+      heroSubtitle: ls('Secure, resilient hosting for your critical IT infrastructure. TIER-3, green electricity'),
       heroImageUrl: '/images/coin/co-location-area-munsbach.webp',
       overview: ls(
         'COIN offers co-location services at our Münsbach campus (same building as the recovery seats) and in partnership with LuxConnect in Bettembourg and Bissen. Both options provide redundant power, cooling, and multi-carrier connectivity.',
@@ -1108,13 +1109,13 @@ function servicesData() {
           heading: ls('Co-location Options'),
           features: [
             {
-              title: ls('COIN Münsbach — On-campus Co-location'),
+              title: ls('COIN Münsbach - On-campus Co-location'),
               description: ls(
                 'Located in the same campus as COIN\'s 500 recovery workplaces. Options: ½ IT rack (23U) or full IT rack (47U), dedicated dataroom or steel cage. Meet-me room with a large presence of telecom providers. TIER-3 datacenter powered by green electricity.',
               ),
             },
             {
-              title: ls('LuxConnect — Bettembourg or Bissen'),
+              title: ls('LuxConnect - Bettembourg or Bissen'),
               description: ls(
                 'Large possibilities of hosting services. Datacenter in TIER-2, 3 and 4. Partnership in place between COIN AS and LuxConnect. COIN Münsbach is connected to the LuxConnect fiber ring. Powered by green electricity.',
               ),
@@ -1122,7 +1123,7 @@ function servicesData() {
             {
               title: ls('Redundant Infrastructure'),
               description: ls(
-                'Both options provide redundant power supply, UPS systems, diesel generators, redundant cooling, and multiple internet and telecom provider access — ensuring maximum availability for your critical systems.',
+                'Both options provide redundant power supply, UPS systems, diesel generators, redundant cooling, and multiple internet and telecom provider access, ensuring maximum availability for your critical systems.',
               ),
             },
           ],
@@ -1138,7 +1139,7 @@ function servicesData() {
       heroSubtitle: ls('Business continuity and cyber resilience compliance for regulated organisations'),
       heroImageUrl: '/images/coin/coin-fotosharonwillems-58.webp',
       overview: ls(
-        'Business Continuity Planning and cyber resilience are now mandatory in critical sectors under NIS2 and DORA. COIN helps you understand these regulations, assess your current position, and implement the required measures — with documented, tested plans and dedicated recovery infrastructure.',
+        'Business Continuity Planning and cyber resilience are now mandatory in critical sectors under NIS2 and DORA. COIN helps you understand these regulations, assess your current position, and implement the required measures, with documented, tested plans and dedicated recovery infrastructure.',
       ),
       sections: [
         {
@@ -1147,13 +1148,13 @@ function servicesData() {
           heading: ls('What NIS2 and DORA Require'),
           features: [
             {
-              title: ls('DORA — Digital Operational Resilience Act'),
+              title: ls('DORA - Digital Operational Resilience Act'),
               description: ls(
                 'Mandatory from January 2025 for financial institutions in the EU. Requires documented ICT risk management, tested Business Continuity Plans, recovery capabilities, and third-party risk management. COIN helps financial institutions demonstrate full DORA compliance.',
               ),
             },
             {
-              title: ls('NIS2 — Network and Information Security Directive'),
+              title: ls('NIS2 - Network and Information Security Directive'),
               description: ls(
                 'Applies to critical sectors including energy, transport, banking, healthcare and digital infrastructure. Requires proportionate security measures, incident reporting, and business continuity management. COIN provides the infrastructure and expertise to meet NIS2 requirements.',
               ),
@@ -1183,7 +1184,7 @@ function servicesData() {
       heroSubtitle: ls('Senior BC experts with hands-on experience as BC Managers, DRP Managers and IT Managers'),
       heroImageUrl: '/images/coin/coin-fotosharonwillems-31.webp',
       overview: ls(
-        'COIN\'s senior consultants are practitioners — not theorists. They have former responsibility as Business Continuity Managers, DRP managers, Facility Managers or IT Managers. They focus on realistic scenarios and pragmatic recovery solutions that resist real-world stress tests.',
+        'COIN\'s senior consultants are practitioners, not theorists. They have former responsibility as Business Continuity Managers, DRP managers, Facility Managers or IT Managers. They focus on realistic scenarios and pragmatic recovery solutions that resist real-world stress tests.',
       ),
       sections: [
         {
@@ -1204,7 +1205,7 @@ function servicesData() {
               ),
             },
             {
-              title: ls('BIA — Risks and Threat Analysis'),
+              title: ls('BIA - Risks and Threat Analysis'),
               description: ls(
                 'Review, update and/or define the Business Impact Analysis (BIA). Establish Recovery Time Objectives (RTO) with associated Recovery Point Objectives (RPO). Identify all critical business processes and their dependencies.',
               ),
@@ -1249,10 +1250,10 @@ function servicesData() {
       shortTitle: ls('Training'),
       category: 'consulting',
       order: 10,
-      heroSubtitle: ls('From awareness sessions to full-scale disaster recovery exercises — 100+ per year at COIN centres'),
+      heroSubtitle: ls('From awareness sessions to full-scale disaster recovery exercises. 100+ per year at COIN centres'),
       heroImageUrl: '/images/coin/coin-fotosharonwillems-43.webp',
       overview: ls(
-        'COIN\'s business continuity centres host over 100 disaster recovery exercises per year. Our expert facilitators help organisations test their BCPs in a real-world environment — from tabletop discussions to full invocations with live IT failover.',
+        'COIN\'s business continuity centres host over 100 disaster recovery exercises per year. Our expert facilitators help organisations test their BCPs in a real-world environment, from tabletop discussions to full invocations with live IT failover.',
       ),
       sections: [
         {
@@ -1269,7 +1270,7 @@ function servicesData() {
             {
               title: ls('Tabletop Exercises'),
               description: ls(
-                'Structured, discussion-based exercises to validate your plans and procedures. Walk through crisis scenarios with your management team and identify gaps — without operational disruption.',
+                'Structured, discussion-based exercises to validate your plans and procedures. Walk through crisis scenarios with your management team and identify gaps, without operational disruption.',
               ),
             },
             {
@@ -1321,7 +1322,7 @@ function testimonialsData() {
     },
     {
       quote: ls(
-        "The migration to COIN's SOC & SIEM solution went seamlessly. Their team perfectly understood our specific needs as a healthcare institution and adapted their solution accordingly.",
+        "The migration to COIN's SOC & SIEM solution went smoothly. Their team understood our specific needs as a healthcare institution and adapted their solution accordingly.",
       ),
       authorName: 'Claire Martin',
       authorTitle: ls('COO'),
@@ -1516,7 +1517,7 @@ async function seedWhitePapers(db: Firestore) {
     },
     {
       title: ls('Business Continuity Planning: A Step-by-Step Guide'),
-      description: ls('From risk assessment to BCP testing — a comprehensive methodology guide for Business Continuity Managers based on 20 years of BeNeLux experience.'),
+      description: ls('From risk assessment to BCP testing. A comprehensive methodology guide for Business Continuity Managers based on 20 years of BeNeLux experience.'),
       category: 'business_continuity',
       fileUrl: '',
       thumbnailUrl: null,
@@ -1565,7 +1566,7 @@ async function seedArticles(db: Firestore) {
 
   const articles = [
     {
-      title: ls('Yearly Business Continuity Exercise — more than a compliance requirement'),
+      title: ls('Yearly Business Continuity Exercise - more than a compliance requirement'),
       slug: { en: 'yearly-business-continuity-exercise', fr: '', nl: '' },
       category: 'resource' as const,
       excerpt: ls('Just as you repeat fire evacuation drills every year, disaster management scenarios must also be practised annually. Regular testing is the only way to ensure your organisation is prepared to address unpredictable events and resume operations as fast as possible.'),

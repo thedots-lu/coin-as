@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect, FormEvent } from 'react'
+import { Send, CheckCircle } from 'lucide-react'
 import { getLocalizedField } from '@/lib/locale'
 import { ContactFormSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
-import Button from '@/components/ui/Button'
 
 interface ContactFormProps {
   section: ContactFormSection
@@ -21,6 +21,11 @@ interface FormData {
   message: string
   gdprConsent: boolean
 }
+
+const inputClass =
+  'w-full px-4 py-3 bg-white border border-secondary-200 rounded-xl text-secondary-800 placeholder:text-secondary-300 focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 outline-none transition-all duration-200'
+
+const labelClass = 'block text-sm font-semibold text-secondary-700 mb-2'
 
 export default function ContactForm({ section, locale }: ContactFormProps) {
   const [formData, setFormData] = useState<FormData>({
@@ -40,7 +45,6 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
 
-  // Generate CAPTCHA client-side only to avoid hydration mismatch
   useEffect(() => {
     const a = Math.floor(Math.random() * 9) + 1
     const b = Math.floor(Math.random() * 9) + 1
@@ -48,8 +52,6 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
   }, [])
 
   const labels = section.formLabels
-  const privacyText = getLocalizedField(section.privacyText, locale)
-  const gdprText = getLocalizedField(section.gdprConsentText, locale)
   const confirmationMsg = getLocalizedField(section.confirmationMessage, locale)
 
   const handleChange = (field: keyof FormData, value: string | boolean) => {
@@ -71,28 +73,15 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
     e.preventDefault()
     setError('')
 
-    // Honeypot check (bots fill hidden fields)
     if (honeypot) return
 
     if (!validate()) {
-      setError(
-        locale === 'fr'
-          ? 'Veuillez remplir tous les champs obligatoires et accepter le consentement RGPD.'
-          : locale === 'nl'
-          ? 'Vul alle verplichte velden in en accepteer de AVG-toestemming.'
-          : 'Please fill in all required fields and accept the GDPR consent.'
-      )
+      setError('Please fill in all required fields and accept the GDPR consent.')
       return
     }
 
     if (parseInt(captchaAnswer, 10) !== captcha.answer) {
-      setError(
-        locale === 'fr'
-          ? 'La verification anti-spam est incorrecte.'
-          : locale === 'nl'
-          ? 'De anti-spam verificatie is onjuist.'
-          : 'The anti-spam verification is incorrect.'
-      )
+      setError('The anti-spam verification is incorrect.')
       return
     }
 
@@ -103,17 +92,10 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...formData, locale }),
       })
-
       if (!res.ok) throw new Error('Failed to send')
       setSubmitted(true)
     } catch {
-      setError(
-        locale === 'fr'
-          ? "Une erreur s'est produite. Veuillez reessayer."
-          : locale === 'nl'
-          ? 'Er is een fout opgetreden. Probeer opnieuw.'
-          : 'An error occurred. Please try again.'
-      )
+      setError('An error occurred. Please try again.')
     } finally {
       setSubmitting(false)
     }
@@ -121,22 +103,17 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
 
   if (submitted) {
     return (
-      <section className="pt-8 pb-20">
-        <div className="container-padding max-w-2xl mx-auto text-center">
-          <div className="glass-card p-12">
-            <h3 className="text-2xl font-semibold text-primary-700 mb-4">
-              {locale === 'fr'
-                ? 'Message envoye !'
-                : locale === 'nl'
-                ? 'Bericht verzonden!'
-                : 'Message sent!'}
+      <section className="py-20 bg-warm-50">
+        <div className="container-padding max-w-xl mx-auto text-center">
+          <div className="bg-white rounded-2xl p-12 shadow-lg border border-secondary-100">
+            <div className="w-16 h-16 rounded-full bg-accent-50 flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="w-8 h-8 text-accent-600" />
+            </div>
+            <h3 className="text-2xl font-bold text-primary-900 font-display mb-3">
+              Message sent
             </h3>
-            <p className="text-secondary-600">
-              {confirmationMsg || (locale === 'fr'
-                ? 'Nous vous recontacterons dans les plus brefs delais.'
-                : locale === 'nl'
-                ? 'We nemen zo snel mogelijk contact met u op.'
-                : 'We will get back to you as soon as possible.')}
+            <p className="text-secondary-600 leading-relaxed">
+              {confirmationMsg || 'We will get back to you within 24 hours.'}
             </p>
           </div>
         </div>
@@ -145,216 +122,232 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
   }
 
   return (
-    <section className="pt-8 pb-20">
-      <div className="container-padding max-w-2xl mx-auto">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Subject */}
-          <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">
-              {getLocalizedField(labels.subject, locale)} *
-            </label>
-            <select
-              value={formData.subject}
-              onChange={(e) => handleChange('subject', e.target.value)}
-              required
-              className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all bg-white"
-            >
-              <option value="">
-                {locale === 'fr' ? '-- Choisissez un sujet --' : locale === 'nl' ? '-- Kies een onderwerp --' : '-- Select a subject --'}
-              </option>
-              {section.subjectOptions?.map((opt, i) => {
-                const val = getLocalizedField(opt, locale)
-                return (
-                  <option key={i} value={val}>
-                    {val}
-                  </option>
-                )
-              })}
-            </select>
-          </div>
+    <section className="py-16 bg-warm-50">
+      <div className="container-padding max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-secondary-700 mb-1">
-                {getLocalizedField(labels.company, locale)}
-              </label>
-              <input
-                type="text"
-                value={formData.company}
-                onChange={(e) => handleChange('company', e.target.value)}
-                className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-secondary-700 mb-1">
-                {getLocalizedField(labels.name, locale)} *
-              </label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => handleChange('name', e.target.value)}
-                required
-                className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-              />
-            </div>
-          </div>
+          {/* Left: Form */}
+          <div className="lg:col-span-3">
+            <h2 className="text-2xl font-bold text-primary-900 font-display mb-2">
+              Send us a message
+            </h2>
+            <p className="text-secondary-500 mb-8">
+              Fields marked with * are required.
+            </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-secondary-700 mb-1">
-                {getLocalizedField(labels.phone, locale)}
-              </label>
-              <input
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => handleChange('phone', e.target.value)}
-                className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-secondary-700 mb-1">
-                {getLocalizedField(labels.email, locale)} *
-              </label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleChange('email', e.target.value)}
-                required
-                className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-              />
-            </div>
-          </div>
-
-          {/* Country */}
-          <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">
-              {getLocalizedField(labels.country, locale)} *
-            </label>
-            <select
-              value={formData.country}
-              onChange={(e) => handleChange('country', e.target.value)}
-              required
-              className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all bg-white"
-            >
-              <option value="">
-                {locale === 'fr' ? '-- Choisissez un pays --' : locale === 'nl' ? '-- Kies een land --' : '-- Select a country --'}
-              </option>
-              {section.countryOptions?.map((opt, i) => {
-                const val = getLocalizedField(opt, locale)
-                return (
-                  <option key={i} value={val}>
-                    {val}
-                  </option>
-                )
-              })}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">
-              {getLocalizedField(labels.message, locale)} *
-            </label>
-            <textarea
-              value={formData.message}
-              onChange={(e) => handleChange('message', e.target.value)}
-              required
-              rows={5}
-              className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all resize-y"
-            />
-          </div>
-
-          {/* Honeypot — hidden from humans, bots fill it */}
-          <div className="absolute -left-[9999px]" aria-hidden="true">
-            <label htmlFor="website">Website</label>
-            <input
-              type="text"
-              id="website"
-              name="website"
-              tabIndex={-1}
-              autoComplete="off"
-              value={honeypot}
-              onChange={(e) => setHoneypot(e.target.value)}
-            />
-          </div>
-
-          {/* Divider before verification section */}
-          <div className="border-t border-secondary-200 pt-6 mt-2 space-y-5">
-            {/* CAPTCHA — prominent */}
-            {captcha.a > 0 && (
-              <div className="bg-primary-50 border border-primary-200 rounded-xl p-5">
-                <label className="block text-sm font-bold text-primary-800 mb-2">
-                  {locale === 'fr'
-                    ? `Verification anti-spam : combien font ${captcha.a} + ${captcha.b}`
-                    : locale === 'nl'
-                    ? `Anti-spam verificatie: hoeveel is ${captcha.a} + ${captcha.b}`
-                    : `Anti-spam verification: what is ${captcha.a} + ${captcha.b}`} *
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Subject */}
+              <div>
+                <label className={labelClass}>
+                  {getLocalizedField(labels.subject, locale)} *
                 </label>
+                <select
+                  value={formData.subject}
+                  onChange={(e) => handleChange('subject', e.target.value)}
+                  required
+                  className={inputClass}
+                >
+                  <option value="">Select a subject</option>
+                  {section.subjectOptions?.map((opt, i) => {
+                    const val = getLocalizedField(opt, locale)
+                    return <option key={i} value={val}>{val}</option>
+                  })}
+                </select>
+              </div>
+
+              {/* Company + Name */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>
+                    {getLocalizedField(labels.company, locale)}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.company}
+                    onChange={(e) => handleChange('company', e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>
+                    {getLocalizedField(labels.name, locale)} *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => handleChange('name', e.target.value)}
+                    required
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+
+              {/* Phone + Email */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>
+                    {getLocalizedField(labels.phone, locale)}
+                  </label>
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => handleChange('phone', e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>
+                    {getLocalizedField(labels.email, locale)} *
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleChange('email', e.target.value)}
+                    required
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+
+              {/* Country */}
+              <div>
+                <label className={labelClass}>
+                  {getLocalizedField(labels.country, locale)} *
+                </label>
+                <select
+                  value={formData.country}
+                  onChange={(e) => handleChange('country', e.target.value)}
+                  required
+                  className={inputClass}
+                >
+                  <option value="">Select a country</option>
+                  {section.countryOptions?.map((opt, i) => {
+                    const val = getLocalizedField(opt, locale)
+                    return <option key={i} value={val}>{val}</option>
+                  })}
+                </select>
+              </div>
+
+              {/* Message */}
+              <div>
+                <label className={labelClass}>
+                  {getLocalizedField(labels.message, locale)} *
+                </label>
+                <textarea
+                  value={formData.message}
+                  onChange={(e) => handleChange('message', e.target.value)}
+                  required
+                  rows={5}
+                  className={`${inputClass} resize-y`}
+                />
+              </div>
+
+              {/* Honeypot */}
+              <div className="absolute -left-[9999px]" aria-hidden="true">
                 <input
                   type="text"
-                  inputMode="numeric"
-                  value={captchaAnswer}
-                  onChange={(e) => setCaptchaAnswer(e.target.value)}
-                  required
-                  className="w-28 px-4 py-2.5 border-2 border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all bg-white text-center text-lg font-semibold"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
                 />
               </div>
-            )}
 
-            {/* GDPR Consent — visually distinct */}
-            <div className="bg-warm-100 border border-secondary-200 rounded-xl p-5">
-              <div className="flex items-start gap-3">
-                <input
-                  type="checkbox"
-                  id="gdpr-consent"
-                  checked={formData.gdprConsent}
-                  onChange={(e) => handleChange('gdprConsent', e.target.checked)}
-                  required
-                  className="mt-0.5 h-5 w-5 border-secondary-400 rounded text-primary-600 focus:ring-primary-500"
-                />
-                <label htmlFor="gdpr-consent" className="text-sm text-secondary-700 leading-relaxed">
-                  I consent to COIN processing my personal data solely to respond to this enquiry, in accordance with the{' '}
-                  <a href="/privacy-policy" target="_blank" className="text-primary-600 font-semibold underline hover:text-primary-800">Privacy Policy</a>.
-                  {' '}My data will not be shared with third parties. I can request access, correction or deletion of my data at any time by contacting COIN.
-                </label>
+              {/* Verification block */}
+              <div className="border-t border-secondary-200 pt-6 space-y-4">
+                {/* CAPTCHA */}
+                {captcha.a > 0 && (
+                  <div className="flex items-center gap-4">
+                    <label className="text-sm font-semibold text-secondary-700 whitespace-nowrap">
+                      What is {captcha.a} + {captcha.b}? *
+                    </label>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={captchaAnswer}
+                      onChange={(e) => setCaptchaAnswer(e.target.value)}
+                      required
+                      className="w-20 px-3 py-2.5 bg-white border border-secondary-200 rounded-xl text-center text-lg font-bold focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 outline-none transition-all"
+                    />
+                  </div>
+                )}
+
+                {/* GDPR */}
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="gdpr-consent"
+                    checked={formData.gdprConsent}
+                    onChange={(e) => handleChange('gdprConsent', e.target.checked)}
+                    required
+                    className="mt-1 h-4 w-4 border-secondary-300 rounded text-primary-600 focus:ring-primary-500"
+                  />
+                  <label htmlFor="gdpr-consent" className="text-xs text-secondary-500 leading-relaxed">
+                    I consent to COIN processing my personal data to respond to this enquiry, per the{' '}
+                    <a href="/privacy-policy" target="_blank" className="text-primary-600 underline hover:text-primary-800">
+                      Privacy Policy
+                    </a>. My data will not be shared with third parties.
+                  </label>
+                </div>
+              </div>
+
+              {error && (
+                <p className="text-coin-red-500 text-sm font-medium">{error}</p>
+              )}
+
+              {/* Submit button */}
+              <button
+                type="submit"
+                disabled={!formData.gdprConsent || !captchaAnswer || submitting}
+                className="inline-flex items-center gap-3 bg-accent-500 hover:bg-accent-600 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200"
+              >
+                <Send className="w-5 h-5" />
+                <span>{submitting ? 'Sending...' : 'Send message'}</span>
+              </button>
+            </form>
+          </div>
+
+          {/* Right: sidebar info */}
+          <div className="lg:col-span-2">
+            <div className="lg:sticky lg:top-28 space-y-6">
+              {/* Direct contact card */}
+              <div className="bg-primary-950 rounded-2xl p-8 text-white">
+                <h3 className="text-lg font-bold font-display mb-1">Prefer to talk?</h3>
+                <p className="text-primary-300 text-sm mb-6">Call us directly at any of our offices.</p>
+
+                <div className="space-y-4">
+                  <a href="tel:+31882646000" className="flex items-center gap-3 text-white hover:text-accent-400 transition-colors">
+                    <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">NL</span>
+                    <span className="font-semibold">+31 88 26 46 000</span>
+                  </a>
+                  <a href="tel:+35235705030" className="flex items-center gap-3 text-white hover:text-accent-400 transition-colors">
+                    <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">LU</span>
+                    <span className="font-semibold">+352 357 05 30</span>
+                  </a>
+                  <a href="tel:+3225133618" className="flex items-center gap-3 text-white hover:text-accent-400 transition-colors">
+                    <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">BE</span>
+                    <span className="font-semibold">+32 2 513 36 18</span>
+                  </a>
+                </div>
+
+                <div className="mt-6 pt-6 border-t border-white/10">
+                  <a href="mailto:info@coin-bc.com" className="text-accent-400 hover:text-accent-300 font-semibold transition-colors">
+                    info@coin-bc.com
+                  </a>
+                </div>
+              </div>
+
+              {/* Response time */}
+              <div className="bg-white rounded-2xl p-6 border border-secondary-100">
+                <p className="text-sm text-secondary-500">
+                  <span className="font-bold text-secondary-800 block mb-1">Response within 24h</span>
+                  Our team processes enquiries on business days. For urgent matters, call us directly.
+                </p>
               </div>
             </div>
           </div>
-
-          {error && (
-            <p className="text-coin-red-500 text-sm font-medium">{error}</p>
-          )}
-
-          <Button
-            type="submit"
-            variant="primary"
-            className="w-full md:w-auto"
-            disabled={!formData.gdprConsent || !captchaAnswer || submitting}
-          >
-            {submitting
-              ? '...'
-              : getLocalizedField(labels.submit, locale)}
-          </Button>
-        </form>
-
-        {/* Locations card */}
-        <a
-          href="/locations"
-          className="mt-12 flex items-center gap-5 p-5 rounded-xl border border-primary-100 bg-primary-50/40 hover:bg-primary-50 transition-colors group"
-        >
-          <div className="w-12 h-12 rounded-xl bg-primary-500 flex items-center justify-center shrink-0">
-            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-            </svg>
-          </div>
-          <div className="flex-1">
-            <p className="font-semibold text-secondary-800 text-base mb-0.5">Our Business Continuity Centres</p>
-            <p className="text-sm text-secondary-500">4 resilience centres across Luxembourg, Netherlands &amp; Belgium — 1,000+ recovery workplaces</p>
-          </div>
-          <svg className="w-5 h-5 text-primary-400 group-hover:translate-x-1 transition-transform shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-          </svg>
-        </a>
+        </div>
       </div>
     </section>
   )

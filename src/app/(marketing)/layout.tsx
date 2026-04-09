@@ -28,7 +28,7 @@ export default async function MarketingLayout({ children }: { children: React.Re
 
       <main className="min-h-screen pt-20">
         <EventBanner
-          message="NIS2 & DORA READY — Is your organisation compliant?"
+          message="NIS2 & DORA READY - Is your organisation compliant?"
           linkText="Check your readiness"
           linkHref="/challenges/nis2-dora-compliance"
         />

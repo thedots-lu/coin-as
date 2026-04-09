@@ -7,7 +7,7 @@ export const revalidate = 300
 
 export const metadata: Metadata = {
   title: 'Business Continuity & Cyber Resilience Solutions | COIN',
-  description: 'COIN AS — BeNeLux leader in business continuity for over 20 years. Recovery workplaces, BCP consulting, DORA & NIS2 compliance, cyber resilience.',
+  description: 'COIN AS, BeNeLux leader in business continuity for over 20 years. Recovery workplaces, BCP consulting, DORA & NIS2 compliance, cyber resilience.',
   alternates: { canonical: 'https://coin-bc.com' },
   openGraph: {
     title: 'Business Continuity & Cyber Resilience | COIN AS BeNeLux',

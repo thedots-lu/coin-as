@@ -158,7 +158,7 @@ export default async function KnowledgeHubPage() {
             <h2 className="text-3xl font-bold">White Papers & Guides</h2>
           </div>
           <p className="text-slate-500 mb-8">
-            In-depth guides and white papers — free to download.
+            In-depth guides and white papers. Free to download.
           </p>
 
           {whitePapers.length > 0 ? (

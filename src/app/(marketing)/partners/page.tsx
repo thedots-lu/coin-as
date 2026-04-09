@@ -78,7 +78,7 @@ export default async function PartnersPage() {
         <div className="container-padding max-w-4xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">Interested in partnering with COIN?</h2>
           <p className="text-slate-600 mb-6 max-w-xl mx-auto">
-            Join our ecosystem and collaborate with us to deliver best-in-class business continuity solutions.
+            Collaborate with us to deliver effective business continuity solutions across the BeNeLux.
           </p>
           <Link href="/partners/become-partner" className="btn-primary inline-block">
             Become a Partner
