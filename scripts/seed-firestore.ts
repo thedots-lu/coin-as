@@ -82,11 +82,11 @@ function navigationMain() {
         path: '/services',
         order: 1,
         children: [
-          { label: ls('Consulting & Training'), path: '/services/consultancy', order: 0 },
-          { label: ls('Business Continuity Centres'), path: '/services/business-continuity', order: 1 },
-          { label: ls('Cyber Resilience Solutions'), path: '/services/cyber-resilience', order: 2 },
-          { label: ls('Dedicated Recovery Sites'), path: '/services/recovery-workplaces', order: 3 },
-          { label: ls('Satellite Offices & Co-location'), path: '/services/satellite-offices', order: 4 },
+          { label: ls('Business Continuity Centres'), path: '/services/business-continuity', order: 0 },
+          { label: ls('Cyber Resilience Solutions'), path: '/services/cyber-resilience', order: 1 },
+          { label: ls('Dedicated Recovery Sites'), path: '/services/recovery-workplaces', order: 2 },
+          { label: ls('Satellite Offices & Co-location'), path: '/services/satellite-offices', order: 3 },
+          { label: ls('Consulting & Training'), path: '/services/consultancy', order: 4 },
         ],
       },
       {
