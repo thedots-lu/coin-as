@@ -3,10 +3,8 @@ import { getLocalizedField } from '@/lib/locale'
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
-import Image from 'next/image'
 import Link from 'next/link'
 import { FileText, ArrowRight } from 'lucide-react'
-import ServiceSubNav from '@/components/layout/ServiceSubNav'
 
 export const revalidate = 300
 
@@ -44,48 +42,8 @@ export default async function ServicePage({
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative overflow-hidden text-white py-20">
-        {service.heroImageUrl ? (
-          <>
-            <Image
-              src={service.heroImageUrl}
-              alt={getLocalizedField(service.title, 'en')}
-              fill
-              className="object-cover"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-secondary-900/80 via-secondary-800/70 to-primary-900/80" />
-          </>
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-secondary-800 via-secondary-700 to-primary-900" />
-        )}
-        <div className="container-padding text-center relative z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            {getLocalizedField(service.title, 'en')}
-          </h1>
-          <p className="text-xl text-slate-200 max-w-3xl mx-auto">
-            {getLocalizedField(service.heroSubtitle, 'en')}
-          </p>
-        </div>
-      </section>
-
-      {/* Service Sub-Navigation */}
-      <ServiceSubNav />
-
-      {/* Overview */}
-      <section className="py-16">
-        <div className="container-padding">
-          <div className="max-w-4xl mx-auto">
-            <p className="text-lg text-slate-600 leading-relaxed">
-              {getLocalizedField(service.overview, 'en')}
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* View Business Case link */}
-      <div className="container-padding -mt-8 mb-8">
+      <div className="container-padding pt-10 mb-4">
         <div className="max-w-4xl mx-auto">
           <Link href="/knowledge-hub" className="inline-flex items-center gap-2 text-primary-500 hover:text-primary-600 font-medium transition-colors">
             <FileText className="h-4 w-4" />
