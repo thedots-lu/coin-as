@@ -61,7 +61,7 @@ export default function TrustedByMarquee() {
                 <img
                   src={url}
                   alt=""
-                  className="max-h-[110px] max-w-[250px] object-contain grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+                  className="max-h-[110px] max-w-[250px] object-contain"
                   loading="lazy"
                 />
               </div>

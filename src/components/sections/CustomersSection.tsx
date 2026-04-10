@@ -55,7 +55,7 @@ export default function CustomersSection({ section, locale }: CustomersSectionPr
                   <img
                     src={url}
                     alt={`Customer ${(i % logos.length) + 1}`}
-                    className="max-h-[100px] max-w-[170px] object-contain grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300"
+                    className="max-h-[100px] max-w-[170px] object-contain"
                     loading="lazy"
                   />
                 </div>

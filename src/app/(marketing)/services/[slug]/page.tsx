@@ -3,8 +3,6 @@ import { getLocalizedField } from '@/lib/locale'
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
-import Link from 'next/link'
-import { FileText, ArrowRight } from 'lucide-react'
 
 export const revalidate = 300
 
@@ -42,17 +40,6 @@ export default async function ServicePage({
 
   return (
     <>
-      {/* View Business Case link */}
-      <div className="container-padding pt-10 mb-4">
-        <div className="max-w-4xl mx-auto">
-          <Link href="/knowledge-hub" className="inline-flex items-center gap-2 text-primary-500 hover:text-primary-600 font-medium transition-colors">
-            <FileText className="h-4 w-4" />
-            View Business Case
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </div>
-
       {/* Dynamic sections */}
       {service.sections && service.sections.length > 0 && (
         <PageSectionRenderer sections={service.sections} />

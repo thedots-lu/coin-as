@@ -82,11 +82,12 @@ function navigationMain() {
         path: '/services',
         order: 1,
         children: [
-          { label: ls('Business Continuity Centres'), path: '/services/business-continuity', order: 0 },
-          { label: ls('Cyber Resilience Solutions'), path: '/services/cyber-resilience', order: 1 },
-          { label: ls('Dedicated Recovery Sites'), path: '/services/recovery-workplaces', order: 2 },
-          { label: ls('Satellite Offices & Co-location'), path: '/services/satellite-offices', order: 3 },
-          { label: ls('Consulting & Training'), path: '/services/consultancy', order: 4 },
+          { label: ls('Overview of Services'), path: '/services', order: 0 },
+          { label: ls('Recovery Workplaces'), path: '/services/recovery-workplaces', order: 1 },
+          { label: ls('Consultancy and Training'), path: '/services/consultancy-and-training', order: 2 },
+          { label: ls('IT Housing'), path: '/services/it-housing', order: 3 },
+          { label: ls('Cyberresilience'), path: '/services/cyberresilience', order: 4 },
+          { label: ls('Crisis Management'), path: '/services/crisis-management', order: 5 },
         ],
       },
       {
@@ -784,6 +785,159 @@ function servicesData() {
       ],
     },
     {
+      slug: 'consultancy-and-training',
+      title: ls('Consultancy and Training'),
+      shortTitle: ls('Consultancy and Training'),
+      category: 'consulting',
+      order: 2,
+      heroSubtitle: ls('Experienced consultants covering the full business continuity cycle'),
+      heroImageUrl: '/images/coin/coin-fotosharonwillems-26.webp',
+      overview: ls(
+        'Experienced consultants covering the full business continuity cycle. From risk assessment to disaster simulation, COIN helps you build, document, test and maintain your continuity and contingency plans.',
+      ),
+      sections: [
+        {
+          type: 'features_list',
+          order: 0,
+          heading: ls('Our Consultancy and Training solution'),
+          features: [
+            {
+              title: ls('Risks and Business Impact Analysis'),
+              description: ls(
+                'Identify your critical processes, quantify the impact of disruption, and map the dependencies between people, systems, suppliers and facilities. The foundation of any serious continuity plan.',
+              ),
+            },
+            {
+              title: ls('Business Continuity and Contingency Plans'),
+              description: ls(
+                'COIN consultants help you design, write and maintain your Business Continuity Plans and contingency procedures. Tailored to your regulatory framework (NIS2, DORA, CSSF, DNB, NBB) and business reality.',
+              ),
+            },
+            {
+              title: ls('DRP and Recovery site Assessment'),
+              description: ls(
+                'Independent audit of your existing Disaster Recovery Plan and recovery infrastructure. Gap analysis, risk mapping, and actionable recommendations to strengthen your resilience posture.',
+              ),
+            },
+            {
+              title: ls('Disaster Simulations & Testing'),
+              description: ls(
+                'Full-scale disaster simulations, crisis exercises and annual tests of your continuity plans. COIN centres host 100+ exercises every year, with experienced facilitators and scenario designers.',
+              ),
+            },
+          ],
+        },
+      ],
+    },
+    {
+      slug: 'it-housing',
+      title: ls('IT Housing'),
+      shortTitle: ls('IT Housing'),
+      category: 'centers',
+      order: 3,
+      heroSubtitle: ls('IT housing facilities co-located with our recovery offices in Luxembourg'),
+      heroImageUrl: '/images/coin/co-location-area-munsbach.webp',
+      overview: ls(
+        'IT housing facilities co-located with our recovery offices in Luxembourg. TIER-3 infrastructure with redundant power, cooling and connectivity, powered by green electricity.',
+      ),
+      sections: [
+        {
+          type: 'features_list',
+          order: 0,
+          heading: ls('Our IT Housing solution'),
+          features: [
+            {
+              title: ls('Secured 24x7 autonomous access'),
+              description: ls(
+                'Permanent access to your equipment, with individual badge-based access control and full audit logs. Biometric entry available for sensitive zones.',
+              ),
+            },
+            {
+              title: ls('Redundant power and HVAC systems'),
+              description: ls(
+                'Dual power feeds, UPS systems and diesel generators. Redundant cooling with precision HVAC to maintain optimal temperature and humidity at all times.',
+              ),
+            },
+            {
+              title: ls('High speed connections with main ISP'),
+              description: ls(
+                'Meet-me room with a large presence of telecom providers. Direct connectivity to the LuxConnect fiber ring for ultra-low latency and multi-carrier redundancy.',
+              ),
+            },
+            {
+              title: ls('Full racks and half racks in shared co-location area'),
+              description: ls(
+                'Options include 23U half racks and 47U full racks in the shared co-location area. Ideal for companies needing flexible, scalable hosting capacity.',
+              ),
+            },
+            {
+              title: ls('Cages'),
+              description: ls(
+                'Physically separated steel cages for enhanced security. Fully customisable space with dedicated power and cooling allocation.',
+              ),
+            },
+            {
+              title: ls('Separated secured rooms'),
+              description: ls(
+                'Private datarooms for customers with the highest security and compliance requirements. Dedicated access, monitoring and environmental controls.',
+              ),
+            },
+          ],
+        },
+      ],
+    },
+    {
+      slug: 'cyberresilience',
+      title: ls('Cyberresilience'),
+      shortTitle: ls('Cyberresilience'),
+      category: 'cyber',
+      order: 4,
+      heroSubtitle: ls('A range of services to prevent and respond to cyberincidents'),
+      heroImageUrl: '/images/coin/coin-luxembourg-common-area-2.webp',
+      overview: ls(
+        'A range of services to prevent and respond to cyberincidents. From user awareness to clean recovery environments, COIN helps you reduce your cyber exposure and recover fast when things go wrong.',
+      ),
+      sections: [
+        {
+          type: 'features_list',
+          order: 0,
+          heading: ls('Our Cyberresilience solution'),
+          features: [
+            {
+              title: ls('SAAS for security awareness and behavioural change'),
+              description: ls(
+                'Hoxhunt-based training platform that turns every employee into a human firewall. Gamified phishing simulations, micro-trainings and measurable behaviour change across your organisation.',
+              ),
+            },
+            {
+              title: ls('Clean Azure and Office 365 Tenant'),
+              description: ls(
+                'A pre-configured, hardened and monitored Microsoft 365 environment ready to take over if your production tenant is compromised. Quick activation, full email and collaboration continuity.',
+              ),
+            },
+            {
+              title: ls('Secure COIN Key for laptop recovery and BYOD'),
+              description: ls(
+                'An IGEL-based secure USB key that turns any laptop into a trusted corporate workstation. Ideal for remote workers, incident response teams and BYOD scenarios.',
+              ),
+            },
+            {
+              title: ls('Emergency Laptop Storage and update services'),
+              description: ls(
+                'Pre-configured emergency laptops stored at COIN sites, kept up to date and ready to dispatch within hours. Ideal for large-scale endpoint recovery after a ransomware incident.',
+              ),
+            },
+            {
+              title: ls('Immutable OS and Backup solutions'),
+              description: ls(
+                'Immutable operating systems that cannot be tampered with, plus air-gapped and immutable backup solutions to guarantee clean recovery data after a cyber incident.',
+              ),
+            },
+          ],
+        },
+      ],
+    },
+    {
       slug: 'business-continuity',
       title: ls('Business Continuity'),
       shortTitle: ls('Business Continuity'),
@@ -838,43 +992,37 @@ function servicesData() {
     },
     {
       slug: 'crisis-management',
-      title: ls('Crisis Management Facilities'),
+      title: ls('Crisis Management'),
       shortTitle: ls('Crisis Management'),
       category: 'centers',
-      order: 2,
-      heroSubtitle: ls('Dedicated infrastructure for crisis teams and dealing rooms, available 24/7'),
+      order: 5,
+      heroSubtitle: ls('Training services and external crisis management facilities'),
       heroImageUrl: '/images/coin/coin-fotosharonwillems-36.webp',
       overview: ls(
-        'COIN provides specific infrastructure for critical activities, from fully equipped crisis management rooms for your senior management team, to dedicated dealing rooms and control rooms for trading floors and operations centres.',
+        'Training services and external crisis management facilities. COIN provides everything you need to prepare, rehearse and respond to crisis scenarios, with dedicated rooms and experienced consultants.',
       ),
       sections: [
         {
           type: 'features_list',
           order: 0,
-          heading: ls('Crisis Management Infrastructure'),
+          heading: ls('Our Crisis Management solution'),
           features: [
             {
-              title: ls('Shared Crisis Management Centre'),
+              title: ls('Simulation of crisis scenarios and management response'),
               description: ls(
-                'High availability and redundant infrastructure. Fully equipped rooms for crisis management teams. Ready-to-use computers, phones, printers and communication devices. Bi-annual testing sessions included.',
+                'We design and run realistic crisis simulations with your teams. Scenarios are tailored to your risks and business environment, with observers and coaches to debrief and identify improvement points.',
               ),
             },
             {
-              title: ls('Dedicated Dealing & Control Rooms'),
+              title: ls('Crisis response plans'),
               description: ls(
-                'High availability and redundant infrastructure. IT infrastructure provided by COIN or the customer, including specific equipment such as turrets, large screens and Bloomberg keyboards. Bi-annual testing sessions included.',
+                'COIN consultants help you build, document and maintain your crisis response plans, covering communication, decision-making, escalation and recovery procedures.',
               ),
             },
             {
-              title: ls('24/7 Availability'),
+              title: ls('Crisis management rooms and offices'),
               description: ls(
-                'Crisis management facilities are available around the clock. COIN engineers are on call to support invocation, set up your environment and assist your teams throughout the incident.',
-              ),
-            },
-            {
-              title: ls('Tested and Certified'),
-              description: ls(
-                'All crisis management facilities are regularly tested and certified. ISO 27001/2022 compliant. Documentation of site guides, access procedures and contingency plans provided.',
+                'Fully equipped, redundant crisis management facilities ready for immediate use. Available 24/7, with COIN engineers on call to support invocation and setup.',
               ),
             },
           ],
@@ -931,51 +1079,43 @@ function servicesData() {
       title: ls('Recovery Workplaces'),
       shortTitle: ls('Recovery Workplaces'),
       category: 'centers',
-      order: 4,
-      heroSubtitle: ls('1,000+ fully equipped recovery seats across 4 resilience centres in the BeNeLux'),
+      order: 1,
+      heroSubtitle: ls('Fully equipped, secured and connected offices to resume work in case of disaster'),
       heroImageUrl: '/images/coin/coin-luxembourg-contern-recovery-office-small-2.webp',
       overview: ls(
-        'COIN operates 4 resilience centres with over 1,000 recovery workplaces across Belgium, the Netherlands and Luxembourg. Each workplace is fully equipped and ready for invocation within hours, 24 hours a day, 7 days a week.',
+        'Fully equipped, secured and connected offices to resume work in case of disaster. COIN operates 1,000+ recovery workplaces across 4 resilience centres in the BeNeLux, ready for immediate activation 24/7.',
       ),
       sections: [
         {
           type: 'features_list',
           order: 0,
-          heading: ls('Recovery Workplace Options'),
+          heading: ls('Our Recovery Workplaces solution'),
           features: [
             {
-              title: ls('Dedicated Recovery Workplaces'),
+              title: ls('Dedicated recovery offices with permanent access'),
               description: ls(
-                'Permanent 24/7 access. Dedicated workplaces are always "up and running". Suitable for critical users. The dedicated area is designed according to your requirements: physical security, IT equipment, space partitioning, dedicated meeting room and kitchenette. Individual badge per user, all logs recorded. Minimum 3-year engagement.',
+                'Permanent dedicated workplaces, always up and running. Designed to your requirements with physical security, IT equipment, dedicated meeting room and kitchenette. Individual badge per user, full access logs recorded.',
               ),
             },
             {
-              title: ls('Shared Recovery Workplaces'),
+              title: ls('Shared recovery positions with 24x7 access within 2 hours'),
               description: ls(
-                'First in / first served. SLA: 2 hours during business hours (Mon–Fri 9am–6pm), 4 hours outside business hours. Once invoked, use for 3 months 24/7 at no additional cost. Annual testing days included. Minimum 1-year engagement.',
+                'SLA of 2 hours during business hours, 4 hours outside. Once invoked, use for 3 months at no additional cost. Annual testing days included.',
               ),
             },
             {
-              title: ls('Shared Workplaces with Exclusivity Zone'),
+              title: ls('Outsourcing of dedicated site anywhere in BeNeLux'),
               description: ls(
-                'Same as shared recovery but with a guaranteed distance between your site and those of other customers. In the exclusivity zone, COIN guarantees availability of a defined percentage of contracted shared workplaces in case of multiple simultaneous invocations.',
+                'COIN rents and operates a dedicated recovery site tailored to your location and requirements. We handle site selection, design, infrastructure, security and daily operations.',
               ),
             },
             {
-              title: ls('"On-Demand" Recovery Workplaces'),
+              title: ls('Design and Management of Satellite Office'),
               description: ls(
-                'Suitable for non-critical users and customers outside the jurisdiction of regulators. SLA: next business day during working hours. Use for 1 month at no additional cost once invoked. One testing day included at start of engagement. Minimum 1-month engagement.',
+                'A satellite office that doubles as a disaster recovery facility. Used daily for hybrid work, instantly convertible into a full recovery site when needed. Fast implementation in 3 months.',
               ),
             },
           ],
-        },
-        {
-          type: 'rich_text',
-          order: 1,
-          heading: ls('Standard Workplace Equipment'),
-          body: ls(
-            'Every recovery workplace includes: desk, chair and cupboard · desktop or bring-your-own-laptop · dual 24" screens · individual IP phone · one multifunction printer per 10 users · one shredder per area.\n\nCommon areas included at no cost: meeting rooms · reception desk · rest areas · internet and WiFi · reserved parking · restaurant.',
-          ),
         },
       ],
     },
