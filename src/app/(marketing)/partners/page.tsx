@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Play } from 'lucide-react'
 import { getPublishedPartners } from '@/lib/firestore/partners'
 import { getLocalizedField } from '@/lib/locale'
+import HubBanner from '@/components/knowledge-hub/HubBanner'
 
 function getYoutubeId(url: string | null | undefined): string | null {
   if (!url) return null
@@ -31,22 +32,19 @@ export default async function PartnersPage() {
   const technologyPartners = partners.filter((p) => p.type === 'technology')
   const partnersWithVideos = partners.filter((p) => p.videoUrl && getYoutubeId(p.videoUrl))
 
+  const quickLinks: Array<{ label: string; href: string }> = []
+  if (technologyPartners.length > 0) quickLinks.push({ label: 'Technology Partners', href: '#technology' })
+  if (businessPartners.length > 0) quickLinks.push({ label: 'Business Partners', href: '#business' })
+  if (partnersWithVideos.length > 0) quickLinks.push({ label: 'Partner Stories', href: '#stories' })
+  quickLinks.push({ label: 'Become a Partner', href: '/partners/become-partner' })
+
   return (
     <>
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary-600 via-primary-700 to-secondary-800 text-white py-20">
-        <div className="absolute inset-0 bg-[url('/images/grid-pattern.svg')] opacity-10" />
-        <div className="relative container-padding max-w-6xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">Our Partners</h1>
-          <p className="text-lg text-primary-100 max-w-2xl mx-auto">
-            We collaborate with leading organizations to deliver the best business continuity solutions.
-          </p>
-        </div>
-      </section>
+      <HubBanner title="Our Partners" quickLinks={quickLinks} />
 
       {/* Business Partners */}
       {businessPartners.length > 0 && (
-        <section className="py-16">
+        <section id="business" className="py-16 scroll-mt-24">
           <div className="container-padding max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold mb-8">Business Partners</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -60,7 +58,7 @@ export default async function PartnersPage() {
 
       {/* Technology Partners */}
       {technologyPartners.length > 0 && (
-        <section className="py-16 bg-slate-50">
+        <section id="technology" className="py-16 bg-warm-50 scroll-mt-24">
           <div className="container-padding max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold mb-8">Technology Partners</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -83,7 +81,7 @@ export default async function PartnersPage() {
 
       {/* Partner videos */}
       {partnersWithVideos.length > 0 && (
-        <section className="py-16 bg-primary-950 text-white">
+        <section id="stories" className="py-16 bg-primary-950 text-white scroll-mt-24">
           <div className="container-padding max-w-6xl mx-auto">
             <div className="mb-10 text-center">
               <div className="w-12 h-1 bg-accent-500 rounded-full mx-auto mb-5" />
