@@ -15,39 +15,40 @@ import CircularText from '@/components/reactbits/CircularText'
 // ---------------------------------------------------------------------------
 const SLIDES = [
   {
-    src: '/images/coin/co-location-area-munsbach.webp',
-    alt: 'COIN AS co-location server room',
-    label: 'Data Centres',
-    title: 'Secure Co-location & Data Centres',
-    description: 'Secure facilities across BeNeLux with redundant power, cooling and connectivity.',
+    src: '/images/coin/coin-luxembourg-contern-disaster-recovery-office-big.webp',
+    alt: 'COIN AS dedicated recovery site at Contern',
+    label: 'Dedicated Site',
+    title: 'Outsource the operation of your site to COIN',
+    bullets: [
+      'You use your second office or COIN rents a dedicated site for you',
+      'You decide how it is designed and if it is also used as satellite office',
+      'We ensure site and procedures are documented and tested',
+      'We operate and maintain the site and assist in case of disaster, 24x7',
+    ],
   },
   {
-    src: '/images/coin/coin-luxembourg-contern-recovery-office-small-2.webp',
-    alt: 'COIN AS recovery workplaces at Contern',
-    label: 'Recovery Workplaces',
-    title: '750+ Recovery Workplaces',
-    description: 'Fully equipped offices ready for immediate activation when disaster strikes.',
-  },
-  {
-    src: '/images/coin/coin-luxembourg-common-area-2.webp',
-    alt: 'COIN AS secure server corridor',
-    label: 'Cyber Resilience',
-    title: 'Cyber Resilience & IT Recovery',
-    description: 'Comprehensive IT disaster recovery and cyber resilience solutions for your critical systems.',
-  },
-  {
-    src: '/images/coin/coin-fotosharonwillems-26.webp',
-    alt: 'COIN AS team presenting a Business Continuity Plan',
-    label: 'Business Continuity',
-    title: 'BCP Consulting & Training',
-    description: 'Expert consulting to build, test and maintain your Business Continuity Plans. NIS2 & DORA ready.',
+    src: '/images/coin/coin-fotosharonwillems-16.webp',
+    alt: 'COIN AS recovery workplaces during a business continuity exercise',
+    label: 'Testing & Exercises',
+    title: 'Test your business continuity plan with COIN',
+    bullets: [
+      'COIN experts help you prepare and organise your exercise',
+      'Our business continuity centres host 100+ exercises every year',
+      'Use COIN recovery office facilities and crisis management rooms',
+      'Service also available for organisations with their own disaster site',
+      'Insightful learnings and better preparation for real disasters',
+    ],
   },
   {
     src: '/images/coin/coin-fotosharonwillems-36.webp',
     alt: 'COIN AS experts analyzing DORA compliance requirements',
-    label: 'DORA Readiness',
-    title: 'Free DORA Readiness Assessment',
-    description: 'Are you prepared for DORA? Take our free assessment to evaluate your organisation\'s digital operational resilience maturity and get a personalised compliance roadmap.',
+    label: 'NIS2 & DORA',
+    title: 'Is your organisation ready for NIS2 and DORA?',
+    bullets: [
+      'Free readiness assessment of your digital operational resilience',
+      'Personalised compliance roadmap and priority actions',
+      'Expert review of your ICT risk management and incident response',
+    ],
   },
 ]
 
@@ -120,10 +121,15 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
                   {active === 0 && heading ? heading : current.title}
                 </h1>
 
-                {/* Description */}
-                <p className="text-primary-200 leading-relaxed mb-8 text-base md:text-lg max-w-lg">
-                  {current.description}
-                </p>
+                {/* Bullet points */}
+                <ul className="text-primary-200 mb-6 text-[13px] md:text-sm max-w-lg space-y-1.5">
+                  {current.bullets.map((point, i) => (
+                    <li key={i} className="flex items-start gap-2 leading-snug">
+                      <span className="shrink-0 mt-[7px] w-1 h-1 rounded-full bg-accent-500" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
 
                 {/* CTA buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">
@@ -226,7 +232,7 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
         )}
 
         {/* Tab cards (desktop) */}
-        <div className="hidden md:grid grid-cols-5 gap-4 mt-6">
+        <div className="hidden md:grid grid-cols-3 gap-4 mt-6">
           {SLIDES.map((slide, i) => (
             <button
               key={i}
