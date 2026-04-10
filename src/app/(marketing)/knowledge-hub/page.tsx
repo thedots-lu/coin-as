@@ -4,11 +4,12 @@ import Image from 'next/image'
 import { BookOpen, Video, FileDown } from 'lucide-react'
 import { getPublishedArticles } from '@/lib/firestore/articles'
 import { getPublishedWhitePapers } from '@/lib/firestore/white-papers'
+import { getCoinYoutubeVideos } from '@/lib/youtube'
 import { getLocalizedField } from '@/lib/locale'
 import { formatDate } from '@/lib/utils/date'
 import Badge from '@/components/ui/Badge'
-import VlogCard from '@/components/ui/VlogCard'
 import WhitePaperCard from '@/components/ui/WhitePaperCard'
+import YoutubeVideos from '@/components/sections/YoutubeVideos'
 
 export const revalidate = 300
 
@@ -24,19 +25,19 @@ export const metadata: Metadata = {
 }
 
 export default async function KnowledgeHubPage() {
-  const [allArticles, whitePapers] = await Promise.all([
+  const [allArticles, whitePapers, videos] = await Promise.all([
     getPublishedArticles(),
     getPublishedWhitePapers(),
+    getCoinYoutubeVideos(),
   ])
 
   const articles = allArticles.filter((a) => a.category !== 'vlog')
-  const vlogs = allArticles.filter((a) => a.category === 'vlog')
   const caseStudies = allArticles.filter((a) => a.category === 'case_study')
   const resources = allArticles.filter((a) => a.category === 'resource')
 
   const tabs = [
     { id: 'articles', label: 'Articles', icon: BookOpen, count: articles.length },
-    { id: 'vlog', label: 'Vlog', icon: Video, count: vlogs.length },
+    { id: 'videos', label: 'Videos', icon: Video, count: videos.length },
     { id: 'white-papers', label: 'White Papers', icon: FileDown, count: whitePapers.length },
   ]
 
@@ -123,30 +124,18 @@ export default async function KnowledgeHubPage() {
         </div>
       </section>
 
-      {/* Vlog */}
-      <section id="vlog" className="py-16 bg-slate-50 scroll-mt-24">
+      {/* Videos */}
+      <section id="videos" className="py-16 bg-warm-50 scroll-mt-24">
         <div className="container-padding max-w-6xl mx-auto">
           <div className="flex items-center gap-3 mb-2">
-            <Video className="h-6 w-6 text-primary-500" />
-            <h2 className="text-3xl font-bold">Vlog</h2>
+            <Video className="h-6 w-6 text-coin-red-500" />
+            <h2 className="text-3xl font-bold">Videos</h2>
           </div>
-          <p className="text-slate-500 mb-8">
+          <p className="text-secondary-500 mb-8">
             Video insights from our business continuity experts.
           </p>
 
-          {vlogs.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {vlogs.map((v) => (
-                <VlogCard key={v.id} article={v} />
-              ))}
-            </div>
-          ) : (
-            <EmptyState
-              icon={<Video className="h-12 w-12 text-slate-300" />}
-              message="Video content coming soon. Subscribe to our LinkedIn to be notified."
-              cta={{ label: 'Follow us on LinkedIn', href: 'https://www.linkedin.com/company/coin-business-continuity/' }}
-            />
-          )}
+          <YoutubeVideos videos={videos} />
         </div>
       </section>
 

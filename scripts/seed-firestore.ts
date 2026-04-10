@@ -1521,6 +1521,10 @@ function partnersData() {
         'COIN is an IGEL velocity managed service partner. We use IGEL immutable OS to provide secured and remotely managed workstations in our business continuity centers, for homeworking recovery and BYOD collaboration scenario.',
       ),
       websiteUrl: 'https://www.igel.com',
+      videoUrl: 'https://www.youtube.com/watch?v=qRIA_nxWI1Q',
+      videoCaption: ls(
+        'IGEL client case: how COIN uses IGEL OS for recovery workplaces. An interview of COIN CTO by IGEL.',
+      ),
       order: 0,
       published: true,
     },

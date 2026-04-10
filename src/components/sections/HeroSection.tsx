@@ -116,9 +116,9 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
                   {current.label}
                 </span>
 
-                {/* Main heading (from Firestore) on first slide, slide title on others */}
+                {/* Slide title */}
                 <h1 className="text-2xl md:text-3xl lg:text-[2.2rem] font-bold mb-4 leading-[1.15] tracking-tight font-display">
-                  {active === 0 && heading ? heading : current.title}
+                  {current.title}
                 </h1>
 
                 {/* Bullet points */}

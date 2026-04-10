@@ -1,8 +1,15 @@
 import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Play } from 'lucide-react'
 import { getPublishedPartners } from '@/lib/firestore/partners'
 import { getLocalizedField } from '@/lib/locale'
+
+function getYoutubeId(url: string | null | undefined): string | null {
+  if (!url) return null
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{11})/)
+  return match?.[1] ?? null
+}
 
 export const revalidate = 300
 
@@ -22,6 +29,7 @@ export default async function PartnersPage() {
 
   const businessPartners = partners.filter((p) => p.type === 'business')
   const technologyPartners = partners.filter((p) => p.type === 'technology')
+  const partnersWithVideos = partners.filter((p) => p.videoUrl && getYoutubeId(p.videoUrl))
 
   return (
     <>
@@ -69,6 +77,58 @@ export default async function PartnersPage() {
         <section className="py-20">
           <div className="container-padding max-w-6xl mx-auto text-center">
             <p className="text-slate-500 text-lg">Partner information coming soon.</p>
+          </div>
+        </section>
+      )}
+
+      {/* Partner videos */}
+      {partnersWithVideos.length > 0 && (
+        <section className="py-16 bg-primary-950 text-white">
+          <div className="container-padding max-w-6xl mx-auto">
+            <div className="mb-10 text-center">
+              <div className="w-12 h-1 bg-accent-500 rounded-full mx-auto mb-5" />
+              <h2 className="text-3xl md:text-4xl font-bold font-display mb-3">
+                Partner stories
+              </h2>
+              <p className="text-primary-200 max-w-2xl mx-auto">
+                Discover how COIN works with its technology partners through real client case videos.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              {partnersWithVideos.map((partner) => {
+                const videoId = getYoutubeId(partner.videoUrl)
+                if (!videoId) return null
+                const caption = partner.videoCaption
+                  ? getLocalizedField(partner.videoCaption)
+                  : ''
+
+                return (
+                  <div key={partner.id} className="bg-primary-900/50 rounded-2xl overflow-hidden border border-white/10">
+                    <div className="relative aspect-video bg-black">
+                      <iframe
+                        src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0`}
+                        title={`${partner.name} video`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                        className="absolute inset-0 w-full h-full"
+                      />
+                    </div>
+                    <div className="p-6">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Play className="w-4 h-4 text-accent-400" />
+                        <span className="text-xs font-semibold uppercase tracking-wider text-accent-400">
+                          {partner.name}
+                        </span>
+                      </div>
+                      {caption && (
+                        <p className="text-white/80 text-sm leading-relaxed">{caption}</p>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </section>
       )}

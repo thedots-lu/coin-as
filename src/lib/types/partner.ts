@@ -8,6 +8,8 @@ export interface Partner {
   logoUrl: string
   description: LocaleString
   websiteUrl: string | null
+  videoUrl?: string | null
+  videoCaption?: LocaleString | null
   order: number
   published: boolean
   createdAt: Timestamp | Date
