@@ -1,182 +1,128 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import { BookOpen, Video, FileDown } from 'lucide-react'
+import { ArrowRight, BookOpen, FileText, Video, FileDown, Newspaper, HelpCircle } from 'lucide-react'
 import { getPublishedArticles } from '@/lib/firestore/articles'
 import { getPublishedWhitePapers } from '@/lib/firestore/white-papers'
+import { getPublishedNews } from '@/lib/firestore/news'
 import { getCoinYoutubeVideos } from '@/lib/youtube'
 import { getLocalizedField } from '@/lib/locale'
 import { formatDate } from '@/lib/utils/date'
-import Badge from '@/components/ui/Badge'
+import HubBanner from '@/components/knowledge-hub/HubBanner'
+import ArticleCard from '@/components/knowledge-hub/ArticleCard'
 import WhitePaperCard from '@/components/ui/WhitePaperCard'
-import YoutubeVideos from '@/components/sections/YoutubeVideos'
+import type { NewsItem } from '@/lib/types/news'
+import type { YoutubeVideo } from '@/lib/youtube'
 
 export const revalidate = 300
 
 export const metadata: Metadata = {
   title: 'Knowledge Hub',
-  description: 'Resources, vlogs, white papers, and expert insights on business continuity, disaster recovery, and cyber resilience.',
+  description: 'Articles, case studies, videos, white papers and news on business continuity, disaster recovery and cyber resilience.',
   alternates: { canonical: 'https://coin-bc.com/knowledge-hub' },
   openGraph: {
     title: 'Knowledge Hub | COIN AS',
-    description: 'Resources, vlogs, white papers, and expert insights on business continuity, disaster recovery, and cyber resilience.',
+    description: 'Articles, case studies, videos, white papers and news on business continuity, disaster recovery and cyber resilience.',
     url: 'https://coin-bc.com/knowledge-hub',
   },
 }
 
-export default async function KnowledgeHubPage() {
-  const [allArticles, whitePapers, videos] = await Promise.all([
+export default async function KnowledgeHubOverview() {
+  const [allArticles, whitePapers, news, videos] = await Promise.all([
     getPublishedArticles(),
     getPublishedWhitePapers(),
+    getPublishedNews(),
     getCoinYoutubeVideos(),
   ])
 
-  const articles = allArticles.filter((a) => a.category !== 'vlog')
-  const caseStudies = allArticles.filter((a) => a.category === 'case_study')
-  const resources = allArticles.filter((a) => a.category === 'resource')
+  const articles = allArticles.filter((a) => a.category === 'resource').slice(0, 3)
+  const caseStudies = allArticles.filter((a) => a.category === 'case_study').slice(0, 3)
+  const latestVideos = videos.slice(0, 3)
+  const latestPapers = whitePapers.slice(0, 3)
+  const latestNews = news.slice(0, 3)
 
-  const tabs = [
-    { id: 'articles', label: 'Articles', icon: BookOpen, count: articles.length },
-    { id: 'videos', label: 'Videos', icon: Video, count: videos.length },
-    { id: 'white-papers', label: 'White Papers', icon: FileDown, count: whitePapers.length },
+  const quickLinks = [
+    { label: 'Articles', href: '#articles', count: articles.length },
+    { label: 'Case Studies', href: '#case-studies', count: caseStudies.length },
+    { label: 'Videos', href: '#videos', count: latestVideos.length },
+    { label: 'White Papers', href: '#white-papers', count: latestPapers.length },
+    { label: 'News & Events', href: '#news', count: latestNews.length },
+    { label: 'FAQ', href: '/knowledge-hub/faq' },
   ]
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative bg-gradient-to-br from-primary-700 via-primary-800 to-primary-950 text-white py-20">
-        <div className="absolute inset-0 bg-grid opacity-10" />
-        <div className="relative container-padding max-w-6xl mx-auto">
-          <div className="text-center mb-10">
-            <p className="text-accent-400 font-semibold text-sm uppercase tracking-widest mb-3">
-              Resources
-            </p>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Knowledge Hub</h1>
-            <p className="text-lg text-primary-100 max-w-2xl mx-auto">
-              Expert insights, video guides, and downloadable resources on business continuity
-              and cyber resilience.
-            </p>
-          </div>
-
-          {/* Tab navigation */}
-          <div className="flex justify-center gap-2 flex-wrap">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <a
-                  key={tab.id}
-                  href={`#${tab.id}`}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 transition-all text-sm font-medium"
-                >
-                  <Icon className="h-4 w-4" />
-                  {tab.label}
-                  {tab.count > 0 && (
-                    <span className="bg-accent-500 text-white text-xs rounded-full px-1.5 py-0.5 leading-none">
-                      {tab.count}
-                    </span>
-                  )}
-                </a>
-              )
-            })}
-            <Link
-              href="/knowledge-hub/faq"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-accent-500 hover:bg-accent-600 transition-all text-sm font-semibold"
-            >
-              FAQ
-            </Link>
-          </div>
-        </div>
-      </section>
+      <HubBanner title="Knowledge Hub" quickLinks={quickLinks} />
 
       {/* Articles */}
-      <section id="articles" className="py-16 scroll-mt-24">
-        <div className="container-padding max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 mb-8">
-            <BookOpen className="h-6 w-6 text-primary-500" />
-            <h2 className="text-3xl font-bold">Articles & Case Studies</h2>
+      <SectionWrapper id="articles" icon={BookOpen} title="Articles" viewAllHref="/knowledge-hub/articles" bgClass="bg-white">
+        {articles.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {articles.map((a) => <ArticleCard key={a.id} article={a} variant="resource" />)}
           </div>
+        ) : (
+          <EmptyHint message="No articles yet." />
+        )}
+      </SectionWrapper>
 
-          {articles.length > 0 ? (
-            <>
-              {resources.length > 0 && (
-                <>
-                  <h3 className="text-lg font-semibold text-slate-500 mb-5">Resources</h3>
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                    {resources.map((a) => <ArticleCard key={a.id} article={a} />)}
-                  </div>
-                </>
-              )}
-              {caseStudies.length > 0 && (
-                <>
-                  <h3 className="text-lg font-semibold text-slate-500 mb-5">Case Studies</h3>
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {caseStudies.map((a) => <ArticleCard key={a.id} article={a} />)}
-                  </div>
-                </>
-              )}
-            </>
-          ) : (
-            <EmptyState
-              icon={<BookOpen className="h-12 w-12 text-slate-300" />}
-              message="No articles published yet. Check back soon."
-            />
-          )}
-        </div>
-      </section>
+      {/* Case Studies */}
+      <SectionWrapper id="case-studies" icon={FileText} title="Case Studies" viewAllHref="/knowledge-hub/case-studies" bgClass="bg-warm-50">
+        {caseStudies.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {caseStudies.map((a) => <ArticleCard key={a.id} article={a} variant="case_study" />)}
+          </div>
+        ) : (
+          <EmptyHint message="No case studies yet." />
+        )}
+      </SectionWrapper>
 
       {/* Videos */}
-      <section id="videos" className="py-16 bg-warm-50 scroll-mt-24">
-        <div className="container-padding max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 mb-2">
-            <Video className="h-6 w-6 text-coin-red-500" />
-            <h2 className="text-3xl font-bold">Videos</h2>
+      <SectionWrapper id="videos" icon={Video} title="Videos" viewAllHref="/knowledge-hub/videos" bgClass="bg-white">
+        {latestVideos.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {latestVideos.map((v) => <VideoCard key={v.id} video={v} />)}
           </div>
-          <p className="text-secondary-500 mb-8">
-            Video insights from our business continuity experts.
-          </p>
-
-          <YoutubeVideos videos={videos} />
-        </div>
-      </section>
+        ) : (
+          <EmptyHint message="No videos yet." />
+        )}
+      </SectionWrapper>
 
       {/* White Papers */}
-      <section id="white-papers" className="py-16 scroll-mt-24">
-        <div className="container-padding max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 mb-2">
-            <FileDown className="h-6 w-6 text-primary-500" />
-            <h2 className="text-3xl font-bold">White Papers & Guides</h2>
+      <SectionWrapper id="white-papers" icon={FileDown} title="White Papers" viewAllHref="/knowledge-hub/white-papers" bgClass="bg-warm-50">
+        {latestPapers.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {latestPapers.map((wp) => <WhitePaperCard key={wp.id} paper={wp} />)}
           </div>
-          <p className="text-slate-500 mb-8">
-            In-depth guides and white papers. Free to download.
-          </p>
+        ) : (
+          <EmptyHint message="No white papers yet." />
+        )}
+      </SectionWrapper>
 
-          {whitePapers.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {whitePapers.map((wp) => (
-                <WhitePaperCard key={wp.id} paper={wp} />
-              ))}
-            </div>
-          ) : (
-            <EmptyState
-              icon={<FileDown className="h-12 w-12 text-slate-300" />}
-              message="White papers and guides coming soon."
-            />
-          )}
-        </div>
-      </section>
+      {/* News & Events */}
+      <SectionWrapper id="news" icon={Newspaper} title="News & Events" viewAllHref="/news" bgClass="bg-white">
+        {latestNews.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {latestNews.map((n) => <NewsCard key={n.id} news={n} />)}
+          </div>
+        ) : (
+          <EmptyHint message="No news yet." />
+        )}
+      </SectionWrapper>
 
-      {/* CTA */}
-      <section className="py-14 bg-primary-500 text-white">
-        <div className="container-padding text-center">
-          <h2 className="text-2xl font-bold mb-3">Need tailored advice?</h2>
-          <p className="text-primary-100 mb-6 max-w-xl mx-auto">
-            Our experts are available to discuss your specific business continuity challenges.
+      {/* FAQ link */}
+      <section className="py-16 bg-primary-950 text-white">
+        <div className="container-padding max-w-3xl mx-auto text-center">
+          <HelpCircle className="w-12 h-12 mx-auto mb-4 text-accent-400" />
+          <h2 className="text-3xl font-bold font-display mb-3">Got a question?</h2>
+          <p className="text-primary-200 mb-6">
+            Browse our frequently asked questions on business continuity, recovery and compliance.
           </p>
           <Link
-            href="/contact"
-            className="inline-block bg-white text-primary-500 font-semibold px-8 py-3 rounded-lg hover:bg-primary-50 transition-colors"
+            href="/knowledge-hub/faq"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-accent-500 hover:bg-accent-600 text-white font-semibold transition-colors"
           >
-            Contact an expert
+            <span>Visit our FAQ</span>
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </section>
@@ -184,75 +130,107 @@ export default async function KnowledgeHubPage() {
   )
 }
 
-// ─── Shared sub-components ────────────────────────────────────────────────────
+// ─── Sub-components ──────────────────────────────────────────────────────
 
-function ArticleCard({ article }: { article: import('@/lib/types/article').Article }) {
-  const title = getLocalizedField(article.title)
-  const excerpt = getLocalizedField(article.excerpt)
-  const slug = getLocalizedField(article.slug)
-  const categoryLabel = article.category === 'case_study' ? 'Case Study' : 'Resource'
-
+function SectionWrapper({
+  id,
+  icon: Icon,
+  title,
+  viewAllHref,
+  bgClass,
+  children,
+}: {
+  id: string
+  icon: React.ComponentType<{ className?: string }>
+  title: string
+  viewAllHref: string
+  bgClass: string
+  children: React.ReactNode
+}) {
   return (
-    <Link
-      href={`/knowledge-hub/${slug}`}
-      className="group block bg-white rounded-xl border border-slate-100 overflow-hidden hover:shadow-lg transition-shadow duration-300"
-    >
-      {article.imageUrl && (
-        <div className="relative h-48 overflow-hidden">
-          <Image
-            src={article.imageUrl}
-            alt={title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        </div>
-      )}
-      <div className="p-6">
-        <div className="flex items-center gap-2 mb-3">
-          <Badge className="text-xs">{categoryLabel}</Badge>
-          {article.publishedAt && (
-            <span className="text-sm text-slate-500">{formatDate(article.publishedAt)}</span>
-          )}
-        </div>
-        <h3 className="text-lg font-semibold mb-2 group-hover:text-primary-600 transition-colors">
-          {title}
-        </h3>
-        {excerpt && <p className="text-slate-600 text-sm line-clamp-3">{excerpt}</p>}
-        {article.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-4">
-            {article.tags.slice(0, 3).map((tag) => (
-              <Badge key={tag} variant="accent" className="text-xs">{tag}</Badge>
-            ))}
+    <section id={id} className={`py-16 scroll-mt-24 ${bgClass}`}>
+      <div className="container-padding max-w-6xl mx-auto">
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <Icon className="w-6 h-6 text-primary-500" />
+              <h2 className="text-2xl md:text-3xl font-bold text-primary-900 font-display">{title}</h2>
+            </div>
           </div>
-        )}
+          <Link
+            href={viewAllHref}
+            className="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 hover:text-primary-800 transition-colors"
+          >
+            <span>View all</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        {children}
+        <div className="mt-8 sm:hidden">
+          <Link
+            href={viewAllHref}
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600"
+          >
+            <span>View all</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
-    </Link>
+    </section>
   )
 }
 
-function EmptyState({
-  icon,
-  message,
-  cta,
-}: {
-  icon: React.ReactNode
-  message: string
-  cta?: { label: string; href: string }
-}) {
+function EmptyHint({ message }: { message: string }) {
+  return <p className="text-secondary-400 text-sm italic">{message}</p>
+}
+
+function VideoCard({ video }: { video: YoutubeVideo }) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      {icon}
-      <p className="mt-4 text-slate-500 max-w-sm">{message}</p>
-      {cta && (
-        <Link
-          href={cta.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 text-primary-500 font-semibold hover:underline text-sm"
-        >
-          {cta.label}
-        </Link>
+    <a
+      href={video.watchUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group flex flex-col bg-white rounded-2xl border border-secondary-100 overflow-hidden hover:shadow-lg transition-all"
+    >
+      <div className="relative aspect-video bg-black">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={video.thumbnail} alt={video.title} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors" />
+      </div>
+      <div className="p-5">
+        <h3 className="font-bold text-primary-900 leading-snug line-clamp-2 group-hover:text-primary-600 transition-colors">
+          {video.title}
+        </h3>
+      </div>
+    </a>
+  )
+}
+
+function NewsCard({ news }: { news: NewsItem }) {
+  const title = getLocalizedField(news.title)
+  const excerpt = getLocalizedField(news.excerpt)
+  const slug = getLocalizedField(news.slug)
+  return (
+    <Link
+      href={`/news/${slug}`}
+      className="group flex flex-col bg-white rounded-2xl border border-secondary-100 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all"
+    >
+      {news.imageUrl && (
+        <div className="relative aspect-[16/10] overflow-hidden bg-secondary-100">
+          <Image src={news.imageUrl} alt={title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 100vw, 33vw" />
+        </div>
       )}
-    </div>
+      <div className="p-5 flex flex-col flex-1">
+        {news.publishedAt && (
+          <span className="text-xs text-secondary-400 uppercase tracking-wider font-medium mb-2">
+            {formatDate(news.publishedAt)}
+          </span>
+        )}
+        <h3 className="font-bold text-primary-900 font-display leading-snug mb-2 group-hover:text-primary-600 transition-colors line-clamp-2">
+          {title}
+        </h3>
+        {excerpt && <p className="text-secondary-600 text-sm line-clamp-2">{excerpt}</p>}
+      </div>
+    </Link>
   )
 }

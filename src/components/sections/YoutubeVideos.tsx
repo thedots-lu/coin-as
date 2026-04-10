@@ -9,10 +9,13 @@ interface YoutubeVideosProps {
   videos: YoutubeVideo[]
 }
 
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
 function formatDate(iso: string): string {
   if (!iso) return ''
   const d = new Date(iso)
-  return d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short' })
+  if (isNaN(d.getTime())) return ''
+  return `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`
 }
 
 export default function YoutubeVideos({ videos }: YoutubeVideosProps) {

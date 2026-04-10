@@ -95,10 +95,12 @@ function navigationMain() {
         path: '/knowledge-hub',
         order: 2,
         children: [
-          { label: ls('Articles'), path: '/knowledge-hub', order: 0 },
-          { label: ls('News & Events'), path: '/news', order: 1 },
-          { label: ls('Case Studies'), path: '/knowledge-hub?category=case_study', order: 2 },
-          { label: ls('FAQ'), path: '/knowledge-hub/faq', order: 3 },
+          { label: ls('Articles'), path: '/knowledge-hub/articles', order: 0 },
+          { label: ls('Case Studies'), path: '/knowledge-hub/case-studies', order: 1 },
+          { label: ls('Videos'), path: '/knowledge-hub/videos', order: 2 },
+          { label: ls('White Papers'), path: '/knowledge-hub/white-papers', order: 3 },
+          { label: ls('News & Events'), path: '/news', order: 4 },
+          { label: ls('FAQ'), path: '/knowledge-hub/faq', order: 5 },
         ],
       },
       {
@@ -109,10 +111,11 @@ function navigationMain() {
           { label: ls('Our Mission'), path: '/about#mission', order: 0 },
           { label: ls('Our Values'), path: '/about#values', order: 1 },
           { label: ls('Our Experts'), path: '/about#teams', order: 2 },
-          { label: ls('Partners'), path: '/partners', order: 3 },
-          { label: ls('Customers / References'), path: '/about#customers', order: 4 },
+          { label: ls('Our Partners'), path: '/partners', order: 3 },
+          { label: ls('Our Customers'), path: '/about#customers', order: 4 },
           { label: ls('Our Locations'), path: '/about#locations', order: 5 },
-          { label: ls('History'), path: '/about#history', order: 6 },
+          { label: ls('Our History'), path: '/about#history', order: 6 },
+          { label: ls('FAQ'), path: '/knowledge-hub/faq', order: 7 },
         ],
       },
       { label: ls('Contact'), path: '/contact', order: 4, children: null },
@@ -130,10 +133,11 @@ function navigationFooter() {
           { label: ls('Our Mission'), path: '/about#mission' },
           { label: ls('Our Values'), path: '/about#values' },
           { label: ls('Our Experts'), path: '/about#teams' },
-          { label: ls('Partners'), path: '/partners' },
-          { label: ls('Customers / References'), path: '/about#customers' },
-          { label: ls('History'), path: '/about#history' },
-          { label: ls('Locations'), path: '/locations' },
+          { label: ls('Our Partners'), path: '/partners' },
+          { label: ls('Our Customers'), path: '/about#customers' },
+          { label: ls('Our History'), path: '/about#history' },
+          { label: ls('Our Locations'), path: '/locations' },
+          { label: ls('FAQ'), path: '/knowledge-hub/faq' },
         ],
       },
       {
@@ -535,7 +539,7 @@ function pageLocations() {
         type: 'map_overview',
         order: 1,
         body: ls(
-          'COIN offers business continuity services in The Netherlands, Luxembourg and Belgium and is the only business continuity specialist providing consistent level of services across the BeNeLux. The services are delivered at COIN business centers and at customer premises.\n\nCOIN operates 4 resilience centres: 2 redundant shared sites in Luxembourg (Münsbach & Contern), one shared site near Amsterdam Schiphol-Rijk, and a dedicated site near Brussels Airport (Machelen, Belgium).\n\nEach site features a crisis management room, dedicated and shared recovery offices with a range of facility and IT options. All sites are equipped with high-resilient power and IT systems, multiple telecom provider access, and physical/digital security compliant with ISO 27001.',
+          'COIN offers business continuity services in The Netherlands, Luxembourg and Belgium and is the only business continuity specialist providing consistent level of services across the BeNeLux. The services are delivered at COIN business centers and at customer premises.\n\nCOIN operates 4 resilience centres: 2 redundant shared sites in Luxembourg (Munsbach and Contern), one shared site near Amsterdam Schiphol-Rijk, and a dedicated site in Antwerp, Belgium.\n\nEach site features a crisis management room, dedicated and shared recovery offices with a range of facility and IT options. All sites are equipped with high-resilient power and IT systems, multiple telecom provider access, and physical/digital security compliant with ISO 27001.',
         ),
         mapImageUrl: null,
         mapEmbedUrl: 'https://maps.google.com/maps?q=50.5,4.8&t=&z=7&ie=UTF8&iwloc=&output=embed',
@@ -585,50 +589,50 @@ function pageLocations() {
           {
             name: ls('Schiphol-Rijk'),
             country: ls('The Netherlands'),
-            address: 'Tupolevlaan 41, 1119 PA Schiphol-Rijk',
+            address: 'Schiphol-Rijk',
             phone: '+31 88 26 46 000',
             imageUrl: '/images/coin/dedicated-site-meeting-room-screen.webp',
             description: ls(
               'COIN Netherlands headquarters and primary business continuity centre, strategically located near Amsterdam Airport Schiphol. The facility offers dedicated and shared recovery rooms, a crisis management suite, and co-location services for Dutch and international clients.',
             ),
             capacity: ls('Recovery workplaces · Crisis management rooms · Co-location'),
-            mapUrl: 'https://maps.google.com/?q=Tupolevlaan+41,+1119+PA+Schiphol-Rijk,+Netherlands',
+            mapUrl: 'https://maps.google.com/?q=Schiphol-Rijk,+Netherlands',
           },
           {
-            name: ls('Münsbach'),
+            name: ls('Munsbach'),
             country: ls('Luxembourg'),
-            address: '6B rue Gabriel Lippmann, L-5365 Münsbach',
+            address: 'Munsbach',
             phone: '+352 357 05 30',
             imageUrl: '/images/coin/coin-luxembourg-munsbach-reception-area-2.webp',
             description: ls(
-              'COIN\'s primary Luxembourg facility, a TIER-3 certified data centre and business continuity centre with 500 recovery workplaces and 30 parking spaces. Co-location infrastructure is powered in partnership with LuxConnect. The site serves Luxembourg\'s financial sector and CSSF-regulated organisations.',
+              "COIN's primary Luxembourg facility, a TIER-3 certified data centre and business continuity centre with 500 recovery workplaces. Co-location infrastructure is powered in partnership with LuxConnect. The site serves Luxembourg's financial sector and CSSF-regulated organisations.",
             ),
-            capacity: ls('500 recovery workplaces · 30 parking · TIER-3 · ISO 27001'),
-            mapUrl: 'https://maps.google.com/?q=6B+rue+Gabriel+Lippmann,+L-5365+Munsbach,+Luxembourg',
+            capacity: ls('500 recovery workplaces · TIER-3 · ISO 27001'),
+            mapUrl: 'https://maps.google.com/?q=Munsbach,+Luxembourg',
           },
           {
             name: ls('Contern'),
             country: ls('Luxembourg'),
-            address: 'Zone Industrielle Contern, Luxembourg',
+            address: 'Contern',
             phone: '+352 357 05 30',
             imageUrl: '/images/coin/coin-luxembourg-contern-disaster-recovery-office-reception-area.webp',
             description: ls(
-              'COIN\'s second Luxembourg site, located in Contern approximately 10 minutes from Münsbach. The facility provides 250 recovery workplaces and 20 parking spaces, offering geographic redundancy for organisations requiring dual-site recovery arrangements within Luxembourg.',
+              "COIN's second Luxembourg site, located in Contern approximately 10 minutes from Munsbach. The facility provides 250 recovery workplaces, offering geographic redundancy for organisations requiring dual-site recovery arrangements within Luxembourg.",
             ),
-            capacity: ls('250 recovery workplaces · 20 parking · 10 min from Münsbach'),
-            mapUrl: 'https://maps.google.com/?q=Zone+Industrielle+Contern,+Luxembourg',
+            capacity: ls('250 recovery workplaces · 10 min from Munsbach'),
+            mapUrl: 'https://maps.google.com/?q=Contern,+Luxembourg',
           },
           {
-            name: ls('Machelen'),
+            name: ls('Antwerp'),
             country: ls('Belgium'),
-            address: 'De Kleetlaan 12B, 1831 Machelen',
+            address: 'Antwerp',
             phone: '+32 2 513 36 18',
             imageUrl: '/images/coin/coin-luxembourg-contern-disaster-recovery-office-big.webp',
             description: ls(
-              'COIN\'s dedicated business continuity centre in Belgium, strategically located near Brussels Airport (Machelen). The facility serves Belgian organisations requiring a dedicated recovery environment, providing exclusive workplaces and crisis management facilities to clients in the Brussels region.',
+              "COIN's dedicated business continuity centre in Belgium, located in Antwerp. The facility serves Belgian organisations requiring a dedicated recovery environment, providing exclusive workplaces and crisis management facilities.",
             ),
-            capacity: ls('Dedicated recovery workplaces · Crisis management · Near Brussels Airport'),
-            mapUrl: 'https://maps.google.com/?q=De+Kleetlaan+12B,+1831+Machelen,+Belgium',
+            capacity: ls('Dedicated recovery workplaces · Crisis management'),
+            mapUrl: 'https://maps.google.com/?q=Antwerp,+Belgium',
           },
         ],
       },
@@ -1116,6 +1120,14 @@ function servicesData() {
               ),
             },
           ],
+        },
+        {
+          type: 'rich_text',
+          order: 1,
+          heading: ls('Standard workplace equipment'),
+          body: ls(
+            "Every recovery workplace at COIN comes fully equipped and ready to use the moment you invoke. No surprises, no delays.\n\n**Workstation setup**\n\n- Desk, chair and personal cupboard\n- Desktop computer (or bring your own laptop)\n- Dual 24-inch screens\n- Individual IP phone\n- One multifunction printer for every 10 users\n- One shredder per area\n\n**Common areas (included at no additional cost)**\n\n- Meeting rooms\n- Reception desk\n- Rest areas and lunch areas\n- Internet and Wi-Fi access\n- Reserved parking (30 spaces in Munsbach, 20 spaces in Contern)\n- Restaurant on site (dish of the day, lunch pass included)\n\n**Security and access**\n\n- 30 segregated installed areas, ranging from 6 to 76 workplaces\n- All areas secured by individual badge and PIN code\n- Full access logs recorded\n- Video recording on every site\n\n**The numbers**\n\nCOIN operates over 1,000 recovery workplaces across 4 resilience centres in the BeNeLux, including 750 seats in Luxembourg alone (500 in Munsbach, 250 in Contern)."
+          ),
         },
       ],
     },
@@ -1749,6 +1761,67 @@ Our business continuity and crisis management center are the ideal location to p
       published: true,
       publishedAt: new Date('2025-03-15'),
       imageUrl: '/images/coin/coin-fotosharonwillems-36.webp',
+    },
+    {
+      title: ls('Customer success: Relocation of a Disaster Recovery Site in 3 months'),
+      slug: { en: 'relocation-disaster-recovery-site', fr: '', nl: '' },
+      category: 'case_study' as const,
+      excerpt: ls('A regulated customer was required by the regulator to relocate its disaster recovery site further away from its main operation and control room. COIN found and built a new highly resilient site in 3 months.'),
+      content: ls(`## The customer challenge
+
+The regulatory authority required our customer to relocate its disaster recovery site further away from its main operation and control room. The deadline was tight, the requirements were strict, and any disruption to the existing operations was out of the question.
+
+## The COIN solution
+
+Find and build, in 3 months, a new highly resilient and secured site.
+
+### Site selection
+
+- Easily reachable and conveniently situated
+- At the right distance, out of the disaster prone zones (flooding, electricity grid loops, demonstrations, terrorist or war targets)
+- High availability and redundant infrastructure: multiple road access, power generator, dual power lines
+
+### Access and security
+
+- Autonomous but highly secured access control
+- Capacity to allow entry of 50 persons in 10 minutes
+- Individual badging, full audit logs
+
+### Crisis management facilities
+
+- Dedicated, fully equipped room for crisis management meetings
+- Separated manager room for executive coordination
+
+### Workplaces for 24x7 operations
+
+- High availability workplaces designed for 24x7 operations in 3 shifts
+- Sit-stand desks, ergonomic chairs, rest area, lunch area, kitchen
+- Thin clients, dual screens, phones, dealing turrets, printers, video conferencing systems
+- LAN and WiFi throughout
+
+### Resilient infrastructure
+
+- Redundant Internet, LAN, cabling and UPS
+- 1 power circuit per desk
+- 3 UTP cables per desk
+- Ready in 1 hour, with 24x7 remote and onsite support in case of contingency
+
+## Compliance with regulatory requirements
+
+- Health and safety, fire prevention, full site certification
+- Documentation of site guides, access procedures and contingency plan
+- Testing and evidence of compliance with technical specifications and regulation
+- Monthly testing of infrastructure
+- Bi-annual disaster recovery exercise
+
+## The result
+
+A fully operational, regulator-compliant disaster recovery site delivered in 3 months. The customer met the regulatory deadline without disrupting its main operations, and now operates from a more resilient infrastructure than before the move.`),
+      author: 'COIN AS',
+      tags: ['case-study', 'disaster-recovery', 'regulatory', 'dedicated-site'],
+      published: true,
+      publishedAt: new Date('2025-06-10'),
+      imageUrl: '/images/coin/coin-luxembourg-contern-disaster-recovery-office-big.webp',
     },
   ];
 

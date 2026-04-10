@@ -1,6 +1,5 @@
 import { Phone, Mail, MapPin, ArrowRight, Building2 } from 'lucide-react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { getLocalizedField } from '@/lib/locale'
 import { ContactInfoSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
@@ -15,21 +14,18 @@ const offices = [
     country: 'Netherlands',
     city: 'Schiphol-Rijk',
     phone: '+31 88 26 46 000',
-    address: 'Tupolevlaan 41, 1119 PA Schiphol-Rijk',
     color: 'bg-primary-500',
   },
   {
     country: 'Luxembourg',
     city: 'Munsbach',
     phone: '+352 357 05 30',
-    address: '6B rue Gabriel Lippmann, L-5365 Munsbach',
     color: 'bg-coin-red-500',
   },
   {
     country: 'Belgium',
-    city: 'Machelen',
+    city: 'Antwerp',
     phone: '+32 2 513 36 18',
-    address: 'De Kleetlaan 12B, 1831 Machelen',
     color: 'bg-accent-500',
   },
 ]
@@ -40,25 +36,16 @@ export default function ContactInfo({ section, locale }: ContactInfoProps) {
 
   return (
     <section className="relative overflow-hidden">
-      {/* Dark hero strip with photo */}
-      <div className="relative bg-primary-950 text-white">
-        <Image
-          src="/images/coin/coin-fotosharonwillems-60.webp"
-          alt="COIN team in discussion"
-          fill
-          className="object-cover opacity-20"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-950/95 via-primary-950/80 to-primary-950/60" />
-
-        <div className="container-padding relative z-10 py-20 md:py-28">
-          <div className="max-w-3xl">
-            <div className="w-12 h-1 bg-accent-500 mb-6 rounded-full" />
-            <h1 className="text-4xl md:text-5xl font-bold font-display tracking-tight mb-4">
+      {/* Minimal banner */}
+      <div className="bg-warm-50 border-b border-secondary-100">
+        <div className="container-padding py-10 md:py-12">
+          <div className="max-w-6xl mx-auto">
+            <div className="w-12 h-1 bg-accent-500 rounded-full mb-4" />
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-900 font-display tracking-tight">
               {heading || 'Contact us'}
             </h1>
             {subtitle && (
-              <p className="text-primary-200 text-lg md:text-xl leading-relaxed">
+              <p className="text-secondary-600 text-base md:text-lg mt-3 max-w-2xl">
                 {subtitle}
               </p>
             )}
@@ -66,8 +53,8 @@ export default function ContactInfo({ section, locale }: ContactInfoProps) {
         </div>
       </div>
 
-      {/* Office cards — overlapping the hero */}
-      <div className="container-padding -mt-8 relative z-20 pb-12">
+      {/* Office cards */}
+      <div className="container-padding pt-10 pb-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
           {offices.map((office) => (
             <a
@@ -86,16 +73,11 @@ export default function ContactInfo({ section, locale }: ContactInfoProps) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-primary-500 shrink-0" />
                 <span className="text-secondary-800 font-semibold group-hover:text-primary-600 transition-colors">
                   {office.phone}
                 </span>
-              </div>
-
-              <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-secondary-300 shrink-0 mt-0.5" />
-                <span className="text-sm text-secondary-500 leading-snug">{office.address}</span>
               </div>
             </a>
           ))}

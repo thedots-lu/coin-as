@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import FAQAccordion from '@/components/sections/FAQAccordion'
+import HubBanner from '@/components/knowledge-hub/HubBanner'
 import { LocaleString } from '@/lib/types/locale'
 
 export const revalidate = 300
@@ -97,25 +98,16 @@ const faqItems = [
 export default function FAQPage() {
   return (
     <>
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary-600 via-primary-700 to-secondary-800 text-white py-20">
-        <div className="absolute inset-0 bg-[url('/images/grid-pattern.svg')] opacity-10" />
-        <div className="relative container-padding max-w-6xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">Frequently Asked Questions</h1>
-          <p className="text-lg text-primary-100 max-w-2xl mx-auto">
-            Find answers to common questions about business continuity, regulations, and our services.
-          </p>
-        </div>
-      </section>
+      <HubBanner title="Frequently Asked Questions" backToHub />
 
       {/* FAQ Accordion */}
       <FAQAccordion items={faqItems} locale="en" />
 
       {/* CTA */}
-      <section className="py-16 bg-slate-50">
+      <section className="py-16 bg-warm-50">
         <div className="container-padding max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-4">Still have questions?</h2>
-          <p className="text-slate-600 mb-6">
+          <h2 className="text-2xl font-bold mb-4 text-primary-900 font-display">Still have questions?</h2>
+          <p className="text-secondary-600 mb-6">
             Our team of experts is ready to help you with your business continuity needs.
           </p>
           <a
