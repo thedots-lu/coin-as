@@ -6,6 +6,7 @@ import { getArticleBySlug } from '@/lib/firestore/articles'
 import { getLocalizedField } from '@/lib/locale'
 import { formatDate } from '@/lib/utils/date'
 import Badge from '@/components/ui/Badge'
+import Markdown from 'react-markdown'
 
 export const revalidate = 300
 
@@ -86,8 +87,8 @@ export default async function ArticleDetailPage({ params }: PageProps) {
             </div>
           )}
 
-          <div className="prose prose-lg max-w-none" style={{ whiteSpace: 'pre-line' }}>
-            {content}
+          <div className="prose prose-lg max-w-none text-secondary-700 prose-headings:text-primary-900 prose-headings:font-display prose-strong:text-secondary-800 prose-li:marker:text-accent-500">
+            <Markdown>{content}</Markdown>
           </div>
 
           {article.tags.length > 0 && (

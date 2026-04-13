@@ -115,7 +115,6 @@ function navigationMain() {
           { label: ls('Our Customers'), path: '/about#customers', order: 4 },
           { label: ls('Our Locations'), path: '/about#locations', order: 5 },
           { label: ls('Our History'), path: '/about#history', order: 6 },
-          { label: ls('FAQ'), path: '/knowledge-hub/faq', order: 7 },
         ],
       },
       { label: ls('Contact'), path: '/contact', order: 4, children: null },
