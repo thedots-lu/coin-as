@@ -25,7 +25,7 @@ const offices = [
   {
     country: 'Belgium',
     city: 'Antwerp',
-    phone: '+32 2 513 36 18',
+    phone: '',
     color: 'bg-accent-500',
   },
 ]
@@ -56,31 +56,39 @@ export default function ContactInfo({ section, locale }: ContactInfoProps) {
       {/* Office cards */}
       <div className="container-padding pt-10 pb-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
-          {offices.map((office) => (
-            <a
-              key={office.city}
-              href={`tel:${office.phone.replace(/\s/g, '')}`}
-              className="group bg-white rounded-2xl p-6 shadow-lg border border-secondary-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-            >
-              {/* Color accent top bar */}
-              <div className={`w-10 h-1 ${office.color} rounded-full mb-5`} />
+          {offices.map((office) => {
+            const Wrapper = office.phone ? 'a' : 'div'
+            const wrapperProps = office.phone
+              ? { href: `tel:${office.phone.replace(/\s/g, '')}` }
+              : {}
+            return (
+              <Wrapper
+                key={office.city}
+                {...wrapperProps}
+                className="group bg-white rounded-2xl p-6 shadow-lg border border-secondary-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+              >
+                {/* Color accent top bar */}
+                <div className={`w-10 h-1 ${office.color} rounded-full mb-5`} />
 
-              <div className="flex items-center gap-3 mb-4">
-                <Building2 className="w-5 h-5 text-secondary-400" />
-                <div>
-                  <p className="font-bold text-primary-900 text-lg font-display">{office.city}</p>
-                  <p className="text-xs uppercase tracking-wider text-secondary-400 font-medium">{office.country}</p>
+                <div className="flex items-center gap-3 mb-4">
+                  <Building2 className="w-5 h-5 text-secondary-400" />
+                  <div>
+                    <p className="font-bold text-primary-900 text-lg font-display">{office.city}</p>
+                    <p className="text-xs uppercase tracking-wider text-secondary-400 font-medium">{office.country}</p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-primary-500 shrink-0" />
-                <span className="text-secondary-800 font-semibold group-hover:text-primary-600 transition-colors">
-                  {office.phone}
-                </span>
-              </div>
-            </a>
-          ))}
+                {office.phone && (
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-primary-500 shrink-0" />
+                    <span className="text-secondary-800 font-semibold group-hover:text-primary-600 transition-colors">
+                      {office.phone}
+                    </span>
+                  </div>
+                )}
+              </Wrapper>
+            )
+          })}
         </div>
 
         {/* Email + Map row */}

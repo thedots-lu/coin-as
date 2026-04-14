@@ -1,182 +1,218 @@
-'use client'
-
-import { getLocalizedField } from '@/lib/locale'
 import { ServicePillarsSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
-import AnimatedSection from '@/components/ui/AnimatedSection'
 import Link from 'next/link'
-import Image from 'next/image'
-import { ArrowRight, BookOpen, Building2, ShieldCheck } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 // ---------------------------------------------------------------------------
-// Service directory — 3 columns matching COIN's service categories
+// Block 1 — ASSESS / PREVENT / RESPOND
 // ---------------------------------------------------------------------------
-const SERVICE_COLUMNS = [
+const STEPS = [
   {
-    title: 'Consulting & Training',
-    Icon: BookOpen,
-    color: 'var(--color-primary-500)',
-    colorRgb: '0, 71, 121',
-    image: '/images/coin/coin-fotosharonwillems-51.webp',
-    imageAlt: 'COIN AS team collaborating around a table, overhead view',
-    services: [
-      { name: 'BCP & BIA', href: '/services/business-continuity' },
-      { name: 'DRP Audit', href: '/services/crisis-management' },
-      { name: 'NIS2 & DORA Compliance', href: '/services/nis2-dora' },
-      { name: 'Consultancy', href: '/services/consultancy' },
-      { name: 'Training & Exercises', href: '/services/training' },
-    ],
+    number: '01',
+    name: 'ASSESS',
+    subtitle: 'Identify your risks and critical vulnerabilities',
+    description:
+      'We analyse your business processes, infrastructure and exposure to ensure the right continuity strategy.',
   },
   {
-    title: 'Business Continuity Centres',
-    Icon: Building2,
-    color: 'var(--color-coin-red-500)',
-    colorRgb: '165, 18, 24',
-    image: '/images/coin/coin-luxembourg-contern-shared-room.webp',
-    imageAlt: 'COIN AS reception and facilities at Contern',
-    services: [
-      { name: 'Crisis Management Facilities', href: '/services/crisis-management' },
-      { name: 'Recovery Workplaces', href: '/services/recovery-workplaces' },
-      { name: 'Satellite Offices', href: '/services/satellite-offices' },
-      { name: 'Virtual Workplaces', href: '/services/virtual-workplaces' },
-      { name: 'Co-location Services', href: '/services/co-location' },
-    ],
+    number: '02',
+    name: 'PREVENT',
+    subtitle: 'Protect your operations before disruption occurs',
+    description:
+      'From cybersecurity to data protection, we secure your environment and reduce the likelihood of incidents.',
   },
   {
-    title: 'Cyberresilience Solutions',
-    Icon: ShieldCheck,
-    color: 'var(--color-accent-500)',
-    colorRgb: '0, 153, 0',
-    image: '/images/coin/co-location-area-munsbach.webp',
-    imageAlt: 'COIN AS server room infrastructure in Münsbach',
-    services: [
-      { name: 'Secure COIN Key (BYOD)', href: '/services/cyber-resilience' },
-      { name: 'Emergency Laptop Storage', href: '/services/cyber-resilience' },
-      { name: 'Immutable Backup', href: '/services/cyber-resilience' },
-      { name: 'Bulk Re-provisioning', href: '/services/cyber-resilience' },
-    ],
+    number: '03',
+    name: 'RESPOND',
+    subtitle: 'Stay operational when disruption happens',
+    description:
+      'We provide secure environments, recovery solutions and crisis support to keep your business running.',
   },
 ]
 
+// ---------------------------------------------------------------------------
+// Block 2 — Value propositions for non-expert visitors
+// ---------------------------------------------------------------------------
+const VALUE_PROPS = [
+  {
+    title: 'Business Continuity',
+    description:
+      'Keep your operations running and minimise disruption from unexpected events',
+  },
+  {
+    title: 'Cyber Resilience',
+    description:
+      'Prevent, withstand and recover from cyber incidents and ransomware attacks',
+  },
+  {
+    title: 'Regulatory Compliance',
+    description:
+      'Meet evolving regulatory requirements with the right tools, processes and safeguards',
+  },
+]
+
+// ---------------------------------------------------------------------------
+// Block 3 — Solutions for expert visitors
+// ---------------------------------------------------------------------------
+const SOLUTIONS = [
+  {
+    title: 'Consultancy & Training',
+    description:
+      'Assess risks, define strategies and train your teams across the full continuity lifecycle',
+    href: '/services/consultancy-and-training',
+  },
+  {
+    title: 'Recovery Workplaces',
+    description:
+      'Access fully equipped offices to resume operations within hours after disruption',
+    href: '/services/recovery-workplaces',
+  },
+  {
+    title: 'Crisis Management',
+    description:
+      'Prepare for and manage critical situations with dedicated facilities and expert support',
+    href: '/services/crisis-management',
+  },
+  {
+    title: 'IT Housing',
+    description:
+      'Secure and resilient infrastructure hosting in Luxembourg with high availability and redundancy',
+    href: '/services/it-housing',
+  },
+  {
+    title: 'Cyber Resilience',
+    description:
+      'Prevent, detect and respond to cyber threats with advanced protection and recovery solutions',
+    href: '/services/cyberresilience',
+  },
+]
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
 interface ServicePillarsProps {
   section: ServicePillarsSection
   locale: Locale
 }
 
 export default function ServicePillars({ section, locale }: ServicePillarsProps) {
-  const heading = getLocalizedField(section.heading, locale)
-  const subtitle = getLocalizedField(section.subtitle, locale)
-
   return (
-    <section className="py-20 bg-white">
-      <div className="container-padding">
-        {/* Top: heading + intro with photo */}
-        <AnimatedSection animation="slideUp" className="mb-16">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            <div className="lg:col-span-7">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-8 h-[2px] bg-primary-500 rounded-full" />
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary-400">
-                  Our Services
-                </span>
-              </div>
-              <h2 className="text-2xl md:text-3xl lg:text-[2rem] font-bold text-secondary-800 mb-4 leading-tight">
-                {heading}
-              </h2>
-              {subtitle && (
-                <p className="text-base text-secondary-500 leading-relaxed max-w-2xl">
-                  {subtitle}
-                </p>
-              )}
-            </div>
-            <div className="lg:col-span-5 flex items-center justify-center">
-              <div className="relative w-48 h-48 lg:w-56 lg:h-56">
-                <Image
-                  src="/images/coin/handshield.png"
-                  alt="COIN AS business partnership"
-                  fill
-                  className="object-contain"
-                  sizes="224px"
-                />
-              </div>
-            </div>
+    <>
+      {/* ================================================================= */}
+      {/* BLOCK 1 — How we ensure your business continuity                  */}
+      {/* ================================================================= */}
+      <section className="py-20 bg-warm-50">
+        <div className="container-padding">
+          {/* Heading */}
+          <div className="mb-14 max-w-3xl">
+            <div className="w-12 h-1 bg-accent-500 mb-6" />
+            <h2 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold text-primary-900 leading-tight">
+              How we ensure your business continuity
+            </h2>
           </div>
-        </AnimatedSection>
 
-        {/* 3-column service directory */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-          {SERVICE_COLUMNS.map((col, colIdx) => {
-            const Icon = col.Icon
-            return (
-              <AnimatedSection
-                key={col.title}
-                animation="slideUp"
-                delay={colIdx * 0.1}
-              >
-                <div className="group">
-                  {/* Photo banner */}
-                  <div className="relative h-44 rounded-xl overflow-hidden mb-5">
-                    <Image
-                      src={col.image}
-                      alt={col.imageAlt}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
-                    {/* Color overlay */}
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background: `linear-gradient(to top, rgba(${col.colorRgb}, 0.7) 0%, rgba(${col.colorRgb}, 0.2) 60%, transparent 100%)`,
-                      }}
-                    />
-                    {/* Icon + title on photo */}
-                    <div className="absolute bottom-0 inset-x-0 p-4 flex items-center gap-2.5">
-                      <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-white/20 backdrop-blur-sm">
-                        <Icon className="w-4.5 h-4.5 text-white" />
-                      </div>
-                      <h3 className="text-base font-bold text-white leading-tight">
-                        {col.title}
-                      </h3>
-                    </div>
-                  </div>
-
-                  {/* Service links */}
-                  <ul className="space-y-1">
-                    {col.services.map((service) => (
-                      <li key={service.name}>
-                        <Link
-                          href={service.href}
-                          className="group/link flex items-center gap-2 py-2.5 px-1 -mx-1 rounded-md text-secondary-600 hover:text-primary-600 hover:bg-primary-50/50 transition-colors duration-200"
-                        >
-                          <ArrowRight
-                            className="w-3.5 h-3.5 opacity-0 -translate-x-2 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all duration-200 flex-shrink-0"
-                            style={{ color: col.color }}
-                          />
-                          <span className="text-[15px] leading-snug group-hover/link:translate-x-1 transition-transform duration-200">
-                            {service.name}
-                          </span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </AnimatedSection>
-            )
-          })}
+          {/* 3 step cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+            {STEPS.map((step) => (
+              <div key={step.number} className="flex flex-col">
+                <span className="font-display text-5xl font-bold text-accent-500 mb-4">
+                  {step.number}
+                </span>
+                <h3 className="text-lg font-bold uppercase tracking-wide text-primary-900 mb-2">
+                  {step.name}
+                </h3>
+                <p className="text-sm font-semibold text-secondary-700 mb-3">
+                  {step.subtitle}
+                </p>
+                <p className="text-sm text-secondary-600 leading-relaxed">
+                  {step.description}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
+      </section>
 
-        {/* Bottom CTA */}
-        <AnimatedSection animation="slideUp" delay={0.3} className="mt-14 text-center">
-          <Link
-            href="/services"
-            className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-primary-600 hover:text-primary-800 transition-colors group"
-          >
-            View all services
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </AnimatedSection>
-      </div>
-    </section>
+      {/* ================================================================= */}
+      {/* BLOCK 2 — Protect what matters most                               */}
+      {/* ================================================================= */}
+      <section className="py-20 bg-white">
+        <div className="container-padding">
+          {/* Heading */}
+          <div className="mb-14 max-w-3xl">
+            <div className="w-12 h-1 bg-accent-500 mb-6" />
+            <h2 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold text-primary-900 leading-tight mb-4">
+              Protect what matters most
+            </h2>
+            <p className="text-base text-secondary-500 mb-2">
+              Not sure where to start? We've got you covered.
+            </p>
+            <p className="text-base font-semibold text-secondary-700">
+              COIN AS helps you strengthen what matters most:
+            </p>
+          </div>
+
+          {/* 3 value propositions */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+            {VALUE_PROPS.map((item) => (
+              <div key={item.title} className="flex flex-col">
+                <div className="w-10 h-1 bg-accent-500 mb-5" />
+                <h3 className="text-lg font-bold text-primary-900 mb-3">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-secondary-600 leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================= */}
+      {/* BLOCK 3 — Our solutions                                           */}
+      {/* ================================================================= */}
+      <section className="py-20 bg-warm-50">
+        <div className="container-padding">
+          {/* Heading */}
+          <div className="mb-14 max-w-3xl">
+            <div className="w-12 h-1 bg-accent-500 mb-6" />
+            <h2 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold text-primary-900 leading-tight mb-4">
+              Our solutions
+            </h2>
+            <p className="text-base text-secondary-500 mb-2">
+              Looking for specific solutions?
+            </p>
+            <p className="text-base text-secondary-600 leading-relaxed">
+              Explore our full range of business continuity and cyber resilience services
+            </p>
+          </div>
+
+          {/* 5 solution links */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {SOLUTIONS.map((solution) => (
+              <Link
+                key={solution.href}
+                href={solution.href}
+                className="group flex flex-col justify-between rounded-xl border border-secondary-200 bg-white p-6 transition-all duration-200 hover:shadow-lg hover:border-accent-500/40"
+              >
+                <div>
+                  <h3 className="text-base font-bold text-primary-900 mb-2 group-hover:text-accent-600 transition-colors">
+                    {solution.title}
+                  </h3>
+                  <p className="text-sm text-secondary-600 leading-relaxed mb-4">
+                    {solution.description}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1.5 text-sm font-semibold text-accent-600">
+                  <span>Learn more</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   )
 }

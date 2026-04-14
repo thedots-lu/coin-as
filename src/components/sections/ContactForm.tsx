@@ -325,10 +325,6 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
                     <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">LU</span>
                     <span className="font-semibold">+352 357 05 30</span>
                   </a>
-                  <a href="tel:+3225133618" className="flex items-center gap-3 text-white hover:text-accent-400 transition-colors">
-                    <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">BE</span>
-                    <span className="font-semibold">+32 2 513 36 18</span>
-                  </a>
                 </div>
 
                 <div className="mt-6 pt-6 border-t border-white/10">

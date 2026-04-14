@@ -313,7 +313,7 @@ function pageHome() {
         order: 5,
         heading: ls('Your business continuity is our mission'),
         body: ls(
-          "COIN teams know exactly what it means for customers with critical operations to be stricken by disrupting events such as loss of telecom line, power cuts, ransomware or pandemics. Our experts will be your first line of defence to prevent unforeseen events to disrupt your business and they are committed to be your last line of defence when you'll need to resort to contingency measures and call upon COIN's business continuity services.",
+          'COIN teams understand the impact of disruptive events on organisations with critical operations, from telecom failures and power cuts to ransomware or pandemics.\n\nOur experts are your first line of defence to prevent disruption, and your last line of defence when you need to rely on contingency measures and business continuity solutions.',
         ),
         imageUrl: '/images/coin/coin-fotosharonwillems-51.webp',
       },
@@ -625,7 +625,7 @@ function pageLocations() {
             name: ls('Antwerp'),
             country: ls('Belgium'),
             address: 'Antwerp',
-            phone: '+32 2 513 36 18',
+            phone: '',
             imageUrl: '/images/coin/coin-luxembourg-contern-disaster-recovery-office-big.webp',
             description: ls(
               "COIN's dedicated business continuity centre in Belgium, located in Antwerp. The facility serves Belgian organisations requiring a dedicated recovery environment, providing exclusive workplaces and crisis management facilities.",

@@ -22,8 +22,8 @@ const SITES = [
   {
     city: 'Antwerp',
     country: 'Belgium',
-    phone: '+32 2 513 36 18',
-    detail: 'Dedicated recovery workplaces',
+    phone: '',
+    detail: 'Dedicated site',
     color: '#009900',
   },
   {
@@ -100,13 +100,15 @@ export default function MapOverview({ section, locale }: MapOverviewProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <a
-                    href={`tel:${site.phone.replace(/\s/g, '')}`}
-                    className="flex items-center gap-2 text-sm text-secondary-700 font-semibold hover:text-primary-600 transition-colors"
-                  >
-                    <Phone className="w-3.5 h-3.5 shrink-0 text-secondary-400" />
-                    <span>{site.phone}</span>
-                  </a>
+                  {site.phone && (
+                    <a
+                      href={`tel:${site.phone.replace(/\s/g, '')}`}
+                      className="flex items-center gap-2 text-sm text-secondary-700 font-semibold hover:text-primary-600 transition-colors"
+                    >
+                      <Phone className="w-3.5 h-3.5 shrink-0 text-secondary-400" />
+                      <span>{site.phone}</span>
+                    </a>
+                  )}
                   <p className="text-xs text-secondary-500 italic pt-1">{site.detail}</p>
                 </div>
               </div>

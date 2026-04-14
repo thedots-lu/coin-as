@@ -15,6 +15,14 @@ import CircularText from '@/components/reactbits/CircularText'
 // ---------------------------------------------------------------------------
 const SLIDES = [
   {
+    src: '/images/coin/coin-fotosharonwillems-60.webp',
+    alt: 'COIN AS team collaborating on business continuity',
+    label: '20 Years of Innovation',
+    title: '20 years of Business Continuity innovation. BeNeLux market leader.',
+    bullets: null,
+    description: "COIN has over 20 years of experience in business continuity. Yet, each year brings its share of new risks as well as technological challenges and opportunities. Together with our partners, we continuously develop innovative and robust solutions that improve the resiliency of our customers in an increasingly complex business and regulatory environment.",
+  },
+  {
     src: '/images/coin/coin-luxembourg-contern-disaster-recovery-office-big.webp',
     alt: 'COIN AS dedicated recovery site at Contern',
     label: 'Dedicated Site',
@@ -25,6 +33,7 @@ const SLIDES = [
       'We ensure site and procedures are documented and tested',
       'We operate and maintain the site and assist in case of disaster, 24x7',
     ],
+    description: null,
   },
   {
     src: '/images/coin/coin-fotosharonwillems-16.webp',
@@ -38,6 +47,7 @@ const SLIDES = [
       'Service also available for organisations with their own disaster site',
       'Insightful learnings and better preparation for real disasters',
     ],
+    description: null,
   },
   {
     src: '/images/coin/coin-fotosharonwillems-36.webp',
@@ -49,6 +59,7 @@ const SLIDES = [
       'Personalised compliance roadmap and priority actions',
       'Expert review of your ICT risk management and incident response',
     ],
+    description: null,
   },
 ]
 
@@ -121,15 +132,21 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
                   {current.title}
                 </h1>
 
-                {/* Bullet points */}
-                <ul className="text-primary-200 mb-6 text-[13px] md:text-sm max-w-lg space-y-1.5">
-                  {current.bullets.map((point, i) => (
-                    <li key={i} className="flex items-start gap-2 leading-snug">
-                      <span className="shrink-0 mt-[7px] w-1 h-1 rounded-full bg-accent-500" />
-                      <span>{point}</span>
-                    </li>
-                  ))}
-                </ul>
+                {/* Content: bullets or description paragraph */}
+                {current.bullets ? (
+                  <ul className="text-primary-200 mb-6 text-[13px] md:text-sm max-w-lg space-y-1.5">
+                    {current.bullets.map((point, i) => (
+                      <li key={i} className="flex items-start gap-2 leading-snug">
+                        <span className="shrink-0 mt-[7px] w-1 h-1 rounded-full bg-accent-500" />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : current.description ? (
+                  <p className="text-primary-200 leading-relaxed mb-6 text-sm md:text-base max-w-lg">
+                    {current.description}
+                  </p>
+                ) : null}
 
                 {/* CTA buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">
@@ -146,7 +163,7 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
                     <Button
                       href={section.secondaryButtonLink}
                       variant="outline"
-                      className="text-base px-7 py-3.5 border-white/30 text-white hover:bg-white hover:text-primary-800"
+                      className="text-base px-7 py-3.5 border-white/30 text-white hover:shadow-lg hover:shadow-white/10 hover:border-white/60"
                     >
                       {secondaryBtnText}
                     </Button>
@@ -231,28 +248,6 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
           </div>
         )}
 
-        {/* Tab cards (desktop) */}
-        <div className="hidden md:grid grid-cols-3 gap-4 mt-6">
-          {SLIDES.map((slide, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => setActive(i)}
-              className={`text-left p-4 rounded-xl border-2 transition-all duration-200 ${
-                i === active
-                  ? 'border-primary-500 bg-primary-50'
-                  : 'border-transparent bg-secondary-50 hover:border-secondary-200'
-              }`}
-            >
-              <span className="block text-xs font-bold uppercase tracking-wider text-accent-600 mb-1">
-                {slide.label}
-              </span>
-              <span className={`font-semibold text-sm ${i === active ? 'text-primary-600' : 'text-secondary-600'}`}>
-                {slide.title}
-              </span>
-            </button>
-          ))}
-        </div>
       </div>
     </section>
   )
