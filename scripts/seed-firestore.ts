@@ -1090,8 +1090,14 @@ function servicesData() {
       ),
       sections: [
         {
-          type: 'features_list',
+          type: 'rich_text',
           order: 0,
+          heading: ls('COIN in numbers'),
+          body: ls('**20+** Years of Experience | **300+** Customers | **1,000+** Recovery Workplaces | **350+** Business Continuity Plans'),
+        },
+        {
+          type: 'features_list',
+          order: 1,
           heading: ls('Our Recovery Workplaces solution'),
           features: [
             {
@@ -1122,7 +1128,7 @@ function servicesData() {
         },
         {
           type: 'rich_text',
-          order: 1,
+          order: 2,
           heading: ls('Standard workplace equipment'),
           body: ls(
             "Every recovery workplace at COIN comes fully equipped and ready to use the moment you invoke. No surprises, no delays.\n\n**Workstation setup**\n\n- Desk, chair and personal cupboard\n- Desktop computer (or bring your own laptop)\n- Dual 24-inch screens\n- Individual IP phone\n- One multifunction printer for every 10 users\n- One shredder per area\n\n**Common areas (included at no additional cost)**\n\n- Meeting rooms\n- Reception desk\n- Rest areas and lunch areas\n- Internet and Wi-Fi access\n- Reserved parking (30 spaces in Munsbach, 20 spaces in Contern)\n- Restaurant on site (dish of the day, lunch pass included)\n\n**Security and access**\n\n- 30 segregated installed areas, ranging from 6 to 76 workplaces\n- All areas secured by individual badge and PIN code\n- Full access logs recorded\n- Video recording on every site\n\n**The numbers**\n\nCOIN operates over 1,000 recovery workplaces across 4 resilience centres in the BeNeLux, including 750 seats in Luxembourg alone (500 in Munsbach, 250 in Contern)."

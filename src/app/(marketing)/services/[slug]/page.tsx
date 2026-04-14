@@ -3,6 +3,7 @@ import { getLocalizedField } from '@/lib/locale'
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
+import ServiceBreadcrumb from '@/components/layout/ServiceBreadcrumb'
 
 export const revalidate = 300
 
@@ -40,10 +41,36 @@ export default async function ServicePage({
 
   return (
     <>
+      <ServiceBreadcrumb serviceTitle={getLocalizedField(service.title, 'en')} />
       {/* Dynamic sections */}
       {service.sections && service.sections.length > 0 && (
         <PageSectionRenderer sections={service.sections} />
       )}
+
+      {/* Related article CTA - to be activated when articles are linked to services */}
+      {/*
+      <section className="py-8">
+        <div className="container-padding max-w-4xl mx-auto">
+          <Link href="/knowledge-hub" className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-800 font-semibold transition-colors">
+            <FileText className="h-4 w-4" />
+            Learn more - Read our article
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+      */}
+
+      {/* Photo gallery placeholder - to be populated when Sam sends photos */}
+      {/*
+      <section className="py-12 bg-warm-50">
+        <div className="container-padding max-w-6xl mx-auto">
+          <h3 className="text-xl font-bold text-primary-900 mb-6">Gallery</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            -- photos go here --
+          </div>
+        </div>
+      </section>
+      */}
 
       {/* CTA */}
       <section className="py-16 bg-gradient-to-r from-primary-600 to-secondary-600">
