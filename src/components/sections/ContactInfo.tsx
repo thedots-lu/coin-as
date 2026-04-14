@@ -14,18 +14,21 @@ const offices = [
     country: 'Netherlands',
     city: 'Schiphol-Rijk',
     phone: '+31 88 26 46 000',
+    detail: '',
     color: 'bg-primary-500',
   },
   {
     country: 'Luxembourg',
     city: 'Munsbach',
     phone: '+352 357 05 30',
+    detail: '',
     color: 'bg-coin-red-500',
   },
   {
     country: 'Belgium',
     city: 'Antwerp',
     phone: '',
+    detail: 'Dedicated site',
     color: 'bg-accent-500',
   },
 ]
@@ -85,6 +88,9 @@ export default function ContactInfo({ section, locale }: ContactInfoProps) {
                       {office.phone}
                     </span>
                   </div>
+                )}
+                {office.detail && (
+                  <p className="text-xs text-secondary-500 italic mt-2">{office.detail}</p>
                 )}
               </Wrapper>
             )
