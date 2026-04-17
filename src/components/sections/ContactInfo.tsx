@@ -1,4 +1,4 @@
-import { Phone, Mail, MapPin, ArrowRight, Building2 } from 'lucide-react'
+import { Mail, MapPin, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { getLocalizedField } from '@/lib/locale'
 import { ContactInfoSection } from '@/lib/types/page'
@@ -9,29 +9,6 @@ interface ContactInfoProps {
   locale: Locale
 }
 
-const offices = [
-  {
-    country: 'Netherlands',
-    city: 'Schiphol-Rijk',
-    phone: '+31 88 26 46 000',
-    detail: '',
-    color: 'bg-primary-500',
-  },
-  {
-    country: 'Luxembourg',
-    city: 'Munsbach',
-    phone: '+352 357 05 30',
-    detail: '',
-    color: 'bg-coin-red-500',
-  },
-  {
-    country: 'Belgium',
-    city: 'Antwerp',
-    phone: '',
-    detail: 'Dedicated site',
-    color: 'bg-accent-500',
-  },
-]
 
 export default function ContactInfo({ section, locale }: ContactInfoProps) {
   const heading = getLocalizedField(section.heading, locale)
@@ -56,49 +33,9 @@ export default function ContactInfo({ section, locale }: ContactInfoProps) {
         </div>
       </div>
 
-      {/* Office cards */}
-      <div className="container-padding pt-10 pb-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
-          {offices.map((office) => {
-            const Wrapper = office.phone ? 'a' : 'div'
-            const wrapperProps = office.phone
-              ? { href: `tel:${office.phone.replace(/\s/g, '')}` }
-              : {}
-            return (
-              <Wrapper
-                key={office.city}
-                {...wrapperProps}
-                className="group bg-white rounded-2xl p-6 shadow-lg border border-secondary-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-              >
-                {/* Color accent top bar */}
-                <div className={`w-10 h-1 ${office.color} rounded-full mb-5`} />
-
-                <div className="flex items-center gap-3 mb-4">
-                  <Building2 className="w-5 h-5 text-secondary-400" />
-                  <div>
-                    <p className="font-bold text-primary-900 text-lg font-display">{office.city}</p>
-                    <p className="text-xs uppercase tracking-wider text-secondary-400 font-medium">{office.country}</p>
-                  </div>
-                </div>
-
-                {office.phone && (
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-primary-500 shrink-0" />
-                    <span className="text-secondary-800 font-semibold group-hover:text-primary-600 transition-colors">
-                      {office.phone}
-                    </span>
-                  </div>
-                )}
-                {office.detail && (
-                  <p className="text-xs text-secondary-500 italic mt-2">{office.detail}</p>
-                )}
-              </Wrapper>
-            )
-          })}
-        </div>
-
-        {/* Email + Map row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl mx-auto mt-5">
+      {/* Email + Map row */}
+      <div className="container-padding py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl mx-auto">
           <a
             href="mailto:info@coin-bc.com"
             className="group flex items-center gap-5 bg-white rounded-2xl p-6 shadow-lg border border-secondary-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
@@ -128,5 +65,6 @@ export default function ContactInfo({ section, locale }: ContactInfoProps) {
         </div>
       </div>
     </section>
+
   )
 }

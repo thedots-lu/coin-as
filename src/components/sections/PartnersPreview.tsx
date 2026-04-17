@@ -19,7 +19,7 @@ export default function PartnersPreview({ section, locale, partners }: PartnersP
   const body = getLocalizedField(section.body, locale)
 
   return (
-    <section className="py-20 bg-warm-50">
+    <section id="partners" className="py-20 bg-warm-50 scroll-mt-24">
       <div className="container-padding">
         {section.imageUrl && (
           <AnimatedSection animation="slideUp" className="mb-12">

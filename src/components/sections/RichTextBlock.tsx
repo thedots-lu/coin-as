@@ -19,7 +19,7 @@ export default function RichTextBlock({ section, locale }: RichTextBlockProps) {
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-primary-900 font-display">{heading}</h2>
         )}
         {body && (
-          <div className="prose prose-lg max-w-none text-secondary-700 prose-headings:text-primary-900 prose-headings:font-display prose-strong:text-secondary-800 prose-li:marker:text-accent-500">
+          <div className="prose prose-lg max-w-none text-secondary-700 prose-headings:text-primary-900 prose-headings:font-display prose-strong:text-secondary-800 prose-li:marker:text-accent-500 [&_li>p]:my-0 [&_li]:my-[-0.4rem]">
             <Markdown>{body}</Markdown>
           </div>
         )}

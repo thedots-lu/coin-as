@@ -36,6 +36,7 @@ export default async function AboutPage() {
     { label: 'Our Mission', href: '#mission' },
     { label: 'Our Values', href: '#values' },
     { label: 'Our Experts', href: '#teams' },
+    { label: 'Our Partners', href: '#partners' },
     { label: 'Our Customers', href: '#customers' },
     { label: 'Our Locations', href: '#locations' },
     { label: 'Our History', href: '#history' },
