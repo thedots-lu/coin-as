@@ -13,6 +13,7 @@ import {
   Timestamp,
 } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
+import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { Partner } from '@/lib/types/partner'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'
@@ -30,6 +31,8 @@ export default function AdminPartnersPage() {
   const [logoUrl, setLogoUrl] = useState('')
   const [description, setDescription] = useState<LocaleString>(createEmptyLocaleString())
   const [websiteUrl, setWebsiteUrl] = useState('')
+  const [videoUrl, setVideoUrl] = useState('')
+  const [videoCaption, setVideoCaption] = useState<LocaleString>(createEmptyLocaleString())
   const [order, setOrder] = useState(0)
   const [published, setPublished] = useState(true)
 
@@ -53,6 +56,8 @@ export default function AdminPartnersPage() {
     setLogoUrl('')
     setDescription(createEmptyLocaleString())
     setWebsiteUrl('')
+    setVideoUrl('')
+    setVideoCaption(createEmptyLocaleString())
     setOrder(0)
     setPublished(true)
   }
@@ -64,6 +69,8 @@ export default function AdminPartnersPage() {
     setLogoUrl(item.logoUrl)
     setDescription(item.description)
     setWebsiteUrl(item.websiteUrl || '')
+    setVideoUrl(item.videoUrl || '')
+    setVideoCaption(item.videoCaption || createEmptyLocaleString())
     setOrder(item.order)
     setPublished(item.published)
   }
@@ -90,6 +97,8 @@ export default function AdminPartnersPage() {
         logoUrl,
         description,
         websiteUrl: websiteUrl || null,
+        videoUrl: videoUrl || null,
+        videoCaption: videoUrl ? videoCaption : null,
         order,
         published,
         updatedAt: now,
@@ -205,6 +214,19 @@ export default function AdminPartnersPage() {
 
         <LocaleEditor label="Description" value={description} onChange={setDescription} multiline />
 
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Video URL (YouTube)</label>
+          <input
+            type="text"
+            value={videoUrl}
+            onChange={(e) => setVideoUrl(e.target.value)}
+            placeholder="https://youtu.be/..."
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+          />
+        </div>
+
+        <LocaleEditor label="Video Caption" value={videoCaption} onChange={setVideoCaption} multiline rows={2} />
+
         <div className="flex gap-3 pt-4 border-t border-gray-200">
           <button
             type="submit"
@@ -282,10 +304,6 @@ export default function AdminPartnersPage() {
 
 async function revalidate(path: string) {
   try {
-    await fetch('/api/revalidate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path, secret: process.env.NEXT_PUBLIC_REVALIDATION_SECRET }),
-    })
+    await triggerRevalidate(path)
   } catch { /* best-effort */ }
 }

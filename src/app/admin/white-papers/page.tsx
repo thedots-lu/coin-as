@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore'
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'
 import { dbAdmin as db, storage } from '@/lib/firebase/config'
+import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { WhitePaper } from '@/lib/types/article'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'
@@ -495,10 +496,6 @@ export default function AdminWhitePapersPage() {
 
 async function revalidate(path: string) {
   try {
-    await fetch('/api/revalidate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path, secret: process.env.NEXT_PUBLIC_REVALIDATION_SECRET }),
-    })
+    await triggerRevalidate(path)
   } catch { /* best-effort */ }
 }

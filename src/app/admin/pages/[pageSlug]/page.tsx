@@ -2,11 +2,13 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, updateDoc, Timestamp } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
+import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { PageDocument, PageSection } from '@/lib/types/page'
 import { LocaleString, createEmptyLocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'
+import SectionsEditor from '@/components/admin/SectionsEditor'
 
 export default function AdminPageEditor() {
   const params = useParams()
@@ -16,7 +18,6 @@ export default function AdminPageEditor() {
   const [page, setPage] = useState<PageDocument | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [expandedSection, setExpandedSection] = useState<number | null>(null)
   const [editedSections, setEditedSections] = useState<PageSection[]>([])
   const [editedTitle, setEditedTitle] = useState<LocaleString>(createEmptyLocaleString())
   const [editedBody, setEditedBody] = useState<LocaleString | undefined>(undefined)
@@ -26,8 +27,21 @@ export default function AdminPageEditor() {
     ogImage: '' as string | null,
   })
 
-  const fetchPage = useCallback(async () => {
+  const load = useCallback(async () => {
     try {
+      // If this slug corresponds to a service, redirect to the service admin
+      const servicesSnapshot = await getDocs(collection(db, 'services'))
+      const serviceSlugs = new Set<string>()
+      servicesSnapshot.forEach((d) => {
+        const data = d.data() as { slug?: string }
+        if (data.slug) serviceSlugs.add(data.slug)
+        serviceSlugs.add(d.id)
+      })
+      if (serviceSlugs.has(pageSlug)) {
+        router.replace(`/admin/services/${pageSlug}`)
+        return
+      }
+
       const docRef = doc(db, 'pages', pageSlug)
       const snapshot = await getDoc(docRef)
       if (snapshot.exists()) {
@@ -47,17 +61,9 @@ export default function AdminPageEditor() {
     } finally {
       setLoading(false)
     }
-  }, [pageSlug])
+  }, [pageSlug, router])
 
-  useEffect(() => { fetchPage() }, [fetchPage])
-
-  const updateSectionField = (sectionIndex: number, field: string, value: unknown) => {
-    setEditedSections((prev) => {
-      const updated = [...prev]
-      updated[sectionIndex] = { ...updated[sectionIndex], [field]: value }
-      return updated
-    })
-  }
+  useEffect(() => { load() }, [load])
 
   const handleSave = async () => {
     setSaving(true)
@@ -80,53 +86,6 @@ export default function AdminPageEditor() {
     } finally {
       setSaving(false)
     }
-  }
-
-  const renderSectionFields = (section: PageSection, index: number) => {
-    const fields: React.ReactNode[] = []
-
-    // Common locale string fields
-    const localeFields: string[] = []
-    const stringFields: string[] = []
-
-    for (const [key, value] of Object.entries(section)) {
-      if (key === 'type' || key === 'order') continue
-      if (value && typeof value === 'object' && 'en' in value && 'fr' in value && 'nl' in value) {
-        localeFields.push(key)
-      } else if (typeof value === 'string') {
-        stringFields.push(key)
-      }
-    }
-
-    for (const field of localeFields) {
-      const val = (section as unknown as Record<string, unknown>)[field] as LocaleString
-      fields.push(
-        <LocaleEditor
-          key={field}
-          label={formatFieldName(field)}
-          value={val}
-          onChange={(v) => updateSectionField(index, field, v)}
-          multiline={['body', 'content', 'description', 'subtitle'].includes(field)}
-        />
-      )
-    }
-
-    for (const field of stringFields) {
-      const val = (section as unknown as Record<string, unknown>)[field] as string
-      fields.push(
-        <div key={field}>
-          <label className="block text-sm font-medium text-gray-700 mb-1">{formatFieldName(field)}</label>
-          <input
-            type="text"
-            value={val}
-            onChange={(e) => updateSectionField(index, field, e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-          />
-        </div>
-      )
-    }
-
-    return fields
   }
 
   if (loading) {
@@ -205,61 +164,16 @@ export default function AdminPageEditor() {
       )}
 
       {/* Sections */}
-      <div className="space-y-3">
-        <h2 className="text-lg font-semibold text-gray-900">Sections ({editedSections.length})</h2>
-        {editedSections.map((section, index) => (
-          <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-            <button
-              onClick={() => setExpandedSection(expandedSection === index ? null : index)}
-              className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-gray-50 transition-colors"
-            >
-              <div>
-                <span className="text-sm font-medium text-gray-900">
-                  #{section.order} - {formatSectionType(section.type)}
-                </span>
-                <span className="ml-2 text-xs text-gray-500">({section.type})</span>
-              </div>
-              <svg
-                className={`w-5 h-5 text-gray-400 transition-transform ${expandedSection === index ? 'rotate-180' : ''}`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            {expandedSection === index && (
-              <div className="px-6 pb-6 space-y-4 border-t border-gray-200 pt-4">
-                {renderSectionFields(section, index)}
-              </div>
-            )}
-          </div>
-        ))}
+      <div>
+        <h2 className="text-lg font-semibold text-gray-900 mb-3">Sections ({editedSections.length})</h2>
+        <SectionsEditor sections={editedSections} onChange={setEditedSections} />
       </div>
     </div>
   )
 }
 
-function formatSectionType(type: string): string {
-  return type
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ')
-}
-
-function formatFieldName(field: string): string {
-  return field
-    .replace(/([A-Z])/g, ' $1')
-    .replace(/^./, (s) => s.toUpperCase())
-    .replace(/Url$/, ' URL')
-}
-
 async function revalidate(path: string) {
   try {
-    await fetch('/api/revalidate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path, secret: process.env.NEXT_PUBLIC_REVALIDATION_SECRET }),
-    })
+    await triggerRevalidate(path)
   } catch { /* best-effort */ }
 }

@@ -11,25 +11,14 @@ import {
   query,
   Timestamp,
 } from 'firebase/firestore'
+import Link from 'next/link'
 import { dbAdmin as db } from '@/lib/firebase/config'
+import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { ServiceDocument } from '@/lib/types/service'
-import { LocaleString } from '@/lib/types/locale'
-import LocaleEditor from '@/components/admin/LocaleEditor'
 
 export default function AdminServicesPage() {
   const [items, setItems] = useState<ServiceDocument[]>([])
   const [loading, setLoading] = useState(true)
-  const [editing, setEditing] = useState<ServiceDocument | null>(null)
-  const [saving, setSaving] = useState(false)
-
-  // Inline edit state
-  const [editTitle, setEditTitle] = useState<LocaleString>({ en: '', fr: '', nl: '' })
-  const [editShortTitle, setEditShortTitle] = useState<LocaleString>({ en: '', fr: '', nl: '' })
-  const [editCategory, setEditCategory] = useState<'consulting' | 'centers' | 'cyber'>('consulting')
-  const [editOrder, setEditOrder] = useState(0)
-  const [editPublished, setEditPublished] = useState(false)
-  const [editOverview, setEditOverview] = useState<LocaleString>({ en: '', fr: '', nl: '' })
-  const [editHeroSubtitle, setEditHeroSubtitle] = useState<LocaleString>({ en: '', fr: '', nl: '' })
 
   const fetchServices = useCallback(async () => {
     try {
@@ -44,44 +33,6 @@ export default function AdminServicesPage() {
   }, [])
 
   useEffect(() => { fetchServices() }, [fetchServices])
-
-  const startEdit = (item: ServiceDocument) => {
-    setEditing(item)
-    setEditTitle(item.title)
-    setEditShortTitle(item.shortTitle)
-    setEditCategory(item.category)
-    setEditOrder(item.order)
-    setEditPublished(item.published)
-    setEditOverview(item.overview)
-    setEditHeroSubtitle(item.heroSubtitle)
-  }
-
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!editing) return
-    setSaving(true)
-    try {
-      await updateDoc(doc(db, 'services', editing.id), {
-        title: editTitle,
-        shortTitle: editShortTitle,
-        category: editCategory,
-        order: editOrder,
-        published: editPublished,
-        overview: editOverview,
-        heroSubtitle: editHeroSubtitle,
-        updatedAt: Timestamp.now(),
-      })
-      await revalidate('/services')
-      await revalidate(`/services/${editing.slug}`)
-      await fetchServices()
-      setEditing(null)
-    } catch (err) {
-      console.error('Error saving service:', err)
-      alert('Error saving. Check console.')
-    } finally {
-      setSaving(false)
-    }
-  }
 
   const handleDelete = async (item: ServiceDocument) => {
     if (!confirm(`Delete service "${item.title.en}"? This cannot be undone.`)) return
@@ -115,75 +66,6 @@ export default function AdminServicesPage() {
     )
   }
 
-  if (editing) {
-    return (
-      <form onSubmit={handleSave} className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-        <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Edit Service: {editing.slug}</h2>
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={editPublished}
-              onChange={(e) => setEditPublished(e.target.checked)}
-              className="rounded border-gray-300"
-            />
-            Published
-          </label>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-            <select
-              value={editCategory}
-              onChange={(e) => setEditCategory(e.target.value as 'consulting' | 'centers' | 'cyber')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-            >
-              <option value="consulting">Consulting</option>
-              <option value="centers">Centers</option>
-              <option value="cyber">Cyber</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
-            <input
-              type="number"
-              value={editOrder}
-              onChange={(e) => setEditOrder(parseInt(e.target.value) || 0)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-            />
-          </div>
-        </div>
-
-        <LocaleEditor label="Title" value={editTitle} onChange={setEditTitle} />
-        <LocaleEditor label="Short Title" value={editShortTitle} onChange={setEditShortTitle} />
-        <LocaleEditor label="Hero Subtitle" value={editHeroSubtitle} onChange={setEditHeroSubtitle} multiline rows={3} />
-        <LocaleEditor label="Overview" value={editOverview} onChange={setEditOverview} multiline rows={6} />
-
-        <p className="text-sm text-gray-500">
-          Note: Section content editing is available via the Pages editor for more complex layouts.
-        </p>
-
-        <div className="flex gap-3 pt-4 border-t border-gray-200">
-          <button
-            type="submit"
-            disabled={saving}
-            className="px-4 py-2 bg-primary-600 text-white rounded-md text-sm font-medium hover:bg-primary-700 transition-colors disabled:opacity-50"
-          >
-            {saving ? 'Saving...' : 'Update'}
-          </button>
-          <button
-            type="button"
-            onClick={() => setEditing(null)}
-            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
-    )
-  }
-
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -203,6 +85,7 @@ export default function AdminServicesPage() {
                 <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Title</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Category</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Slug</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Sections</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
                 <th className="text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
@@ -214,6 +97,7 @@ export default function AdminServicesPage() {
                   <td className="px-4 py-3 text-sm font-medium text-gray-900">{item.title.en || item.title.fr}</td>
                   <td className="px-4 py-3 text-sm text-gray-600 capitalize">{item.category}</td>
                   <td className="px-4 py-3 text-sm text-gray-500 font-mono">{item.slug}</td>
+                  <td className="px-4 py-3 text-sm text-gray-600">{item.sections?.length || 0}</td>
                   <td className="px-4 py-3">
                     <button
                       onClick={() => handleTogglePublished(item)}
@@ -225,7 +109,12 @@ export default function AdminServicesPage() {
                     </button>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button onClick={() => startEdit(item)} className="text-sm text-primary-600 hover:text-primary-700 mr-3">Edit</button>
+                    <Link
+                      href={`/admin/services/${item.slug}`}
+                      className="text-sm text-primary-600 hover:text-primary-700 mr-3"
+                    >
+                      Edit
+                    </Link>
                     <button onClick={() => handleDelete(item)} className="text-sm text-red-600 hover:text-red-700">Delete</button>
                   </td>
                 </tr>
@@ -240,10 +129,6 @@ export default function AdminServicesPage() {
 
 async function revalidate(path: string) {
   try {
-    await fetch('/api/revalidate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path, secret: process.env.NEXT_PUBLIC_REVALIDATION_SECRET }),
-    })
+    await triggerRevalidate(path)
   } catch { /* best-effort */ }
 }

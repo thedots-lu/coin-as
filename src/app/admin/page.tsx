@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { collection, getCountFromServer } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
+import { TEAM_COLLECTION } from '@/lib/firestore/team'
 import Link from 'next/link'
 
 interface Stats {
@@ -32,7 +33,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function fetchStats() {
       try {
-        const collections = ['news', 'articles', 'services', 'partners', 'team', 'pages', 'white_papers'] as const
+        const collections = ['news', 'articles', 'services', 'partners', TEAM_COLLECTION, 'pages', 'white_papers'] as const
         const counts = await Promise.all(
           collections.map(async (col) => {
             const snapshot = await getCountFromServer(collection(db, col))

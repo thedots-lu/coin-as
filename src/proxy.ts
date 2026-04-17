@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-
+export function proxy(request: NextRequest) {
   // Set default locale cookie if not present
   const locale = request.cookies.get('locale')?.value
   if (!locale) {

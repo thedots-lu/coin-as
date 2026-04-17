@@ -13,6 +13,7 @@ import {
   Timestamp,
 } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
+import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { NewsItem } from '@/lib/types/news'
 import NewsForm from '@/components/admin/NewsForm'
 
@@ -201,11 +202,7 @@ export default function AdminNewsPage() {
 
 async function revalidate(path: string) {
   try {
-    await fetch('/api/revalidate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path, secret: process.env.NEXT_PUBLIC_REVALIDATION_SECRET }),
-    })
+    await triggerRevalidate(path)
   } catch {
     // Revalidation is best-effort
   }

@@ -13,6 +13,7 @@ import {
   Timestamp,
 } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
+import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { Article } from '@/lib/types/article'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'
@@ -30,7 +31,7 @@ export default function AdminArticlesPage() {
   const [excerpt, setExcerpt] = useState<LocaleString>(createEmptyLocaleString())
   const [slug, setSlug] = useState<LocaleString>(createEmptyLocaleString())
   const [imageUrl, setImageUrl] = useState('')
-  const [category, setCategory] = useState<'resource' | 'case_study' | 'vlog'>('resource')
+  const [category, setCategory] = useState<'resource' | 'case_study'>('resource')
   const [published, setPublished] = useState(false)
   const [author, setAuthor] = useState('')
   const [tags, setTags] = useState('')
@@ -297,10 +298,6 @@ export default function AdminArticlesPage() {
 
 async function revalidate(path: string) {
   try {
-    await fetch('/api/revalidate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path, secret: process.env.NEXT_PUBLIC_REVALIDATION_SECRET }),
-    })
+    await triggerRevalidate(path)
   } catch { /* best-effort */ }
 }

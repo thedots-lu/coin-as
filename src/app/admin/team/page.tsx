@@ -13,7 +13,9 @@ import {
   Timestamp,
 } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
-import { TeamMember } from '@/lib/types/team'
+import { triggerRevalidate } from '@/lib/firebase/revalidate'
+import { TEAM_COLLECTION } from '@/lib/firestore/team'
+import { TeamMember, normalizeTeamMemberName } from '@/lib/types/team'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'
 
@@ -25,7 +27,7 @@ export default function AdminTeamPage() {
   const [saving, setSaving] = useState(false)
 
   // Form state
-  const [name, setName] = useState('')
+  const [name, setName] = useState<LocaleString>(createEmptyLocaleString())
   const [position, setPosition] = useState<LocaleString>(createEmptyLocaleString())
   const [bio, setBio] = useState<LocaleString>(createEmptyLocaleString())
   const [photoUrl, setPhotoUrl] = useState('')
@@ -35,9 +37,12 @@ export default function AdminTeamPage() {
 
   const fetchTeam = useCallback(async () => {
     try {
-      const q = query(collection(db, 'team'), orderBy('order', 'asc'))
+      const q = query(collection(db, TEAM_COLLECTION), orderBy('order', 'asc'))
       const snapshot = await getDocs(q)
-      setItems(snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as TeamMember)))
+      setItems(snapshot.docs.map((d) => {
+        const data = d.data()
+        return { id: d.id, ...data, name: normalizeTeamMemberName(data.name) } as TeamMember
+      }))
     } catch (err) {
       console.error('Error fetching team:', err)
     } finally {
@@ -48,7 +53,7 @@ export default function AdminTeamPage() {
   useEffect(() => { fetchTeam() }, [fetchTeam])
 
   const resetForm = () => {
-    setName('')
+    setName(createEmptyLocaleString())
     setPosition(createEmptyLocaleString())
     setBio(createEmptyLocaleString())
     setPhotoUrl('')
@@ -59,7 +64,7 @@ export default function AdminTeamPage() {
 
   const startEdit = (item: TeamMember) => {
     setEditing(item)
-    setName(item.name)
+    setName(normalizeTeamMemberName(item.name))
     setPosition(item.position)
     setBio(item.bio)
     setPhotoUrl(item.photoUrl || '')
@@ -95,9 +100,9 @@ export default function AdminTeamPage() {
         updatedAt: now,
       }
       if (editing) {
-        await updateDoc(doc(db, 'team', editing.id), data)
+        await updateDoc(doc(db, TEAM_COLLECTION, editing.id), data)
       } else {
-        await addDoc(collection(db, 'team'), { ...data, createdAt: now })
+        await addDoc(collection(db, TEAM_COLLECTION), { ...data, createdAt: now })
       }
       await revalidate('/about')
       await fetchTeam()
@@ -113,7 +118,7 @@ export default function AdminTeamPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this team member? This cannot be undone.')) return
     try {
-      await deleteDoc(doc(db, 'team', id))
+      await deleteDoc(doc(db, TEAM_COLLECTION, id))
       await revalidate('/about')
       await fetchTeam()
     } catch (err) {
@@ -147,28 +152,17 @@ export default function AdminTeamPage() {
           </label>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
-            <input
-              type="number"
-              value={order}
-              onChange={(e) => setOrder(parseInt(e.target.value) || 0)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-            />
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
+          <input
+            type="number"
+            value={order}
+            onChange={(e) => setOrder(parseInt(e.target.value) || 0)}
+            className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md text-sm"
+          />
         </div>
 
+        <LocaleEditor label="Name" value={name} onChange={setName} />
         <LocaleEditor label="Position" value={position} onChange={setPosition} />
         <LocaleEditor label="Bio" value={bio} onChange={setBio} multiline rows={5} />
 
@@ -245,7 +239,7 @@ export default function AdminTeamPage() {
               {items.map((item) => (
                 <tr key={item.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 text-sm text-gray-600">{item.order}</td>
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900">{item.name}</td>
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900">{item.name.en || item.name.fr || item.name.nl || '(unnamed)'}</td>
                   <td className="px-4 py-3 text-sm text-gray-600">{item.position.en || item.position.fr}</td>
                   <td className="px-4 py-3">
                     <span className={`text-xs px-2 py-1 rounded font-medium ${
@@ -270,10 +264,6 @@ export default function AdminTeamPage() {
 
 async function revalidate(path: string) {
   try {
-    await fetch('/api/revalidate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path, secret: process.env.NEXT_PUBLIC_REVALIDATION_SECRET }),
-    })
+    await triggerRevalidate(path)
   } catch { /* best-effort */ }
 }

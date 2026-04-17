@@ -8,8 +8,8 @@ export interface Article {
   excerpt: LocaleString
   slug: LocaleString
   imageUrl: string | null
-  videoUrl?: string | null    // YouTube or Vimeo URL for vlog entries
-  category: 'resource' | 'case_study' | 'vlog'
+  videoUrl?: string | null
+  category: 'resource' | 'case_study'
   published: boolean
   publishedAt: Timestamp | Date | null
   author: string

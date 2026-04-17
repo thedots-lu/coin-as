@@ -1,9 +1,9 @@
-import { getServiceBySlug } from '@/lib/firestore/services'
+import { getPublishedServices } from '@/lib/firestore/services'
 import { getLocalizedField } from '@/lib/locale'
 import Link from 'next/link'
 import { Metadata } from 'next'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
-import { ArrowRight, Building2, GraduationCap, Server, Shield, AlertTriangle } from 'lucide-react'
+import { ArrowRight, Building2, GraduationCap, Server, Shield, AlertTriangle, Briefcase, LucideIcon } from 'lucide-react'
 
 export const revalidate = 300
 
@@ -18,51 +18,60 @@ export const metadata: Metadata = {
   },
 }
 
-// ---------------------------------------------------------------------------
-// The 5 top-level services (order per client review)
-// ---------------------------------------------------------------------------
-const TOP_SERVICES = [
-  {
-    slug: 'consultancy-and-training',
+// Visual metadata keyed by service slug. Services without an entry fall back to DEFAULT_CARD_META.
+type CardMeta = {
+  icon: LucideIcon
+  accentColor: string
+  borderColor: string
+  iconBg: string
+  iconColor: string
+}
+
+const SERVICE_CARD_META: Record<string, CardMeta> = {
+  'consultancy-and-training': {
     icon: GraduationCap,
     accentColor: 'bg-accent-500',
     borderColor: 'border-accent-500',
     iconBg: 'bg-accent-50',
     iconColor: 'text-accent-600',
   },
-  {
-    slug: 'recovery-workplaces',
+  'recovery-workplaces': {
     icon: Building2,
     accentColor: 'bg-primary-500',
     borderColor: 'border-primary-500',
     iconBg: 'bg-primary-50',
     iconColor: 'text-primary-600',
   },
-  {
-    slug: 'crisis-management',
+  'crisis-management': {
     icon: AlertTriangle,
     accentColor: 'bg-accent-600',
     borderColor: 'border-accent-600',
     iconBg: 'bg-accent-50',
     iconColor: 'text-accent-700',
   },
-  {
-    slug: 'it-housing',
+  'it-housing': {
     icon: Server,
     accentColor: 'bg-primary-700',
     borderColor: 'border-primary-700',
     iconBg: 'bg-primary-50',
     iconColor: 'text-primary-700',
   },
-  {
-    slug: 'cyberresilience',
+  cyberresilience: {
     icon: Shield,
     accentColor: 'bg-coin-red-500',
     borderColor: 'border-coin-red-500',
     iconBg: 'bg-coin-red-50',
     iconColor: 'text-coin-red-600',
   },
-] as const
+}
+
+const DEFAULT_CARD_META: CardMeta = {
+  icon: Briefcase,
+  accentColor: 'bg-primary-500',
+  borderColor: 'border-primary-500',
+  iconBg: 'bg-primary-50',
+  iconColor: 'text-primary-600',
+}
 
 // ---------------------------------------------------------------------------
 // Approach steps
@@ -89,16 +98,15 @@ const APPROACH_STEPS = [
 ]
 
 export default async function ServicesPage() {
-  // Fetch the 5 top services in parallel
-  const services = await Promise.all(
-    TOP_SERVICES.map((s) => getServiceBySlug(s.slug))
-  )
+  // Fetch all published services (already ordered by `order` ascending)
+  const services = await getPublishedServices()
 
-  // Combine service data with display metadata
-  const cards = TOP_SERVICES.map((meta, i) => ({
-    ...meta,
-    service: services[i],
-  })).filter((c) => c.service !== null)
+  // Combine service data with display metadata (fallback to default for unknown slugs)
+  const cards = services.map((service) => {
+    const slug = service.slug ?? service.id
+    const meta = SERVICE_CARD_META[slug] ?? DEFAULT_CARD_META
+    return { slug, service, ...meta }
+  })
 
   return (
     <>
@@ -197,9 +205,13 @@ export default async function ServicesPage() {
               Our services designed for resilience
             </h2>
 
+            {cards.length === 0 ? (
+              <p className="text-center text-secondary-600 text-lg">
+                Services coming soon.
+              </p>
+            ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {cards.map((card) => {
-                if (!card.service) return null
                 const title = getLocalizedField(card.service.title, 'en')
                 const tagline = getLocalizedField(card.service.heroSubtitle, 'en')
 
@@ -269,6 +281,7 @@ export default async function ServicesPage() {
                 )
               })}
             </div>
+            )}
           </div>
         </div>
       </section>

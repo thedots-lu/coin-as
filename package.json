@@ -6,8 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint ./src",
     "seed": "npx tsx scripts/seed-firestore.ts",
+    "seed-faq": "npx tsx scripts/seed-faq.ts",
+    "seed-challenges": "npx tsx scripts/seed-challenges.ts",
     "migrate-news": "npx tsx scripts/migrate-news.ts"
   },
   "keywords": [],
@@ -42,6 +44,8 @@
   },
   "devDependencies": {
     "@netlify/plugin-nextjs": "^5.15.8",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.4",
     "shadcn": "^4.0.2"
   }
 }

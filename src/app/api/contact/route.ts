@@ -1,22 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { initializeApp, getApps, cert } from 'firebase-admin/app'
-import { getFirestore } from 'firebase-admin/firestore'
+import { getAdminDb } from '@/lib/firebase/admin'
 
-function getAdminDb() {
-  if (getApps().length === 0) {
-    initializeApp({
-      credential: cert({
-        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-      }),
-    })
-  }
-  return getFirestore()
-}
+// Simple in-memory rate limit: 5 requests per IP per hour (per lambda instance)
+const RATE_LIMIT_MAX = 5
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+    const now = Date.now()
+    // Opportunistic cleanup of expired entries
+    for (const [key, entry] of rateLimitMap) {
+      if (entry.resetAt < now) rateLimitMap.delete(key)
+    }
+    const existing = rateLimitMap.get(ip)
+    if (existing && existing.resetAt > now) {
+      if (existing.count >= RATE_LIMIT_MAX) {
+        const retryAfter = Math.ceil((existing.resetAt - now) / 1000)
+        return NextResponse.json(
+          { error: 'Too many requests' },
+          { status: 429, headers: { 'Retry-After': String(retryAfter) } }
+        )
+      }
+      existing.count += 1
+    } else {
+      rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
+    }
+
     const body = await request.json()
     const { subject, company, name, phone, email, country, message, gdprConsent } = body
 
@@ -41,7 +52,7 @@ export async function POST(request: NextRequest) {
       gdprConsent: !!gdprConsent,
       status: 'new',
       createdAt: new Date().toISOString(),
-      ip: request.headers.get('x-forwarded-for') ?? 'unknown',
+      ip,
     }
 
     // Save to Firestore — visible in admin CMS
@@ -51,7 +62,6 @@ export async function POST(request: NextRequest) {
     } catch (dbError) {
       // If admin SDK not configured (no service account), log and continue
       console.error('Firestore save failed (service account not configured):', dbError)
-      console.log('Contact submission received:', submission)
     }
 
     return NextResponse.json({ success: true })

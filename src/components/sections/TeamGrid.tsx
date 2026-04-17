@@ -58,6 +58,7 @@ export default function TeamGrid({ section, locale, teamMembers }: TeamGridProps
         {teamMembers.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {teamMembers.map((member, index) => {
+              const name = getLocalizedField(member.name, locale)
               const position = getLocalizedField(member.position, locale)
               const bio = getLocalizedField(member.bio, locale)
 
@@ -72,13 +73,13 @@ export default function TeamGrid({ section, locale, teamMembers }: TeamGridProps
                       <div className="mb-4 flex justify-center">
                         <img
                           src={member.photoUrl}
-                          alt={member.name}
+                          alt={name}
                           className="w-24 h-24 rounded-full object-cover"
                         />
                       </div>
                     )}
                     <h3 className="text-xl font-semibold text-center mb-1">
-                      {member.name}
+                      {name}
                     </h3>
                     {position && (
                       <p className="text-primary-600 text-center text-sm font-medium mb-3">

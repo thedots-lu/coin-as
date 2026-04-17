@@ -30,3 +30,12 @@ yarn-error.log*
 next-env.d.ts
 .netlify/
 deno.lock
+
+# Local assets not meant for git
+public/images/photos.zip
+public/images/photos/
+scripts/*.pptx
+scripts/originals/
+scripts/enhanced_source/
+scripts/content-export/
+scripts/2024-06-17 COIN-FotoSharonWillems-16.jpg
