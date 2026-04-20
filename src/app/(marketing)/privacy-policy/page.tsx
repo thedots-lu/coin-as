@@ -2,6 +2,7 @@ import { getPage } from '@/lib/firestore/pages'
 import { Metadata } from 'next'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 import { getLocalizedField } from '@/lib/locale'
+import ReactMarkdown from 'react-markdown'
 
 export const revalidate = 300
 
@@ -35,8 +36,8 @@ export default async function PrivacyPolicyPage() {
 
       <section className="py-16">
         <div className="container-padding max-w-4xl mx-auto">
-          <div className="prose prose-lg max-w-none" style={{ whiteSpace: 'pre-line' }}>
-            {body}
+          <div className="prose prose-lg max-w-none">
+            <ReactMarkdown>{body}</ReactMarkdown>
           </div>
         </div>
       </section>
