@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { getPage } from '@/lib/firestore/pages'
 import { getPublishedTestimonials } from '@/lib/firestore/testimonials'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
+import NewsletterPopup from '@/components/NewsletterPopup'
 
 export const revalidate = 300
 
@@ -31,5 +32,10 @@ export default async function HomePage() {
     )
   }
 
-  return <PageSectionRenderer sections={pageData.sections} testimonials={testimonials} />
+  return (
+    <>
+      <PageSectionRenderer sections={pageData.sections} testimonials={testimonials} />
+      <NewsletterPopup />
+    </>
+  )
 }
