@@ -4,7 +4,7 @@ import { Sora } from "next/font/google";
 import { cn } from "@/lib/utils";
 
 // Sora used as display/heading font to complement Arial body font
-const sora = Sora({subsets:['latin'],variable:'--font-display',weight:['400','500','600','700']});
+const sora = Sora({subsets:['latin'],variable:'--font-sora',weight:['400','500','600','700']});
 
 const BASE_URL = 'https://coin-bc.com'
 

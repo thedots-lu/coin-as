@@ -3,6 +3,7 @@ import { getLocalizedField } from '@/lib/locale'
 import Link from 'next/link'
 import { Metadata } from 'next'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
+import FlexibleServices from '@/components/sections/FlexibleServices'
 import { ArrowRight, Building2, GraduationCap, Server, Shield, AlertTriangle, Briefcase, LucideIcon } from 'lucide-react'
 
 export const revalidate = 300
@@ -287,23 +288,25 @@ export default async function ServicesPage() {
       </section>
 
       {/* ── 6. Flexible Services Block ── */}
-      <section className="bg-white py-16 md:py-20">
-        <div className="container-padding">
-          <div className="max-w-4xl mx-auto">
-            <div className="w-12 h-1 bg-accent-500 rounded-full mb-6" />
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-900 mb-4">
-              Flexible Services - Customized SLA
-            </h2>
-            <p className="text-lg text-secondary-600 leading-relaxed">
-              COIN adjusts to your needs and constraints. We know business continuity objectives
-              and regulatory requirements depend on your business, country, and resources available
-              in your organisation. We can offer this unique level of flexibility because business
-              continuity is our core business and we have experience with 300+ customers in various
-              industries.
-            </p>
-          </div>
-        </div>
-      </section>
+      <FlexibleServices
+        section={{
+          type: 'flexible_services',
+          order: 6,
+          heading: {
+            en: 'Flexible Services - Customized SLA',
+            fr: 'Flexible Services - Customized SLA',
+            nl: 'Flexible Services - Customized SLA',
+          },
+          body: {
+            en: 'COIN adjusts to your needs and constraints. We know business continuity objectives and regulatory requirements depend on your business, country, and resources available in your organisation. We can offer this unique level of flexibility because business continuity is our core business and we have experience with 300+ customers in various industries.',
+            fr: 'COIN adjusts to your needs and constraints. We know business continuity objectives and regulatory requirements depend on your business, country, and resources available in your organisation. We can offer this unique level of flexibility because business continuity is our core business and we have experience with 300+ customers in various industries.',
+            nl: 'COIN adjusts to your needs and constraints. We know business continuity objectives and regulatory requirements depend on your business, country, and resources available in your organisation. We can offer this unique level of flexibility because business continuity is our core business and we have experience with 300+ customers in various industries.',
+          },
+          imageUrl: '/images/coin/coin-luxembourg-munsbach-shared-meeting-room.webp',
+        }}
+        locale="en"
+        background="#ffffff"
+      />
 
       {/* ── 7. Bottom CTA ── */}
       <section className="bg-primary-950 text-white py-20">

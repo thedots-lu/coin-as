@@ -30,6 +30,7 @@ yarn-error.log*
 next-env.d.ts
 .netlify/
 deno.lock
+core
 
 # Local assets not meant for git
 public/images/photos.zip

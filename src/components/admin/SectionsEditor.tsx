@@ -19,6 +19,15 @@ export default function SectionsEditor({ sections, onChange }: SectionsEditorPro
     onChange(updated)
   }
 
+  const deleteSection = (sectionIndex: number) => {
+    const section = sections[sectionIndex]
+    const label = `#${section.order} – ${formatSectionType(section.type)}`
+    if (!confirm(`Delete section "${label}"? This cannot be undone until you save or reload.`)) return
+    const updated = sections.filter((_, i) => i !== sectionIndex)
+    onChange(updated)
+    setExpandedSection(null)
+  }
+
   const renderSectionFields = (section: PageSection, index: number) => {
     const fields: React.ReactNode[] = []
     const localeFields: string[] = []
@@ -99,6 +108,15 @@ export default function SectionsEditor({ sections, onChange }: SectionsEditorPro
           {expandedSection === index && (
             <div className="px-6 pb-6 space-y-4 border-t border-gray-200 pt-4">
               {renderSectionFields(section, index)}
+              <div className="pt-4 border-t border-gray-100 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => deleteSection(index)}
+                  className="text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-md transition-colors"
+                >
+                  Delete section
+                </button>
+              </div>
             </div>
           )}
         </div>

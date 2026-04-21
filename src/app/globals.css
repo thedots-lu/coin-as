@@ -6,9 +6,9 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-display: "Sora", Arial, sans-serif;
+  --font-display: var(--font-sora), Arial, sans-serif;
 
-  --color-warm-50: #FAFAF8;
+  --color-warm-50: #F1F1EF;
   --color-warm-100: #F5F5F0;
 
   /* COIN AS Primary — Navy Blue (0, 71, 121) */

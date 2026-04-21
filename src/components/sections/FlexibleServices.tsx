@@ -9,14 +9,15 @@ import { motion } from 'framer-motion'
 interface FlexibleServicesProps {
   section: FlexibleServicesSection
   locale: Locale
+  background?: string
 }
 
-export default function FlexibleServices({ section, locale }: FlexibleServicesProps) {
+export default function FlexibleServices({ section, locale, background = 'var(--color-warm-50)' }: FlexibleServicesProps) {
   const heading = getLocalizedField(section.heading, locale)
   const body = getLocalizedField(section.body, locale)
 
   return (
-    <section className="relative py-28 md:py-36 overflow-hidden" style={{ background: 'var(--color-warm-50)' }}>
+    <section className="relative py-28 md:py-36 overflow-hidden" style={{ background }}>
       {/* Precision dot grid -- evokes configurability and modular systems */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.06]">
         <div
