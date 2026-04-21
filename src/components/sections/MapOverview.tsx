@@ -67,7 +67,7 @@ export default function MapOverview({ section, locale }: MapOverviewProps) {
           <div className="lg:col-span-2 flex justify-center lg:justify-start">
             <div className="relative w-full max-w-sm">
               <Image
-                src="/images/coin/carte-coin.png"
+                src="/images/coin/Amsterdam.png"
                 alt="COIN BeNeLux locations: Amsterdam, Antwerp, Luxembourg"
                 width={400}
                 height={500}
