@@ -1,0 +1,10 @@
+
+> coinwebsite-next@1.0.0 dev
+> next dev -p 3100
+
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3100
+- Network:       http://79.137.101.252:3100
+- Environments: .env.local
+✓ Ready in 290ms
+
