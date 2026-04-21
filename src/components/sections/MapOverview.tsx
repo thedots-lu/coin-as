@@ -16,7 +16,7 @@ const SITES = [
     city: 'Schiphol-Rijk',
     country: 'Netherlands',
     phone: '+31 88 26 46 000',
-    detail: 'Recovery workplaces · Crisis rooms · Co-location',
+    detail: 'Recovery workplaces · Crisis rooms',
     color: '#004779',
   },
   {
@@ -30,14 +30,14 @@ const SITES = [
     city: 'Munsbach',
     country: 'Luxembourg',
     phone: '+352 357 05 30',
-    detail: '500 workplaces · TIER-3 · ISO 27001',
+    detail: '500 workplaces · IT Housing',
     color: '#A51218',
   },
   {
     city: 'Contern',
     country: 'Luxembourg',
     phone: '+352 357 05 30',
-    detail: '250 workplaces · 10 min from Munsbach',
+    detail: '250 workplaces · Crisis Room',
     color: '#A51218',
   },
 ]
@@ -124,7 +124,7 @@ export default function MapOverview({ section, locale }: MapOverviewProps) {
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 110-12 6 6 0 010 12z" clipRule="evenodd" />
             </svg>
           </div>
-          <span className="font-semibold">All sites ISO 27001 certified · 24/7 operations</span>
+          <span className="font-semibold">All sites ISO 27001/2022 certified · 24/7 operations</span>
         </div>
       </div>
     </section>

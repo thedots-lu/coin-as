@@ -397,7 +397,7 @@ function pageAbout() {
       {
         type: 'teams',
         order: 3,
-        heading: ls('Our Teams'),
+        heading: ls('Our Experts'),
         body: ls(
           "COIN experts brings together an unmatched level of experience in the many areas required to ensure business continuity and cyberresilience. They know that ensuring continuity is a matter of preparation, training, documented processes, redundant infrastructure but also being ready and committed to address unexpected situations as a team. The operational resiliency of our customers puts high demand on COIN teams to act transparently and reliably and be committed to the continuity of customers' activities while taking care of their staff, whatever the situation at hand.",
         ),
@@ -466,18 +466,9 @@ function pageAbout() {
         heading: ls('Our History'),
         events: [
           {
-            year: '1997',
-            title: ls('COIN Founded in Luxembourg'),
-            description: ls(
-              'COIN was founded in Luxembourg, taking over IBM\'s business continuity centre in Contern. This established COIN as the leading provider of recovery workplaces for the Luxembourg financial sector.',
-            ),
-          },
-          {
             year: '2003',
-            title: ls('Expansion to the Netherlands'),
-            description: ls(
-              'COIN expanded to the Netherlands, establishing a business continuity centre near Amsterdam Airport Schiphol-Rijk to serve the Dutch financial services market.',
-            ),
+            title: ls('COIN Founded in the Netherlands'),
+            description: ls('COIN was founded in the Netherlands'),
           },
           {
             year: '2019',
@@ -1090,14 +1081,8 @@ function servicesData() {
       ),
       sections: [
         {
-          type: 'rich_text',
-          order: 0,
-          heading: ls('COIN in numbers'),
-          body: ls('**20+** Years of Experience | **300+** Customers | **1,000+** Recovery Workplaces | **350+** Business Continuity Plans'),
-        },
-        {
           type: 'features_list',
-          order: 1,
+          order: 0,
           heading: ls('Our Recovery Workplaces solution'),
           features: [
             {
@@ -1124,6 +1109,16 @@ function servicesData() {
                 'A satellite office that doubles as a disaster recovery facility. Used daily for hybrid work, instantly convertible into a full recovery site when needed. Fast implementation in 3 months.',
               ),
             },
+          ],
+        },
+        {
+          type: 'stats',
+          order: 1,
+          stats: [
+            { value: 20, suffix: '+', label: ls('Years of Experience') },
+            { value: 300, suffix: '+', label: ls('Customers') },
+            { value: 1000, suffix: '+', label: ls('Recovery Workplaces') },
+            { value: 350, suffix: '+', label: ls('Business Continuity Plans') },
           ],
         },
         {
