@@ -98,73 +98,94 @@ const APPROACH_STEPS = [
   },
 ]
 
+const CARD_ORDER = [
+  'consultancy-and-training',
+  'recovery-workplaces',
+  'crisis-management',
+  'it-housing',
+  'cyberresilience',
+]
+
 export default async function ServicesPage() {
-  // Fetch all published services (already ordered by `order` ascending)
   const services = await getPublishedServices()
 
-  // Combine service data with display metadata (fallback to default for unknown slugs)
-  const cards = services.map((service) => {
-    const slug = service.slug ?? service.id
+  // Build cards in the explicit order, dropping any service not listed.
+  const cards = CARD_ORDER.flatMap((slug) => {
+    const service = services.find((s) => (s.slug ?? s.id) === slug)
+    if (!service) return []
     const meta = SERVICE_CARD_META[slug] ?? DEFAULT_CARD_META
-    return { slug, service, ...meta }
+    return [{ slug, service, ...meta }]
   })
+
+  const quickLinks = [
+    { label: 'Overview of Services', href: '#overview' },
+    { label: 'Recovery Workplaces', href: '/services/recovery-workplaces' },
+    { label: 'Consultancy and Training', href: '/services/consultancy-and-training' },
+    { label: 'IT Housing', href: '/services/it-housing' },
+    { label: 'Cyberresilience', href: '/services/cyberresilience' },
+    { label: 'Crisis Management', href: '/services/crisis-management' },
+  ]
 
   return (
     <>
       {/* ── 1. Minimal Banner ── */}
-      <HubBanner title="Our Services" />
+      <HubBanner title="Our Services" quickLinks={quickLinks} />
 
       {/* ── 2. Intro Bloc ── */}
-      <section className="bg-white py-16 md:py-20">
+      <section id="overview" className="bg-white py-16 md:py-20 scroll-mt-24">
         <div className="container-padding">
-          <div className="max-w-4xl mx-auto">
-            <p className="text-sm font-semibold uppercase tracking-wider text-accent-500 mb-4">
-              Business Continuity &amp; Cyber Resilience
-            </p>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-900 leading-tight mb-6">
-              We enable organisations to strengthen their resilience across three key areas
-            </h2>
-            <p className="text-lg text-secondary-600 leading-relaxed">
-              COIN has a unique blend of competences in Business Continuity, Digital Workplaces,
-              Facility Management, High Resiliency Systems and Security. We help organisations
-              with critical operations prepare for, respond to, and recover from any disruption.
-            </p>
+          <div className="max-w-6xl mx-auto">
+            <div className="max-w-4xl">
+              <p className="text-sm font-semibold uppercase tracking-wider text-accent-500 mb-4">
+                Business Continuity &amp; Cyber Resilience
+              </p>
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-900 leading-tight mb-6">
+                We enable organisations to strengthen their resilience across three key areas
+              </h2>
+              <p className="text-lg text-secondary-600 leading-relaxed">
+                COIN has a unique blend of competences in Business Continuity, Digital Workplaces,
+                Facility Management, High Resiliency Systems and Security. We help organisations
+                with critical operations prepare for, respond to, and recover from any disruption.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ── 3. Context / Trends Bloc ── */}
-      <section className="bg-warm-50 py-16 md:py-20">
+      <section id="context" className="bg-warm-50 py-16 md:py-20 scroll-mt-24">
         <div className="container-padding">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-900 mb-4">
-              An increasingly complex environment
-            </h2>
-            <p className="text-lg text-secondary-600 leading-relaxed mb-6">
-              Business continuity is becoming more critical, and more complex.
-            </p>
-            <p className="text-secondary-700 font-medium mb-4">
-              Organisations today face an increasing need for robust Business Continuity
-              Management, driven by:
-            </p>
-            <ul className="space-y-3">
-              {[
-                'A growing number and variety of disruption risks',
-                'The rise of hybrid work and distributed workplaces',
-                'Increasing regulatory and compliance requirements',
-              ].map((bullet) => (
-                <li key={bullet} className="flex items-start gap-3 text-secondary-700">
-                  <span className="shrink-0 mt-2 w-2 h-2 rounded-full bg-accent-500" />
-                  <span className="leading-relaxed">{bullet}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="max-w-6xl mx-auto">
+            <div className="max-w-4xl">
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-900 mb-4">
+                An increasingly complex environment
+              </h2>
+              <p className="text-lg text-secondary-600 leading-relaxed mb-6">
+                Business continuity is becoming more critical, and more complex.
+              </p>
+              <p className="text-secondary-700 font-medium mb-4">
+                Organisations today face an increasing need for robust Business Continuity
+                Management, driven by:
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'A growing number and variety of disruption risks',
+                  'The rise of hybrid work and distributed workplaces',
+                  'Increasing regulatory and compliance requirements',
+                ].map((bullet) => (
+                  <li key={bullet} className="flex items-start gap-3 text-secondary-700">
+                    <span className="shrink-0 mt-2 w-2 h-2 rounded-full bg-accent-500" />
+                    <span className="leading-relaxed">{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ── 4. Approach Bloc ── */}
-      <section className="bg-white py-16 md:py-20">
+      <section id="approach" className="bg-white py-16 md:py-20 scroll-mt-24">
         <div className="container-padding">
           <div className="max-w-6xl mx-auto">
             <div className="max-w-4xl mb-12">
@@ -199,7 +220,7 @@ export default async function ServicesPage() {
       </section>
 
       {/* ── 5. Service Cards ── */}
-      <section className="bg-warm-50 py-16 md:py-20">
+      <section id="services" className="bg-warm-50 py-16 md:py-20 scroll-mt-24">
         <div className="container-padding">
           <div className="max-w-6xl mx-auto">
             <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-900 mb-12 text-center">
@@ -289,6 +310,7 @@ export default async function ServicesPage() {
 
       {/* ── 6. Flexible Services Block ── */}
       <FlexibleServices
+        id="flexible"
         section={{
           type: 'flexible_services',
           order: 6,

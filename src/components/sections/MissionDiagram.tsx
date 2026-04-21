@@ -15,10 +15,10 @@ export default function MissionDiagram({ section, locale }: MissionDiagramProps)
   const heading = getLocalizedField(section.heading, locale)
   const body = getLocalizedField(section.body, locale)
 
-  const steps = section.diagramSteps.map((step) => getLocalizedField(step, locale))
+  const sourceSteps = section.diagramSteps.map((step) => getLocalizedField(step, locale))
 
   // Colors for each step in the cycle
-  const stepColors = [
+  const sourceColors = [
     'bg-primary-600',
     'bg-primary-500',
     'bg-secondary-700',
@@ -26,6 +26,13 @@ export default function MissionDiagram({ section, locale }: MissionDiagramProps)
     'bg-primary-700',
     'bg-primary-800',
   ]
+
+  // Rotate the cycle one notch counter-clockwise: each label (and its color)
+  // takes the position of the previous entry in the source order.
+  const rotate = <T,>(arr: T[]): T[] =>
+    arr.length > 0 ? [...arr.slice(1), arr[0]] : arr
+  const steps = rotate(sourceSteps)
+  const stepColors = rotate(sourceColors)
 
   return (
     <section id="mission" className="py-20 bg-warm-50 scroll-mt-24">

@@ -1,9 +1,18 @@
-import { getServiceBySlug } from '@/lib/firestore/services'
+import { getServiceBySlug, getPublishedServices } from '@/lib/firestore/services'
 import { getLocalizedField } from '@/lib/locale'
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
 import ServiceBreadcrumb from '@/components/layout/ServiceBreadcrumb'
+import RelatedServicesCarousel from '@/components/sections/RelatedServicesCarousel'
+
+const RELATED_ORDER = [
+  'consultancy-and-training',
+  'recovery-workplaces',
+  'crisis-management',
+  'it-housing',
+  'cyberresilience',
+]
 
 export const revalidate = 300
 
@@ -36,8 +45,17 @@ export default async function ServicePage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const service = await getServiceBySlug(slug)
+  const [service, allServices] = await Promise.all([
+    getServiceBySlug(slug),
+    getPublishedServices(),
+  ])
   if (!service) notFound()
+
+  const relatedServices = RELATED_ORDER.flatMap((s) => {
+    if (s === slug) return []
+    const match = allServices.find((svc) => (svc.slug ?? svc.id) === s)
+    return match ? [match] : []
+  })
 
   return (
     <>
@@ -71,6 +89,9 @@ export default async function ServicePage({
         </div>
       </section>
       */}
+
+      {/* Related services carousel (excludes the current one) */}
+      <RelatedServicesCarousel services={relatedServices} />
 
       {/* CTA */}
       <section className="py-16 bg-gradient-to-r from-primary-600 to-secondary-600">

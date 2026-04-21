@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { X, Calendar } from 'lucide-react'
+import { X, Mail } from 'lucide-react'
 
 interface EventBannerProps {
   message: string
@@ -18,7 +18,7 @@ export default function EventBanner({ message, linkText, linkHref }: EventBanner
   return (
     <div className="bg-accent-500 text-white relative">
       <div className="container-padding py-2.5 flex items-center justify-center gap-3 text-sm font-medium">
-        <Calendar className="h-4 w-4 flex-shrink-0" />
+        <Mail className="h-4 w-4 flex-shrink-0" />
         <span>{message}</span>
         {linkText && linkHref && (
           <Link

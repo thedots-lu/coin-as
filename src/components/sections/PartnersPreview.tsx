@@ -14,7 +14,7 @@ interface PartnersPreviewProps {
   partners: Partner[]
 }
 
-export default function PartnersPreview({ section, locale, partners }: PartnersPreviewProps) {
+export default function PartnersPreview({ section, locale }: PartnersPreviewProps) {
   const heading = getLocalizedField(section.heading, locale)
   const body = getLocalizedField(section.body, locale)
 
@@ -54,45 +54,6 @@ export default function PartnersPreview({ section, locale, partners }: PartnersP
           <AnimatedSection animation="slideUp" className="text-center mb-16">
             <p className="text-lg text-secondary-600 max-w-2xl mx-auto">{body}</p>
           </AnimatedSection>
-        )}
-
-        {partners.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
-            {partners.map((partner, index) => (
-              <AnimatedSection
-                key={partner.id}
-                animation="slideUp"
-                delay={index * 0.08}
-              >
-                <div className="glass-card p-6 flex flex-col items-center justify-center h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-                  {partner.logoUrl ? (
-                    <img
-                      src={partner.logoUrl}
-                      alt={partner.name}
-                      className="max-h-16 max-w-full object-contain mb-3"
-                    />
-                  ) : (
-                    <span className="text-lg font-semibold text-secondary-800 mb-3">
-                      {partner.name}
-                    </span>
-                  )}
-                  <p className="text-sm text-secondary-500 text-center">{partner.name}</p>
-                  {partner.websiteUrl && (
-                    <a
-                      href={partner.websiteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary-600 hover:text-primary-800 text-xs mt-2"
-                    >
-                      Visit website
-                    </a>
-                  )}
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-secondary-500 mb-12">No partners to display.</p>
         )}
 
         {section.ctaLink && (
