@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { PageSection } from '@/lib/types/page'
-import { LocaleString } from '@/lib/types/locale'
+import { PageSection, TimelineSection } from '@/lib/types/page'
+import { LocaleString, createEmptyLocaleString } from '@/lib/types/locale'
 import LocaleEditor from './LocaleEditor'
+
+type TimelineEvent = TimelineSection['events'][number]
 
 interface SectionsEditorProps {
   sections: PageSection[]
@@ -70,6 +72,16 @@ export default function SectionsEditor({ sections, onChange }: SectionsEditorPro
       )
     }
 
+    if (section.type === 'timeline') {
+      fields.push(
+        <TimelineEventsEditor
+          key="events"
+          events={section.events}
+          onChange={(events) => updateSectionField(index, 'events', events)}
+        />
+      )
+    }
+
     return fields
   }
 
@@ -121,6 +133,116 @@ export default function SectionsEditor({ sections, onChange }: SectionsEditorPro
           )}
         </div>
       ))}
+    </div>
+  )
+}
+
+interface TimelineEventsEditorProps {
+  events: TimelineEvent[]
+  onChange: (events: TimelineEvent[]) => void
+}
+
+function TimelineEventsEditor({ events, onChange }: TimelineEventsEditorProps) {
+  const updateEvent = (index: number, patch: Partial<TimelineEvent>) => {
+    const updated = events.map((e, i) => (i === index ? { ...e, ...patch } : e))
+    onChange(updated)
+  }
+
+  const addEvent = () => {
+    onChange([
+      ...events,
+      {
+        year: String(new Date().getFullYear()),
+        title: createEmptyLocaleString(),
+        description: createEmptyLocaleString(),
+      },
+    ])
+  }
+
+  const removeEvent = (index: number) => {
+    const event = events[index]
+    const label = `${event.year} – ${event.title?.en || '(untitled)'}`
+    if (!confirm(`Delete event "${label}"? This cannot be undone until you save or reload.`)) return
+    onChange(events.filter((_, i) => i !== index))
+  }
+
+  const moveEvent = (index: number, direction: -1 | 1) => {
+    const target = index + direction
+    if (target < 0 || target >= events.length) return
+    const updated = [...events]
+    ;[updated[index], updated[target]] = [updated[target], updated[index]]
+    onChange(updated)
+  }
+
+  return (
+    <div className="space-y-3">
+      <label className="block text-sm font-medium text-gray-700">Events</label>
+      {events.length === 0 && (
+        <p className="text-sm text-gray-500">No events yet. Add one below.</p>
+      )}
+      {events.map((event, index) => (
+        <div key={index} className="border border-gray-200 rounded-md p-4 space-y-3 bg-gray-50">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+              Event #{index + 1}
+            </span>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => moveEvent(index, -1)}
+                disabled={index === 0}
+                className="text-xs px-2 py-1 text-gray-600 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                title="Move up"
+              >
+                ↑
+              </button>
+              <button
+                type="button"
+                onClick={() => moveEvent(index, 1)}
+                disabled={index === events.length - 1}
+                className="text-xs px-2 py-1 text-gray-600 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                title="Move down"
+              >
+                ↓
+              </button>
+              <button
+                type="button"
+                onClick={() => removeEvent(index)}
+                className="text-xs px-2 py-1 text-red-600 hover:bg-red-50 rounded"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Year</label>
+            <input
+              type="text"
+              value={event.year}
+              onChange={(e) => updateEvent(index, { year: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white"
+            />
+          </div>
+          <LocaleEditor
+            label="Title"
+            value={event.title}
+            onChange={(v) => updateEvent(index, { title: v })}
+          />
+          <LocaleEditor
+            label="Description"
+            value={event.description}
+            onChange={(v) => updateEvent(index, { description: v })}
+            multiline
+          />
+        </div>
+      ))}
+      <button
+        type="button"
+        onClick={addEvent}
+        className="text-sm font-medium text-primary-600 hover:text-primary-700 hover:bg-primary-50 px-3 py-1.5 rounded-md transition-colors"
+      >
+        + Add event
+      </button>
     </div>
   )
 }
