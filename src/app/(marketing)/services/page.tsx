@@ -1,10 +1,11 @@
+import { Fragment } from 'react'
 import { getPublishedServices } from '@/lib/firestore/services'
 import { getLocalizedField } from '@/lib/locale'
 import Link from 'next/link'
 import { Metadata } from 'next'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
 import FlexibleServices from '@/components/sections/FlexibleServices'
-import { ArrowRight, Building2, GraduationCap, Server, Shield, AlertTriangle, Briefcase, LucideIcon } from 'lucide-react'
+import { ArrowRight, Building2, ChevronRight, GraduationCap, Server, Shield, AlertTriangle, Briefcase, LucideIcon } from 'lucide-react'
 
 export const revalidate = 300
 
@@ -79,19 +80,16 @@ const DEFAULT_CARD_META: CardMeta = {
 // ---------------------------------------------------------------------------
 const APPROACH_STEPS = [
   {
-    number: '01',
     title: 'Assess',
     description:
       'Understand your risks and define the right strategy. We analyse your business processes, critical assets and exposure to identify vulnerabilities and design a tailored continuity plan.',
   },
   {
-    number: '02',
     title: 'Prevent',
     description:
       'Reduce risks and strengthen your resilience. We implement security, monitoring and protection solutions to minimise the likelihood and impact of disruptions.',
   },
   {
-    number: '03',
     title: 'Respond',
     description:
       'Ensure continuity when disruption occurs. We provide recovery environments, crisis management support and secure access solutions to keep your operations running.',
@@ -197,22 +195,26 @@ export default async function ServicesPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {APPROACH_STEPS.map((step) => (
-                <div
-                  key={step.number}
-                  className="relative bg-warm-50 rounded-2xl p-8 border border-secondary-100"
-                >
-                  <span className="text-5xl font-bold text-accent-500/20 font-display">
-                    {step.number}
-                  </span>
-                  <h3 className="font-display text-xl font-bold text-primary-900 mt-2 mb-3">
-                    {step.title}
-                  </h3>
-                  <p className="text-secondary-600 leading-relaxed text-sm">
-                    {step.description}
-                  </p>
-                </div>
+            <div className="flex flex-col md:flex-row md:items-stretch gap-6 md:gap-4">
+              {APPROACH_STEPS.map((step, index) => (
+                <Fragment key={step.title}>
+                  <div className="relative bg-warm-50 rounded-2xl p-8 border border-secondary-100 flex-1">
+                    <h3 className="font-display text-xl font-bold text-primary-900 mb-3">
+                      {step.title}
+                    </h3>
+                    <p className="text-secondary-600 leading-relaxed text-sm">
+                      {step.description}
+                    </p>
+                  </div>
+                  {index < APPROACH_STEPS.length - 1 && (
+                    <div className="flex items-center justify-center py-2 md:py-0">
+                      <ChevronRight
+                        className="w-12 h-12 text-accent-500 rotate-90 md:rotate-0 shrink-0"
+                        aria-hidden="true"
+                      />
+                    </div>
+                  )}
+                </Fragment>
               ))}
             </div>
           </div>
