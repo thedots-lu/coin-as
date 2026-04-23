@@ -322,12 +322,12 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
                     <span className="font-semibold">+31 88 26 46 000</span>
                   </a>
                   <a href="tel:+35235705030" className="flex items-center gap-3 text-white hover:text-accent-400 transition-colors">
-                    <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">LU</span>
+                    <span className="flex items-center gap-1">
+                      <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">FR</span>
+                      <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">DE</span>
+                      <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">EN</span>
+                    </span>
                     <span className="font-semibold">+352 357 05 30</span>
-                  </a>
-                  <a href="tel:+3225133618" className="flex items-center gap-3 text-white hover:text-accent-400 transition-colors">
-                    <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">BE</span>
-                    <span className="font-semibold">+32 2 513 36 18</span>
                   </a>
                 </div>
 
@@ -338,13 +338,6 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
                 </div>
               </div>
 
-              {/* Response time */}
-              <div className="bg-white rounded-2xl p-6 border border-secondary-100">
-                <p className="text-sm text-secondary-500">
-                  <span className="font-bold text-secondary-800 block mb-1">Response within 24h</span>
-                  Our team processes enquiries on business days. For urgent matters, call us directly.
-                </p>
-              </div>
             </div>
           </div>
         </div>

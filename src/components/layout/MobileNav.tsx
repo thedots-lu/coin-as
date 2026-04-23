@@ -24,25 +24,25 @@ export default function MobileNav({ navItems, isOpen, onClose }: MobileNavProps)
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
-          {/* Overlay */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 top-20 bg-black/40 z-[60] lg:hidden"
-            onClick={onClose}
-          />
-
-          {/* Drawer */}
-          <motion.nav
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="fixed top-20 right-0 bottom-0 w-80 max-w-[85vw] bg-white shadow-xl z-[70] overflow-y-auto lg:hidden"
-          >
+        <motion.div
+          key="mobile-overlay"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 top-20 bg-black/40 z-[60] lg:hidden"
+          onClick={onClose}
+        />
+      )}
+      {isOpen && (
+        <motion.nav
+          key="mobile-drawer"
+          initial={{ opacity: 0, x: '100%' }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: '100%' }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          className="fixed top-20 right-0 bottom-0 w-80 max-w-[85vw] bg-white shadow-xl z-[70] overflow-y-auto lg:hidden"
+        >
             <div className="py-4">
               {navItems
                 .sort((a, b) => a.order - b.order)
@@ -109,8 +109,7 @@ export default function MobileNav({ navItems, isOpen, onClose }: MobileNavProps)
                   )
                 })}
             </div>
-          </motion.nav>
-        </>
+        </motion.nav>
       )}
     </AnimatePresence>
   )

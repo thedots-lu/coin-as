@@ -46,7 +46,7 @@ export default async function KnowledgeHubOverview() {
     { label: 'Case Studies', href: '#case-studies', count: caseStudies.length },
     { label: 'Videos', href: '#videos', count: latestVideos.length },
     { label: 'White Papers', href: '#white-papers', count: latestPapers.length },
-    { label: 'News & Events', href: '#news', count: latestNews.length },
+    { label: 'News', href: '#news', count: latestNews.length },
     { label: 'FAQ', href: '/knowledge-hub/faq' },
   ]
 
@@ -98,8 +98,8 @@ export default async function KnowledgeHubOverview() {
         )}
       </SectionWrapper>
 
-      {/* News & Events */}
-      <SectionWrapper id="news" icon={Newspaper} title="News & Events" viewAllHref="/news" bgClass="bg-white">
+      {/* News */}
+      <SectionWrapper id="news" icon={Newspaper} title="News" viewAllHref="/news" bgClass="bg-white">
         {latestNews.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {latestNews.map((n) => <NewsCard key={n.id} news={n} />)}

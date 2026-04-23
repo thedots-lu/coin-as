@@ -9,12 +9,12 @@ import Badge from '@/components/ui/Badge'
 export const revalidate = 300
 
 export const metadata: Metadata = {
-  title: 'News & Events',
-  description: 'Stay up to date with the latest news and events from COIN, your business continuity partner.',
+  title: 'News',
+  description: 'Stay up to date with the latest news from COIN, your business continuity partner.',
   alternates: { canonical: 'https://coin-bc.com/news' },
   openGraph: {
-    title: 'News & Events | COIN AS',
-    description: 'Stay up to date with the latest news and events from COIN, your business continuity partner.',
+    title: 'News | COIN AS',
+    description: 'Stay up to date with the latest news from COIN, your business continuity partner.',
     url: 'https://coin-bc.com/news',
   },
 }
@@ -31,7 +31,7 @@ export default async function NewsPage() {
       <section className="relative bg-gradient-to-br from-primary-600 via-primary-700 to-secondary-800 text-white py-20">
         <div className="absolute inset-0 bg-[url('/images/grid-pattern.svg')] opacity-10" />
         <div className="relative container-padding max-w-6xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">News & Events</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">News</h1>
           <p className="text-lg text-primary-100 max-w-2xl mx-auto">
             The latest updates on business continuity, cyber resilience, and COIN activities.
           </p>

@@ -183,14 +183,14 @@ export default async function ServicesPage() {
       </section>
 
       {/* ── 4. Approach Bloc ── */}
-      <section id="approach" className="bg-white py-16 md:py-20 scroll-mt-24">
+      <section id="approach" className="bg-primary-950 text-white py-16 md:py-20 scroll-mt-24">
         <div className="container-padding">
           <div className="max-w-6xl mx-auto">
             <div className="max-w-4xl mb-12">
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-900 mb-4">
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
                 Our approach to business continuity
               </h2>
-              <p className="text-lg text-secondary-600 leading-relaxed">
+              <p className="text-lg text-primary-200 leading-relaxed">
                 COIN supports your organisation across the full business continuity lifecycle:
               </p>
             </div>
@@ -198,11 +198,11 @@ export default async function ServicesPage() {
             <div className="flex flex-col md:flex-row md:items-stretch gap-6 md:gap-4">
               {APPROACH_STEPS.map((step, index) => (
                 <Fragment key={step.title}>
-                  <div className="relative bg-warm-50 rounded-2xl p-8 border border-secondary-100 flex-1">
-                    <h3 className="font-display text-xl font-bold text-primary-900 mb-3">
+                  <div className="relative bg-primary-900/50 rounded-2xl p-8 border border-white/10 flex-1">
+                    <h3 className="font-display text-xl font-bold text-white mb-3">
                       {step.title}
                     </h3>
-                    <p className="text-secondary-600 leading-relaxed text-sm">
+                    <p className="text-primary-200 leading-relaxed text-sm">
                       {step.description}
                     </p>
                   </div>

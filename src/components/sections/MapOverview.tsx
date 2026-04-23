@@ -13,31 +13,31 @@ interface MapOverviewProps {
 
 const SITES = [
   {
-    city: 'Schiphol-Rijk',
+    city: 'Amsterdam',
     country: 'Netherlands',
     phone: '+31 88 26 46 000',
-    detail: 'Recovery workplaces · Crisis rooms',
+    detail: '500 Recovery workplaces · Crisis rooms',
     color: '#004779',
   },
   {
     city: 'Antwerp',
     country: 'Belgium',
     phone: '',
-    detail: 'Dedicated site',
+    detail: 'Customer dedicated recovery site',
     color: '#009900',
   },
   {
     city: 'Munsbach',
     country: 'Luxembourg',
     phone: '+352 357 05 30',
-    detail: '500 workplaces · IT Housing',
+    detail: '500 recovery workplaces · IT Housing',
     color: '#A51218',
   },
   {
     city: 'Contern',
     country: 'Luxembourg',
     phone: '+352 357 05 30',
-    detail: '250 workplaces · Crisis Room',
+    detail: '250 recovery workplaces · Crisis Room',
     color: '#A51218',
   },
 ]
