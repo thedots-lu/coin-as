@@ -51,7 +51,7 @@ export default function MapOverview({ section, locale }: MapOverviewProps) {
         {/* Section title */}
         <div className="mb-10">
           <div className="w-12 h-1 bg-accent-500 rounded-full mb-4" />
-          <h2 className="text-3xl md:text-4xl font-bold text-primary-900 font-display tracking-tight mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-black font-display tracking-tight mb-4">
             Our Locations
           </h2>
           {body && (

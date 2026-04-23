@@ -21,7 +21,7 @@ export default function CustomersSection({ section, locale }: CustomersSectionPr
       <div className="container-padding">
         <AnimatedSection animation="slideUp" className="text-center mb-6">
           {heading && (
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">{heading}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-black mb-4">{heading}</h2>
           )}
         </AnimatedSection>
 
