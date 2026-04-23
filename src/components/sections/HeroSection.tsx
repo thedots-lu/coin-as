@@ -34,6 +34,10 @@ const SLIDES = [
       'We operate and maintain the site and assist in case of disaster, 24x7',
     ],
     description: null,
+    secondaryCta: {
+      text: 'Read our article',
+      href: '/knowledge-hub',
+    },
   },
   {
     src: '/images/coin/coin-fotosharonwillems-16.webp',
@@ -49,18 +53,19 @@ const SLIDES = [
     ],
     description: null,
   },
-  {
-    src: '/images/coin/coin-fotosharonwillems-36.webp',
-    alt: 'COIN AS experts analyzing DORA compliance requirements',
-    label: 'NIS2 & DORA',
-    title: 'Is your organisation ready for NIS2 and DORA?',
-    bullets: [
-      'Free readiness assessment of your digital operational resilience',
-      'Personalised compliance roadmap and priority actions',
-      'Expert review of your ICT risk management and incident response',
-    ],
-    description: null,
-  },
+  // Hidden for now — kept for later re-enable
+  // {
+  //   src: '/images/coin/coin-fotosharonwillems-36.webp',
+  //   alt: 'COIN AS experts analyzing DORA compliance requirements',
+  //   label: 'NIS2 & DORA',
+  //   title: 'Is your organisation ready for NIS2 and DORA?',
+  //   bullets: [
+  //     'Free readiness assessment of your digital operational resilience',
+  //     'Personalised compliance roadmap and priority actions',
+  //     'Expert review of your ICT risk management and incident response',
+  //   ],
+  //   description: null,
+  // },
 ]
 
 const INTERVAL = 12000
@@ -161,15 +166,20 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
                       {primaryBtnText}
                     </Button>
                   )}
-                  {secondaryBtnText && (
-                    <Button
-                      href={section.secondaryButtonLink}
-                      variant="outline"
-                      className="text-base px-7 py-3.5 border-white/30 text-white hover:shadow-lg hover:shadow-white/10 hover:border-white/60"
-                    >
-                      {secondaryBtnText}
-                    </Button>
-                  )}
+                  {(() => {
+                    const slideCta = 'secondaryCta' in current ? current.secondaryCta : null
+                    const text = slideCta?.text ?? secondaryBtnText
+                    const href = slideCta?.href ?? section.secondaryButtonLink
+                    return text ? (
+                      <Button
+                        href={href}
+                        variant="outline"
+                        className="text-base px-7 py-3.5 border-white/30 text-white hover:shadow-lg hover:shadow-white/10 hover:border-white/60"
+                      >
+                        {text}
+                      </Button>
+                    ) : null
+                  })()}
                 </div>
 
                 {/* NIS2/DORA badge — hidden for now, keep for later

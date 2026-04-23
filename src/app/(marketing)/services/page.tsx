@@ -4,7 +4,6 @@ import { getLocalizedField } from '@/lib/locale'
 import Link from 'next/link'
 import { Metadata } from 'next'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
-import FlexibleServices from '@/components/sections/FlexibleServices'
 import { ArrowRight, Building2, ChevronRight, GraduationCap, Server, Shield, AlertTriangle, Briefcase, LucideIcon } from 'lucide-react'
 
 export const revalidate = 300
@@ -150,38 +149,6 @@ export default async function ServicesPage() {
         </div>
       </section>
 
-      {/* ── 3. Context / Trends Bloc ── */}
-      <section id="context" className="bg-warm-50 py-16 md:py-20 scroll-mt-24">
-        <div className="container-padding">
-          <div className="max-w-6xl mx-auto">
-            <div className="max-w-4xl">
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-900 mb-4">
-                An increasingly complex environment
-              </h2>
-              <p className="text-lg text-secondary-600 leading-relaxed mb-6">
-                Business continuity is becoming more critical, and more complex.
-              </p>
-              <p className="text-secondary-700 font-medium mb-4">
-                Organisations today face an increasing need for robust Business Continuity
-                Management, driven by:
-              </p>
-              <ul className="space-y-3">
-                {[
-                  'A growing number and variety of disruption risks',
-                  'The rise of hybrid work and distributed workplaces',
-                  'Increasing regulatory and compliance requirements',
-                ].map((bullet) => (
-                  <li key={bullet} className="flex items-start gap-3 text-secondary-700">
-                    <span className="shrink-0 mt-2 w-2 h-2 rounded-full bg-accent-500" />
-                    <span className="leading-relaxed">{bullet}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ── 4. Approach Bloc ── */}
       <section id="approach" className="bg-primary-950 text-white py-16 md:py-20 scroll-mt-24">
         <div className="container-padding">
@@ -309,28 +276,6 @@ export default async function ServicesPage() {
           </div>
         </div>
       </section>
-
-      {/* ── 6. Flexible Services Block ── */}
-      <FlexibleServices
-        id="flexible"
-        section={{
-          type: 'flexible_services',
-          order: 6,
-          heading: {
-            en: 'Flexible Services - Customized SLA',
-            fr: 'Flexible Services - Customized SLA',
-            nl: 'Flexible Services - Customized SLA',
-          },
-          body: {
-            en: 'COIN adjusts to your needs and constraints. We know business continuity objectives and regulatory requirements depend on your business, country, and resources available in your organisation. We can offer this unique level of flexibility because business continuity is our core business and we have experience with 300+ customers in various industries.',
-            fr: 'COIN adjusts to your needs and constraints. We know business continuity objectives and regulatory requirements depend on your business, country, and resources available in your organisation. We can offer this unique level of flexibility because business continuity is our core business and we have experience with 300+ customers in various industries.',
-            nl: 'COIN adjusts to your needs and constraints. We know business continuity objectives and regulatory requirements depend on your business, country, and resources available in your organisation. We can offer this unique level of flexibility because business continuity is our core business and we have experience with 300+ customers in various industries.',
-          },
-          imageUrl: '/images/coin/coin-luxembourg-munsbach-shared-meeting-room.webp',
-        }}
-        locale="en"
-        background="#ffffff"
-      />
 
       {/* ── 7. Bottom CTA ── */}
       <section className="bg-primary-950 text-white py-20">
