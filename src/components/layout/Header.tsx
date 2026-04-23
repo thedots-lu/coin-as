@@ -41,6 +41,7 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
   const textClass = isScrolled ? 'text-secondary-600 hover:text-primary-500' : 'text-primary-700 hover:text-primary-500'
 
   return (
+    <>
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
@@ -136,9 +137,12 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
           </button>
         </div>
       </div>
-
-      {/* Mobile Navigation */}
-      <MobileNav navItems={navItems} isOpen={mobileOpen} onClose={handleMobileClose} />
     </header>
+
+    {/* Mobile Navigation — rendered outside <header> because the header's
+        backdrop-filter would otherwise create a containing block for this
+        fixed drawer (breaks positioning once scrolled). */}
+    <MobileNav navItems={navItems} isOpen={mobileOpen} onClose={handleMobileClose} />
+    </>
   )
 }

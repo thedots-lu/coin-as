@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
 import { getLocalizedField } from '@/lib/locale'
 import { HeroSection as HeroSectionType } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
@@ -20,7 +20,7 @@ const SLIDES = [
     label: '20 Years of Innovation',
     title: '20 years of Business Continuity innovation. BeNeLux market leader.',
     bullets: null,
-    description: "COIN has over 20 years of experience in business continuity. Yet, each year brings its share of new risks as well as technological challenges and opportunities. Together with our partners, we continuously develop innovative and robust solutions that improve the resiliency of our customers in an increasingly complex business and regulatory environment.",
+    description: "With over 20 years of experience in business continuity, COIN continuously develops innovative solutions to help organisations stay resilient in an increasingly complex business and regulatory environment.",
   },
   {
     src: '/images/coin/coin-luxembourg-contern-disaster-recovery-office-big.webp',
@@ -63,7 +63,7 @@ const SLIDES = [
   },
 ]
 
-const INTERVAL = 6000
+const INTERVAL = 12000
 
 interface HeroSectionProps {
   section: HeroSectionType
@@ -72,7 +72,9 @@ interface HeroSectionProps {
 
 export default function HeroSection({ section, locale }: HeroSectionProps) {
   const [active, setActive] = useState(0)
-  const [paused, setPaused] = useState(false)
+  const [hoverPaused, setHoverPaused] = useState(false)
+  const [manualPaused, setManualPaused] = useState(false)
+  const paused = hoverPaused || manualPaused
 
   const next = useCallback(() => setActive((i) => (i + 1) % SLIDES.length), [])
   const prev = useCallback(() => setActive((i) => (i - 1 + SLIDES.length) % SLIDES.length), [])
@@ -94,8 +96,8 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
         {/* Main carousel card */}
         <div
           className="relative rounded-2xl overflow-hidden shadow-2xl"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
+          onMouseEnter={() => setHoverPaused(true)}
+          onMouseLeave={() => setHoverPaused(false)}
         >
           <AnimatePresence mode="wait">
             <motion.div
@@ -222,7 +224,7 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
           )}
         </div>
 
-        {/* Dots progress */}
+        {/* Dots progress + play/pause */}
         {SLIDES.length > 1 && (
           <div className="flex items-center justify-center gap-3 mt-6">
             {SLIDES.map((_, i) => (
@@ -245,6 +247,15 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
                 )}
               </button>
             ))}
+            <button
+              type="button"
+              onClick={() => setManualPaused((p) => !p)}
+              aria-label={manualPaused ? 'Play carousel' : 'Pause carousel'}
+              aria-pressed={manualPaused}
+              className="ml-2 flex items-center justify-center h-7 w-7 rounded-full text-primary-700 hover:bg-secondary-200 transition-colors"
+            >
+              {manualPaused ? <Play className="h-3.5 w-3.5" /> : <Pause className="h-3.5 w-3.5" />}
+            </button>
           </div>
         )}
 

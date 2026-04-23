@@ -146,9 +146,15 @@ export default function Footer({ footerNav, siteConfig }: FooterProps) {
 
         <div className="container-padding py-5">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-secondary-500 text-xs tracking-wide">
-              {copyright || `${currentYear} COIN. All rights reserved.`}
-            </p>
+            <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3">
+              <p className="text-secondary-500 text-xs tracking-wide">
+                {copyright || `${currentYear} COIN. All rights reserved.`}
+              </p>
+              <span className="hidden md:inline text-secondary-700">|</span>
+              <p className="text-secondary-500 text-xs tracking-wide">
+                Developed by The Dots
+              </p>
+            </div>
 
             <div className="flex items-center gap-1 text-xs">
               <Link

@@ -455,7 +455,7 @@ function pageAbout() {
       {
         type: 'map_overview',
         order: 6,
-        body: ls('COIN operates business continuity centres across Belgium, the Netherlands and Luxembourg, providing 750+ recovery workplaces and co-location facilities to keep your business running.'),
+        body: ls('COIN operates business continuity centres across Belgium, the Netherlands and Luxembourg, providing 1000 recovery workplaces and co-location facilities to keep your business running.'),
         mapImageUrl: null,
         mapEmbedUrl: null,
         isoBadgeUrl: null,
