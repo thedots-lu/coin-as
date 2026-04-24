@@ -115,7 +115,6 @@ export default async function ServicesPage() {
   })
 
   const quickLinks = [
-    { label: 'Overview of Services', href: '#overview' },
     { label: 'Recovery Workplaces', href: '/services/recovery-workplaces' },
     { label: 'Consultancy and Training', href: '/services/consultancy-and-training' },
     { label: 'IT Housing', href: '/services/it-housing' },
