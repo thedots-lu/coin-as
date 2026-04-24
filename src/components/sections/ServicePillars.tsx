@@ -125,15 +125,9 @@ export default function ServicePillars({ section, locale }: ServicePillarsProps)
           {/* Heading */}
           <div className="mb-14 max-w-3xl">
             <div className="w-12 h-1 bg-accent-500 mb-6" />
-            <h2 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight mb-4">
+            <h2 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
               Our solutions
             </h2>
-            <p className="text-base text-white/70 mb-2">
-              Looking for specific solutions?
-            </p>
-            <p className="text-base text-white/80 leading-relaxed">
-              Explore our full range of business continuity and cyber resilience services
-            </p>
           </div>
 
           {/* 5 solution links */}
