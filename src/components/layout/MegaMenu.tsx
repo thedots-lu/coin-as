@@ -7,11 +7,12 @@ import type { NavChild } from '@/lib/types/navigation'
 
 interface MegaMenuProps {
   children: NavChild[]
+  parentPath: string
   isOpen: boolean
   onClose: () => void
 }
 
-export default function MegaMenu({ children, isOpen, onClose }: MegaMenuProps) {
+export default function MegaMenu({ children, parentPath, isOpen, onClose }: MegaMenuProps) {
   const locale = 'en'
 
   return (
@@ -25,6 +26,7 @@ export default function MegaMenu({ children, isOpen, onClose }: MegaMenuProps) {
           className="absolute top-full left-0 mt-1 min-w-[220px] bg-white rounded-lg shadow-lg border-t-2 border-primary-500 py-2 z-50"
         >
           {children
+            .filter((c) => c.path !== parentPath)
             .sort((a, b) => a.order - b.order)
             .map((child) => {
               const label = getLocalizedField(child.label, locale)

@@ -102,6 +102,7 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
                     {hasChildren && item.children && (
                       <MegaMenu
                         children={item.children}
+                        parentPath={item.path}
                         isOpen={openMenu === item.path}
                         onClose={handleMenuClose}
                       />

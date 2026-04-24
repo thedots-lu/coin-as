@@ -18,6 +18,7 @@ const SITES = [
     phone: '+31 88 26 46 000',
     detail: '500 Recovery workplaces · Crisis rooms',
     color: '#004779',
+    image: '/images/coin/amsterdam-office.webp',
   },
   {
     city: 'Antwerp',
@@ -25,6 +26,7 @@ const SITES = [
     phone: '',
     detail: 'Customer dedicated recovery site',
     color: '#009900',
+    image: null,
   },
   {
     city: 'Munsbach',
@@ -32,6 +34,7 @@ const SITES = [
     phone: '+352 357 05 30',
     detail: '500 recovery workplaces · IT Housing',
     color: '#A51218',
+    image: null,
   },
   {
     city: 'Contern',
@@ -39,6 +42,7 @@ const SITES = [
     phone: '+352 357 05 30',
     detail: '250 recovery workplaces · Crisis Room',
     color: '#A51218',
+    image: '/images/coin/contern-ltc-building.webp',
   },
 ]
 
@@ -82,34 +86,47 @@ export default function MapOverview({ section, locale }: MapOverviewProps) {
             {SITES.map((site) => (
               <div
                 key={`${site.city}-${site.country}`}
-                className="bg-white rounded-2xl p-5 border border-secondary-100 hover:shadow-md transition-all duration-200"
+                className="bg-white rounded-2xl border border-secondary-100 hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col"
               >
-                <div className="flex items-start gap-3 mb-3">
-                  <div
-                    className="w-1 h-10 rounded-full shrink-0"
-                    style={{ backgroundColor: site.color }}
-                  />
-                  <div>
-                    <h3 className="font-bold text-primary-900 font-display text-lg leading-tight">
-                      {site.city}
-                    </h3>
-                    <p className="text-xs text-secondary-400 uppercase tracking-wider font-medium">
-                      {site.country}
-                    </p>
+                {site.image && (
+                  <div className="relative w-full aspect-[4/3] bg-secondary-50">
+                    <Image
+                      src={site.image}
+                      alt={`COIN ${site.city} site`}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+                      className="object-cover"
+                    />
                   </div>
-                </div>
+                )}
+                <div className="p-5">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div
+                      className="w-1 h-10 rounded-full shrink-0"
+                      style={{ backgroundColor: site.color }}
+                    />
+                    <div>
+                      <h3 className="font-bold text-primary-900 font-display text-lg leading-tight">
+                        {site.city}
+                      </h3>
+                      <p className="text-xs text-secondary-400 uppercase tracking-wider font-medium">
+                        {site.country}
+                      </p>
+                    </div>
+                  </div>
 
-                <div className="space-y-2">
-                  {site.phone && (
-                    <a
-                      href={`tel:${site.phone.replace(/\s/g, '')}`}
-                      className="flex items-center gap-2 text-sm text-secondary-700 font-semibold hover:text-primary-600 transition-colors"
-                    >
-                      <Phone className="w-3.5 h-3.5 shrink-0 text-secondary-400" />
-                      <span>{site.phone}</span>
-                    </a>
-                  )}
-                  <p className="text-xs text-secondary-500 italic pt-1">{site.detail}</p>
+                  <div className="space-y-2">
+                    {site.phone && (
+                      <a
+                        href={`tel:${site.phone.replace(/\s/g, '')}`}
+                        className="flex items-center gap-2 text-sm text-secondary-700 font-semibold hover:text-primary-600 transition-colors"
+                      >
+                        <Phone className="w-3.5 h-3.5 shrink-0 text-secondary-400" />
+                        <span>{site.phone}</span>
+                      </a>
+                    )}
+                    <p className="text-xs text-secondary-500 italic pt-1">{site.detail}</p>
+                  </div>
                 </div>
               </div>
             ))}
@@ -117,14 +134,23 @@ export default function MapOverview({ section, locale }: MapOverviewProps) {
         </div>
 
         {/* ISO certification badge */}
-        <div className="mt-12 flex items-center justify-center gap-3 text-base md:text-lg text-secondary-700">
-          <div className="w-9 h-9 rounded-full bg-primary-500 flex items-center justify-center">
-            <svg viewBox="0 0 20 20" className="w-5 h-5 fill-white">
-              <path d="M9 12l-2-2 1.4-1.4L9 9.2l3.6-3.6L14 7z" />
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 110-12 6 6 0 010 12z" clipRule="evenodd" />
-            </svg>
+        <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-6 bg-white rounded-2xl border border-secondary-100 shadow-sm px-6 py-5 max-w-xl mx-auto">
+          <Image
+            src="/images/coin/kiwa-iso-27001-logo.jpg"
+            alt="Kiwa ISO/IEC 27001 certification"
+            width={90}
+            height={167}
+            className="h-24 md:h-28 w-auto shrink-0"
+          />
+          <div className="text-center sm:text-left">
+            <p className="text-xs uppercase tracking-wider text-secondary-400 font-medium mb-1">
+              Certified
+            </p>
+            <p className="text-base md:text-lg font-semibold text-secondary-800 leading-snug">
+              All sites ISO 27001/2022 certified
+            </p>
+            <p className="text-sm text-secondary-500 mt-1">24/7 operations</p>
           </div>
-          <span className="font-semibold">All sites ISO 27001/2022 certified · 24/7 operations</span>
         </div>
       </div>
     </section>
