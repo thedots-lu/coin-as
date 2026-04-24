@@ -67,8 +67,8 @@ export default function MapOverview({ section, locale }: MapOverviewProps) {
 
         {/* Map + sites grid */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
-          {/* Map image */}
-          <div className="lg:col-span-2 flex justify-center lg:justify-start">
+          {/* Map image + certification */}
+          <div className="lg:col-span-2 flex flex-col items-center lg:items-start gap-6">
             <div className="relative w-full max-w-sm">
               <Image
                 src="/images/coin/Amsterdam.png"
@@ -78,6 +78,26 @@ export default function MapOverview({ section, locale }: MapOverviewProps) {
                 className="w-full h-auto"
                 priority
               />
+            </div>
+
+            {/* ISO certification badge */}
+            <div className="w-full max-w-sm flex flex-col sm:flex-row items-center gap-5 sm:gap-6 bg-white rounded-2xl border border-secondary-100 shadow-sm px-6 py-5">
+              <Image
+                src="/images/coin/kiwa-iso-27001-logo.jpg"
+                alt="Kiwa ISO/IEC 27001 certification"
+                width={90}
+                height={167}
+                className="h-24 md:h-28 w-auto shrink-0"
+              />
+              <div className="text-center sm:text-left">
+                <p className="text-xs uppercase tracking-wider text-secondary-400 font-medium mb-1">
+                  Certified
+                </p>
+                <p className="text-base md:text-lg font-semibold text-secondary-800 leading-snug">
+                  All sites ISO 27001/2022 certified
+                </p>
+                <p className="text-sm text-secondary-500 mt-1">24/7 operations</p>
+              </div>
             </div>
           </div>
 
@@ -130,26 +150,6 @@ export default function MapOverview({ section, locale }: MapOverviewProps) {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* ISO certification badge */}
-        <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-6 bg-white rounded-2xl border border-secondary-100 shadow-sm px-6 py-5 max-w-xl mx-auto">
-          <Image
-            src="/images/coin/kiwa-iso-27001-logo.jpg"
-            alt="Kiwa ISO/IEC 27001 certification"
-            width={90}
-            height={167}
-            className="h-24 md:h-28 w-auto shrink-0"
-          />
-          <div className="text-center sm:text-left">
-            <p className="text-xs uppercase tracking-wider text-secondary-400 font-medium mb-1">
-              Certified
-            </p>
-            <p className="text-base md:text-lg font-semibold text-secondary-800 leading-snug">
-              All sites ISO 27001/2022 certified
-            </p>
-            <p className="text-sm text-secondary-500 mt-1">24/7 operations</p>
           </div>
         </div>
       </div>
