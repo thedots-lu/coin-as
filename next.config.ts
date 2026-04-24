@@ -8,9 +8,6 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'coin-website-8d592.firebasestorage.app' },
     ],
   },
-}
-
-module.exports = {
   allowedDevOrigins: ['100.67.235.50'],
 }
 
