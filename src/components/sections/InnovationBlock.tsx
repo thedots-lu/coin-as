@@ -1,19 +1,24 @@
 'use client'
 
-import Image from 'next/image'
 import { getLocalizedField } from '@/lib/locale'
 import { InnovationSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
 import { motion } from 'framer-motion'
+import EditableText from '@/components/admin/cms/EditableText'
+import EditableImage from '@/components/admin/cms/EditableImage'
+import { useEditing } from '@/components/admin/cms/EditingContext'
 
 interface InnovationBlockProps {
   section: InnovationSection
   locale: Locale
+  basePath: string
 }
 
-export default function InnovationBlock({ section, locale }: InnovationBlockProps) {
+export default function InnovationBlock({ section, locale, basePath }: InnovationBlockProps) {
+  const isEditing = !!useEditing()
   const heading = getLocalizedField(section.heading, locale)
   const body = getLocalizedField(section.body, locale)
+  const showImageColumn = !!section.imageUrl || isEditing
 
   return (
     <section className="relative py-28 md:py-36 overflow-hidden" style={{ background: 'var(--color-primary-950)' }}>
@@ -38,7 +43,7 @@ export default function InnovationBlock({ section, locale }: InnovationBlockProp
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-80px' }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className={section.imageUrl ? 'lg:w-[45%] lg:pt-12' : 'max-w-3xl mx-auto'}
+              className={showImageColumn ? 'lg:w-[45%] lg:pt-12' : 'max-w-3xl mx-auto'}
             >
               {/* Stacked label with vertical accent */}
               <div className="flex items-stretch gap-4 mb-8">
@@ -58,15 +63,25 @@ export default function InnovationBlock({ section, locale }: InnovationBlockProp
                 </div>
               </div>
 
-              {heading && (
+              {(heading || isEditing) && (
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-8 leading-[1.1] tracking-tight">
-                  {heading}
+                  <EditableText
+                    path={`${basePath}.heading`}
+                    value={section.heading}
+                    as="span"
+                    multiline
+                  />
                 </h2>
               )}
 
-              {body && (
+              {(body || isEditing) && (
                 <p className="text-primary-200 leading-relaxed text-lg md:text-xl max-w-xl">
-                  {body}
+                  <EditableText
+                    path={`${basePath}.body`}
+                    value={section.body}
+                    as="span"
+                    multiline
+                  />
                 </p>
               )}
 
@@ -86,7 +101,7 @@ export default function InnovationBlock({ section, locale }: InnovationBlockProp
             </motion.div>
 
             {/* Image column -- full-bleed feel with diagonal clip */}
-            {section.imageUrl && (
+            {showImageColumn && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: 30 }}
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
@@ -102,7 +117,8 @@ export default function InnovationBlock({ section, locale }: InnovationBlockProp
                   />
                   <div className="relative rounded-xl overflow-hidden">
                     <div className="aspect-[16/10] relative">
-                      <Image
+                      <EditableImage
+                        path={`${basePath}.imageUrl`}
                         src={section.imageUrl}
                         alt={heading || ''}
                         fill
@@ -111,7 +127,7 @@ export default function InnovationBlock({ section, locale }: InnovationBlockProp
                       />
                       {/* Cool-tone overlay for editorial cohesion */}
                       <div
-                        className="absolute inset-0 mix-blend-multiply opacity-15 transition-opacity duration-700 group-hover:opacity-5"
+                        className="absolute inset-0 mix-blend-multiply opacity-15 transition-opacity duration-700 group-hover:opacity-5 pointer-events-none"
                         style={{
                           background: 'linear-gradient(160deg, var(--color-primary-700), transparent 60%)',
                         }}
@@ -119,7 +135,7 @@ export default function InnovationBlock({ section, locale }: InnovationBlockProp
                     </div>
                     {/* Top accent stripe */}
                     <div
-                      className="absolute top-0 left-0 right-0 h-1"
+                      className="absolute top-0 left-0 right-0 h-1 pointer-events-none"
                       style={{
                         background: 'linear-gradient(90deg, var(--color-primary-500), var(--color-primary-300), transparent)',
                       }}

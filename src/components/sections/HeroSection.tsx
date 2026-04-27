@@ -3,102 +3,191 @@
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Pause, Play, Plus, X } from 'lucide-react'
 import { getLocalizedField } from '@/lib/locale'
-import { HeroSection as HeroSectionType } from '@/lib/types/page'
-import { Locale } from '@/lib/types/locale'
+import { HeroSection as HeroSectionType, HeroSlide } from '@/lib/types/page'
+import { Locale, LocaleString, ls } from '@/lib/types/locale'
 import Button from '@/components/ui/Button'
-import CircularText from '@/components/reactbits/CircularText'
+import EditableText from '@/components/admin/cms/EditableText'
+import EditableImage from '@/components/admin/cms/EditableImage'
+import { useEditing } from '@/components/admin/cms/EditingContext'
 
-// ---------------------------------------------------------------------------
-// Carousel slides — each has its own image, label, title, description
-// ---------------------------------------------------------------------------
-const SLIDES = [
+const EMPTY_LS: LocaleString = { en: '', fr: '', nl: '' }
+
+// Default slide content. Used in two scenarios:
+//   1. View-mode fallback when section.slides is undefined (pre-initialization)
+//   2. Seeded by the drawer's "Initialize slides" button
+export const HERO_DEFAULT_SLIDES: HeroSlide[] = [
   {
-    src: '/images/coin/coin-fotosharonwillems-60.webp',
+    imageUrl: '/images/coin/coin-fotosharonwillems-60.webp',
     alt: 'COIN AS team collaborating on business continuity',
-    label: '20 Years of Innovation',
-    title: '20 years of Business Continuity innovation. BeNeLux market leader.',
-    bullets: null,
-    description: "With over 20 years of experience in business continuity, COIN continuously develops innovative solutions to help organisations stay resilient in an increasingly complex business and regulatory environment.",
+    label: ls('20 Years of Innovation'),
+    title: ls('20 years of Business Continuity innovation. BeNeLux market leader.'),
+    bullets: [],
+    description: ls(
+      'With over 20 years of experience in business continuity, COIN continuously develops innovative solutions to help organisations stay resilient in an increasingly complex business and regulatory environment.',
+    ),
+    visible: true,
   },
   {
-    src: '/images/coin/coin-luxembourg-contern-disaster-recovery-office-big.webp',
+    imageUrl: '/images/coin/coin-luxembourg-contern-disaster-recovery-office-big.webp',
     alt: 'COIN AS dedicated recovery site at Contern',
-    label: 'Dedicated Site',
-    title: 'Outsource the operation of your site to COIN',
+    label: ls('Dedicated Site'),
+    title: ls('Outsource the operation of your site to COIN'),
     bullets: [
-      'You use your second office or COIN rents a dedicated site for you',
-      'You decide how it is designed and if it is also used as satellite office',
-      'We ensure site and procedures are documented and tested',
-      'We operate and maintain the site and assist in case of disaster, 24x7',
+      ls('You use your second office or COIN rents a dedicated site for you'),
+      ls('You decide how it is designed and if it is also used as satellite office'),
+      ls('We ensure site and procedures are documented and tested'),
+      ls('We operate and maintain the site and assist in case of disaster, 24x7'),
     ],
-    description: null,
-    secondaryCta: {
-      text: 'Read our article',
-      href: '/knowledge-hub',
-    },
+    description: { ...EMPTY_LS },
+    ctaText: ls('Read our article'),
+    ctaLink: '/knowledge-hub',
+    visible: true,
   },
   {
-    src: '/images/coin/coin-fotosharonwillems-16.webp',
+    imageUrl: '/images/coin/coin-fotosharonwillems-16.webp',
     alt: 'COIN AS recovery workplaces during a business continuity exercise',
-    label: 'Testing & Exercises',
-    title: 'Test your business continuity plan with COIN',
+    label: ls('Testing & Exercises'),
+    title: ls('Test your business continuity plan with COIN'),
     bullets: [
-      'COIN experts help you prepare and organise your exercise',
-      'Our business continuity centres host 100+ exercises every year',
-      'Use COIN recovery office facilities and crisis management rooms',
-      'Service also available for organisations with their own disaster site',
-      'Insightful learnings and better preparation for real disasters',
+      ls('COIN experts help you prepare and organise your exercise'),
+      ls('Our business continuity centres host 100+ exercises every year'),
+      ls('Use COIN recovery office facilities and crisis management rooms'),
+      ls('Service also available for organisations with their own disaster site'),
+      ls('Insightful learnings and better preparation for real disasters'),
     ],
-    description: null,
+    description: { ...EMPTY_LS },
+    visible: true,
   },
-  // Hidden for now — kept for later re-enable
-  // {
-  //   src: '/images/coin/coin-fotosharonwillems-36.webp',
-  //   alt: 'COIN AS experts analyzing DORA compliance requirements',
-  //   label: 'NIS2 & DORA',
-  //   title: 'Is your organisation ready for NIS2 and DORA?',
-  //   bullets: [
-  //     'Free readiness assessment of your digital operational resilience',
-  //     'Personalised compliance roadmap and priority actions',
-  //     'Expert review of your ICT risk management and incident response',
-  //   ],
-  //   description: null,
-  // },
+  {
+    imageUrl: '/images/coin/coin-fotosharonwillems-36.webp',
+    alt: 'COIN AS experts analyzing DORA compliance requirements',
+    label: ls('NIS2 & DORA'),
+    title: ls('Is your organisation ready for NIS2 and DORA?'),
+    bullets: [
+      ls('Free readiness assessment of your digital operational resilience'),
+      ls('Personalised compliance roadmap and priority actions'),
+      ls('Expert review of your ICT risk management and incident response'),
+    ],
+    description: { ...EMPTY_LS },
+    visible: false,
+  },
 ]
+
+export function makeEmptyHeroSlide(): HeroSlide {
+  return {
+    imageUrl: null,
+    alt: '',
+    label: { ...EMPTY_LS },
+    title: { ...EMPTY_LS },
+    bullets: [],
+    description: { ...EMPTY_LS },
+    visible: true,
+  }
+}
 
 const INTERVAL = 12000
 
 interface HeroSectionProps {
   section: HeroSectionType
   locale: Locale
+  basePath: string
 }
 
-export default function HeroSection({ section, locale }: HeroSectionProps) {
+export default function HeroSection({ section, locale, basePath }: HeroSectionProps) {
+  const ctx = useEditing()
+  const isEditing = !!ctx
+  const isFirestoreDriven = Array.isArray(section.slides)
+  const sourceSlides = isFirestoreDriven ? (section.slides as HeroSlide[]) : HERO_DEFAULT_SLIDES
+
+  // Pair each slide with its index in section.slides so we can build edit paths.
+  const slidesWithIdx = sourceSlides.map((slide, originalIdx) => ({ slide, originalIdx }))
+  const visible = slidesWithIdx.filter(({ slide }) => slide.visible !== false)
+
   const [active, setActive] = useState(0)
   const [hoverPaused, setHoverPaused] = useState(false)
   const [manualPaused, setManualPaused] = useState(false)
   const paused = hoverPaused || manualPaused
+  const total = visible.length
 
-  const next = useCallback(() => setActive((i) => (i + 1) % SLIDES.length), [])
-  const prev = useCallback(() => setActive((i) => (i - 1 + SLIDES.length) % SLIDES.length), [])
+  const next = useCallback(() => setActive((i) => (i + 1) % Math.max(1, total)), [total])
+  const prev = useCallback(
+    () => setActive((i) => (i - 1 + Math.max(1, total)) % Math.max(1, total)),
+    [total],
+  )
 
   useEffect(() => {
-    if (paused || SLIDES.length <= 1) return
+    if (paused || isEditing || total <= 1) return
     const timer = setInterval(next, INTERVAL)
     return () => clearInterval(timer)
-  }, [paused, next])
+  }, [paused, isEditing, total, next])
 
-  const heading = getLocalizedField(section.heading, locale)
   const primaryBtnText = getLocalizedField(section.primaryButtonText, locale)
   const secondaryBtnText = getLocalizedField(section.secondaryButtonText, locale)
-  const current = SLIDES[active]
+
+  // Empty state (only reachable in edit mode if user hides everything)
+  if (total === 0) {
+    return (
+      <section className="pt-4 pb-8 bg-white">
+        <div className="container-padding">
+          <div className="rounded-2xl bg-gray-100 border-2 border-dashed border-gray-300 p-12 text-center">
+            <p className="text-gray-600 text-sm">
+              {isEditing
+                ? 'No visible slides. Open the section settings drawer to add or unhide slides.'
+                : 'No slides to display.'}
+            </p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  const activeIdx = Math.min(active, total - 1)
+  const { slide: currentSlide, originalIdx: currentOriginalIdx } = visible[activeIdx]
+  const slidePath = isFirestoreDriven ? `${basePath}.slides.${currentOriginalIdx}` : null
+
+  // Per-slide CTA override
+  const slideCtaText = currentSlide.ctaText ? getLocalizedField(currentSlide.ctaText, locale) : ''
+  const slideCtaLink = currentSlide.ctaLink ?? ''
+  const slideHasOverride = !!slideCtaText && !!slideCtaLink
+  const renderedSecondaryText = slideHasOverride ? slideCtaText : secondaryBtnText
+  const renderedSecondaryHref = slideHasOverride ? slideCtaLink : section.secondaryButtonLink
+  const showSecondary = !!renderedSecondaryText || isEditing
+
+  // Bullets vs description: bullets take precedence if any. In edit mode with both empty, prefer description editor.
+  const hasBullets = currentSlide.bullets.length > 0
+  const descText = getLocalizedField(currentSlide.description, locale)
+  const showBullets = hasBullets
+  const showDescription = !hasBullets && (descText !== '' || isEditing)
+
+  const addBullet = () => {
+    if (!ctx || !slidePath) return
+    ctx.updateAt(`${slidePath}.bullets`, [...currentSlide.bullets, { ...EMPTY_LS, en: 'New point' }])
+  }
+  const removeBullet = (idx: number) => {
+    if (!ctx || !slidePath) return
+    ctx.updateAt(
+      `${slidePath}.bullets`,
+      currentSlide.bullets.filter((_, i) => i !== idx),
+    )
+  }
+  const convertDescriptionToBullets = () => {
+    if (!ctx || !slidePath) return
+    ctx.updateAt(`${slidePath}.bullets`, [{ ...EMPTY_LS, en: 'New point' }])
+  }
 
   return (
     <section className="pt-4 pb-8 bg-white">
       <div className="container-padding">
-        {/* Main carousel card */}
+        {isEditing && !isFirestoreDriven && (
+          <div className="mb-4 px-4 py-3 bg-amber-50 border border-amber-200 rounded-md text-sm text-amber-900">
+            Slides are not yet editable. Open the section settings drawer (cog icon, top-right) and
+            click <strong>Initialize slides for editing</strong> to import the current content into
+            the CMS.
+          </div>
+        )}
+
         <div
           className="relative rounded-2xl overflow-hidden shadow-2xl"
           onMouseEnter={() => setHoverPaused(true)}
@@ -106,7 +195,7 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
         >
           <AnimatePresence mode="wait">
             <motion.div
-              key={active}
+              key={`${currentOriginalIdx}-${activeIdx}`}
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -30 }}
@@ -115,110 +204,172 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
             >
               {/* Left — Image */}
               <div className="relative min-h-[280px] md:min-h-[460px]">
-                <Image
-                  src={current.src}
-                  alt={current.alt}
-                  fill
-                  priority={active === 0}
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover"
-                />
-                {/* Subtle gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black/10" />
+                {slidePath ? (
+                  <EditableImage
+                    path={`${slidePath}.imageUrl`}
+                    src={currentSlide.imageUrl}
+                    alt={currentSlide.alt}
+                    fill
+                    priority={activeIdx === 0}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
+                  />
+                ) : currentSlide.imageUrl ? (
+                  <Image
+                    src={currentSlide.imageUrl}
+                    alt={currentSlide.alt}
+                    fill
+                    priority={activeIdx === 0}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
+                  />
+                ) : null}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black/10 pointer-events-none" />
               </div>
 
               {/* Right — Content panel */}
               <div className="bg-primary-950 text-white p-8 md:p-12 lg:p-14 flex flex-col justify-center">
                 {/* Slide label */}
-                <span className="inline-block text-xs font-bold uppercase tracking-[0.2em] text-accent-400 mb-5 px-3 py-1 rounded-full border border-accent-500/30 w-fit">
-                  {current.label}
+                <span className="inline-block text-xs font-bold uppercase tracking-[0.2em] text-accent-400 mb-5 px-3 py-1 rounded-full border border-accent-500/30 w-fit max-w-full">
+                  {slidePath ? (
+                    <EditableText path={`${slidePath}.label`} value={currentSlide.label} as="span" />
+                  ) : (
+                    getLocalizedField(currentSlide.label, locale)
+                  )}
                 </span>
 
                 {/* Slide title */}
                 <h1 className="text-2xl md:text-3xl lg:text-[2.2rem] font-bold mb-4 leading-[1.15] tracking-tight font-display">
-                  {current.title}
+                  {slidePath ? (
+                    <EditableText
+                      path={`${slidePath}.title`}
+                      value={currentSlide.title}
+                      as="span"
+                      multiline
+                    />
+                  ) : (
+                    getLocalizedField(currentSlide.title, locale)
+                  )}
                 </h1>
 
-                {/* Content: bullets or description paragraph */}
-                {current.bullets ? (
+                {/* Bullets or description */}
+                {showBullets ? (
                   <ul className="text-primary-200 mb-6 text-[13px] md:text-sm max-w-lg space-y-1.5">
-                    {current.bullets.map((point, i) => (
-                      <li key={i} className="flex items-start gap-2 leading-snug">
+                    {currentSlide.bullets.map((bullet, i) => (
+                      <li key={i} className="group/bullet flex items-start gap-2 leading-snug">
                         <span className="shrink-0 mt-[7px] w-1 h-1 rounded-full bg-accent-500" />
-                        <span>{point}</span>
+                        <span className="flex-1 min-w-0">
+                          {slidePath ? (
+                            <EditableText
+                              path={`${slidePath}.bullets.${i}`}
+                              value={bullet}
+                              as="span"
+                              multiline
+                            />
+                          ) : (
+                            getLocalizedField(bullet, locale)
+                          )}
+                        </span>
+                        {isEditing && slidePath && (
+                          <button
+                            type="button"
+                            onClick={() => removeBullet(i)}
+                            className="opacity-0 group-hover/bullet:opacity-100 transition-opacity shrink-0 text-primary-300 hover:text-red-400 p-0.5 mt-0.5"
+                            aria-label="Remove bullet"
+                            title="Remove bullet"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        )}
                       </li>
                     ))}
+                    {isEditing && slidePath && (
+                      <li className="ml-3 mt-2">
+                        <button
+                          type="button"
+                          onClick={addBullet}
+                          className="inline-flex items-center gap-1 text-[11px] font-medium text-accent-400 hover:text-accent-300"
+                        >
+                          <Plus className="w-3 h-3" /> Add bullet
+                        </button>
+                      </li>
+                    )}
                   </ul>
-                ) : current.description ? (
-                  <p className="text-primary-200 leading-relaxed mb-6 text-sm md:text-base max-w-lg">
-                    {current.description}
-                  </p>
+                ) : showDescription ? (
+                  <div className="mb-6">
+                    <p className="text-primary-200 leading-relaxed text-sm md:text-base max-w-lg">
+                      {slidePath ? (
+                        <EditableText
+                          path={`${slidePath}.description`}
+                          value={currentSlide.description}
+                          as="span"
+                          multiline
+                        />
+                      ) : (
+                        descText
+                      )}
+                    </p>
+                    {isEditing && slidePath && !hasBullets && (
+                      <button
+                        type="button"
+                        onClick={convertDescriptionToBullets}
+                        className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-accent-400/70 hover:text-accent-300"
+                        title="Switch to bullet points instead of a paragraph"
+                      >
+                        <Plus className="w-3 h-3" /> Use bullet points instead
+                      </button>
+                    )}
+                  </div>
                 ) : null}
 
                 {/* CTA buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">
-                  {primaryBtnText && (
+                  {(primaryBtnText || isEditing) && (
                     <Button
                       href={section.primaryButtonLink}
                       variant="primary"
                       className="text-base px-7 py-3.5 !bg-accent-500 hover:!bg-accent-600 !shadow-accent-500/25"
                     >
-                      {primaryBtnText}
+                      <EditableText
+                        path={`${basePath}.primaryButtonText`}
+                        value={section.primaryButtonText}
+                        as="span"
+                      />
                     </Button>
                   )}
-                  {(() => {
-                    const slideCta = 'secondaryCta' in current ? current.secondaryCta : null
-                    const text = slideCta?.text ?? secondaryBtnText
-                    const href = slideCta?.href ?? section.secondaryButtonLink
-                    return text ? (
-                      <Button
-                        href={href}
-                        variant="outline"
-                        className="text-base px-7 py-3.5 border-white/30 text-white hover:shadow-lg hover:shadow-white/10 hover:border-white/60"
-                      >
-                        {text}
-                      </Button>
-                    ) : null
-                  })()}
+                  {showSecondary && (
+                    <Button
+                      href={renderedSecondaryHref}
+                      variant="outline"
+                      className="text-base px-7 py-3.5 border-white/30 text-white hover:shadow-lg hover:shadow-white/10 hover:border-white/60"
+                    >
+                      {slideHasOverride && slidePath ? (
+                        <EditableText
+                          path={`${slidePath}.ctaText`}
+                          value={currentSlide.ctaText ?? EMPTY_LS}
+                          as="span"
+                        />
+                      ) : (
+                        <EditableText
+                          path={`${basePath}.secondaryButtonText`}
+                          value={section.secondaryButtonText}
+                          as="span"
+                        />
+                      )}
+                    </Button>
+                  )}
                 </div>
-
-                {/* NIS2/DORA badge — hidden for now, keep for later
-                <div className="lg:flex justify-end mt-6">
-                  <div className="w-[110px] h-[110px]">
-                    <div className="relative w-full h-full">
-                      <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-                        <div className="w-11 h-11 rounded-full flex items-center justify-center backdrop-blur-sm overflow-hidden">
-                          <img
-                            src="/images/coin/coin-sigle.svg"
-                            alt="COIN AS"
-                            className="w-9 h-9"
-                          />
-                        </div>
-                      </div>
-                      <CircularText
-                        text="NIS2 & DORA READY * COMPLIANT * "
-                        spinDuration={18}
-                        onHover="speedUp"
-                        className="text-white/60"
-                        radius={34}
-                        fontSize={9}
-                      />
-                    </div>
-                  </div>
-                </div>
-                end hidden NIS2/DORA badge */}
               </div>
             </motion.div>
           </AnimatePresence>
 
-          {/* Prev/Next arrows */}
-          {SLIDES.length > 1 && (
+          {total > 1 && (
             <>
               <button
                 type="button"
                 onClick={prev}
                 aria-label="Previous"
-                className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 backdrop-blur-sm text-white rounded-full p-2 transition-all z-10"
+                className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 backdrop-blur-sm text-white rounded-full p-2 transition-all z-30"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
@@ -226,7 +377,7 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
                 type="button"
                 onClick={next}
                 aria-label="Next"
-                className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 backdrop-blur-sm text-white rounded-full p-2 transition-all z-10"
+                className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 backdrop-blur-sm text-white rounded-full p-2 transition-all z-30"
               >
                 <ChevronRight className="h-5 w-5" />
               </button>
@@ -234,20 +385,19 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
           )}
         </div>
 
-        {/* Dots progress + play/pause */}
-        {SLIDES.length > 1 && (
+        {total > 1 && (
           <div className="flex items-center justify-center gap-3 mt-6">
-            {SLIDES.map((_, i) => (
+            {visible.map((_, i) => (
               <button
                 key={i}
                 type="button"
                 onClick={() => setActive(i)}
                 aria-label={`Slide ${i + 1}`}
                 className={`relative h-2 rounded-full transition-all duration-300 overflow-hidden ${
-                  i === active ? 'w-8 bg-primary-200' : 'w-2 bg-secondary-300 hover:bg-secondary-400'
+                  i === activeIdx ? 'w-8 bg-primary-200' : 'w-2 bg-secondary-300 hover:bg-secondary-400'
                 }`}
               >
-                {i === active && !paused && (
+                {i === activeIdx && !paused && !isEditing && (
                   <motion.span
                     className="absolute inset-y-0 left-0 bg-primary-500 rounded-full"
                     initial={{ width: '0%' }}
@@ -268,7 +418,6 @@ export default function HeroSection({ section, locale }: HeroSectionProps) {
             </button>
           </div>
         )}
-
       </div>
     </section>
   )

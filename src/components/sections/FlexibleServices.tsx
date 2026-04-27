@@ -4,10 +4,13 @@ import { getLocalizedField } from '@/lib/locale'
 import { FlexibleServicesSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
 import { motion } from 'framer-motion'
+import EditableText from '@/components/admin/cms/EditableText'
+import { useEditing } from '@/components/admin/cms/EditingContext'
 
 interface FlexibleServicesProps {
   section: FlexibleServicesSection
   locale: Locale
+  basePath: string
   background?: string
   id?: string
 }
@@ -107,7 +110,14 @@ function Gauge({
   )
 }
 
-export default function FlexibleServices({ section, locale, background = 'var(--color-warm-50)', id }: FlexibleServicesProps) {
+export default function FlexibleServices({
+  section,
+  locale,
+  basePath,
+  background = 'var(--color-warm-50)',
+  id,
+}: FlexibleServicesProps) {
+  const isEditing = !!useEditing()
   const heading = getLocalizedField(section.heading, locale)
   const body = getLocalizedField(section.body, locale)
 
@@ -176,14 +186,26 @@ export default function FlexibleServices({ section, locale, background = 'var(--
                 />
               </div>
 
-              {heading && (
+              {(heading || isEditing) && (
                 <h2 className="text-3xl md:text-4xl lg:text-[2.75rem] font-bold text-secondary-800 mb-8 leading-[1.15] tracking-tight">
-                  {heading}
+                  <EditableText
+                    path={`${basePath}.heading`}
+                    value={section.heading}
+                    as="span"
+                    multiline
+                  />
                 </h2>
               )}
 
-              {body && (
-                <p className="text-secondary-500 leading-relaxed text-lg max-w-lg">{body}</p>
+              {(body || isEditing) && (
+                <p className="text-secondary-500 leading-relaxed text-lg max-w-lg">
+                  <EditableText
+                    path={`${basePath}.body`}
+                    value={section.body}
+                    as="span"
+                    multiline
+                  />
+                </p>
               )}
 
               {/* Three-column micro-stats row to reinforce precision */}

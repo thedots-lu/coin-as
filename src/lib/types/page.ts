@@ -2,6 +2,19 @@ import { LocaleString } from './locale'
 import { Timestamp } from 'firebase/firestore/lite'
 
 // Section types for pages
+
+export interface HeroSlide {
+  imageUrl: string | null
+  alt: string
+  label: LocaleString
+  title: LocaleString
+  bullets: LocaleString[]
+  description: LocaleString
+  ctaText?: LocaleString
+  ctaLink?: string
+  visible: boolean
+}
+
 export interface HeroSection {
   type: 'hero'
   order: number
@@ -12,6 +25,9 @@ export interface HeroSection {
   secondaryButtonText: LocaleString
   secondaryButtonLink: string
   backgroundImageUrl: string | null
+  // Optional — when populated, the hero carousel renders these slides from Firestore.
+  // When undefined or empty, the component falls back to hardcoded defaults.
+  slides?: HeroSlide[]
 }
 
 export interface ServicePillarsSection {

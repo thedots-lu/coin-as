@@ -82,12 +82,22 @@ export default function AdminPagesPage() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     {page ? (
-                      <Link
-                        href={`/admin/pages/${ep.slug}`}
-                        className="text-sm text-primary-600 hover:text-primary-700"
-                      >
-                        Edit
-                      </Link>
+                      <div className="flex items-center justify-end gap-3">
+                        {ep.slug === 'home' && (
+                          <Link
+                            href={`/admin/pages/${ep.slug}/visual`}
+                            className="text-sm font-medium text-accent-600 hover:text-accent-700"
+                          >
+                            Visual editor
+                          </Link>
+                        )}
+                        <Link
+                          href={`/admin/pages/${ep.slug}`}
+                          className="text-sm text-primary-600 hover:text-primary-700"
+                        >
+                          Edit
+                        </Link>
+                      </div>
                     ) : (
                       <span className="text-sm text-gray-400">--</span>
                     )}

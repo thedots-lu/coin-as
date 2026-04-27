@@ -1,17 +1,21 @@
 'use client'
 
-import Image from 'next/image'
 import { getLocalizedField } from '@/lib/locale'
 import { MissionStatementSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
 import { motion } from 'framer-motion'
+import EditableText from '@/components/admin/cms/EditableText'
+import EditableImage from '@/components/admin/cms/EditableImage'
+import { useEditing } from '@/components/admin/cms/EditingContext'
 
 interface MissionStatementProps {
   section: MissionStatementSection
   locale: Locale
+  basePath: string
 }
 
-export default function MissionStatement({ section, locale }: MissionStatementProps) {
+export default function MissionStatement({ section, locale, basePath }: MissionStatementProps) {
+  const isEditing = !!useEditing()
   const heading = getLocalizedField(section.heading, locale)
   const body = getLocalizedField(section.body, locale)
 
@@ -20,9 +24,10 @@ export default function MissionStatement({ section, locale }: MissionStatementPr
       {/* Full-width cinematic layout -- dark background, bold statement */}
 
       {/* Background image as full bleed with heavy overlay */}
-      {section.imageUrl && (
+      {(section.imageUrl || isEditing) && (
         <div className="absolute inset-0">
-          <Image
+          <EditableImage
+            path={`${basePath}.imageUrl`}
             src={section.imageUrl}
             alt=""
             fill
@@ -31,7 +36,7 @@ export default function MissionStatement({ section, locale }: MissionStatementPr
           />
           {/* Dark gradient overlay for text legibility */}
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 pointer-events-none"
             style={{
               background:
                 'linear-gradient(to right, rgba(11,26,46,0.95) 0%, rgba(11,26,46,0.85) 40%, rgba(11,26,46,0.6) 100%)',
@@ -70,7 +75,7 @@ export default function MissionStatement({ section, locale }: MissionStatementPr
             </motion.div>
 
             {/* Large editorial heading */}
-            {heading && (
+            {(heading || isEditing) && (
               <motion.h2
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -79,11 +84,16 @@ export default function MissionStatement({ section, locale }: MissionStatementPr
                 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.1] tracking-tight mb-6"
                 style={{ color: 'var(--color-warm-50)' }}
               >
-                {heading}
+                <EditableText
+                  path={`${basePath}.heading`}
+                  value={section.heading}
+                  as="span"
+                  multiline
+                />
               </motion.h2>
             )}
 
-            {body && (
+            {(body || isEditing) && (
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -92,7 +102,12 @@ export default function MissionStatement({ section, locale }: MissionStatementPr
                 className="text-lg md:text-xl leading-relaxed max-w-2xl"
                 style={{ color: 'var(--color-secondary-300)' }}
               >
-                {body}
+                <EditableText
+                  path={`${basePath}.body`}
+                  value={section.body}
+                  as="span"
+                  multiline
+                />
               </motion.p>
             )}
 
