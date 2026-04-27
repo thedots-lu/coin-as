@@ -185,33 +185,6 @@ export default function FlexibleServices({ section, locale, background = 'var(--
               {body && (
                 <p className="text-secondary-500 leading-relaxed text-lg max-w-lg">{body}</p>
               )}
-
-              {/* Three-column micro-stats row to reinforce precision */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-10 grid grid-cols-3 gap-4 max-w-sm"
-              >
-                {[
-                  { value: '99.9%', label: 'Uptime' },
-                  { value: '24/7', label: 'Support' },
-                  { value: '<4h', label: 'Response' },
-                ].map((stat) => (
-                  <div key={stat.label} className="text-center">
-                    <div
-                      className="text-xl md:text-2xl font-bold font-display"
-                      style={{ color: 'var(--color-primary-600)' }}
-                    >
-                      {stat.value}
-                    </div>
-                    <div className="text-xs text-secondary-400 uppercase tracking-wider mt-1">
-                      {stat.label}
-                    </div>
-                  </div>
-                ))}
-              </motion.div>
             </motion.div>
 
             {/* Chart column -- SLA dashboard visualization */}
@@ -227,7 +200,11 @@ export default function FlexibleServices({ section, locale, background = 'var(--
                   className="absolute inset-3 rounded-xl border-2 pointer-events-none z-20 transition-all duration-700 group-hover:inset-4"
                   style={{ borderColor: 'rgba(255,255,255,0.18)' }}
                 />
-                <div className="relative rounded-2xl overflow-hidden shadow-xl">
+                <div
+                  className="relative rounded-2xl overflow-hidden shadow-xl"
+                  role="img"
+                  aria-label="Service level dashboard: 99.9% uptime, 24/7 support, less than 4 hours response time"
+                >
                   <div
                     className="aspect-[4/3] relative"
                     style={{

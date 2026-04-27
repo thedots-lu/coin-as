@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect, FormEvent } from 'react'
-import { Send, CheckCircle } from 'lucide-react'
+import Link from 'next/link'
+import { Send, CheckCircle, Mail, MapPin, ArrowRight } from 'lucide-react'
 import { getLocalizedField } from '@/lib/locale'
 import { ContactFormSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
@@ -311,6 +312,21 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
           {/* Right: sidebar info */}
           <div className="lg:col-span-2">
             <div className="lg:sticky lg:top-28 space-y-6">
+              {/* Locations card */}
+              <Link
+                href="/locations"
+                className="group flex items-center gap-5 bg-primary-950 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+              >
+                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center shrink-0 group-hover:bg-white/20 transition-colors">
+                  <MapPin className="w-6 h-6 text-accent-400" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs uppercase tracking-wider text-primary-300 font-medium mb-1">4 centres across BeNeLux</p>
+                  <p className="text-lg font-bold text-white">See all locations on the map</p>
+                </div>
+                <ArrowRight className="w-5 h-5 text-white/50 group-hover:text-white group-hover:translate-x-1 transition-all shrink-0" />
+              </Link>
+
               {/* Direct contact card */}
               <div className="bg-primary-950 rounded-2xl p-8 text-white">
                 <h3 className="text-lg font-bold font-display mb-1">Prefer to talk?</h3>
@@ -332,7 +348,8 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
                 </div>
 
                 <div className="mt-6 pt-6 border-t border-white/10">
-                  <a href="mailto:info@coin-bc.com" className="text-accent-400 hover:text-accent-300 font-semibold transition-colors">
+                  <a href="mailto:info@coin-bc.com" className="inline-flex items-center gap-2 text-accent-400 hover:text-accent-300 font-semibold transition-colors">
+                    <Mail className="w-4 h-4" />
                     info@coin-bc.com
                   </a>
                 </div>

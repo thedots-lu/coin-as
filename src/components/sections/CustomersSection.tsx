@@ -17,7 +17,7 @@ export default function CustomersSection({ section, locale }: CustomersSectionPr
   const logos = (section.logoUrls ?? []).filter((url) => url && url.length > 0)
 
   return (
-    <section id="customers" className="py-20 bg-warm-100/60 overflow-hidden scroll-mt-24">
+    <section id="customers" className="py-20 bg-secondary-50 overflow-hidden scroll-mt-24">
       <div className="container-padding">
         <AnimatedSection animation="slideUp" className="text-center mb-6">
           {heading && (
@@ -36,8 +36,8 @@ export default function CustomersSection({ section, locale }: CustomersSectionPr
       {logos.length > 0 && (
         <div className="relative mx-8 md:mx-16 lg:mx-24">
           {/* Fade edges */}
-          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-warm-100/60 to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-warm-100/60 to-transparent z-10 pointer-events-none" />
+          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-secondary-50 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-secondary-50 to-transparent z-10 pointer-events-none" />
 
           <div className="overflow-hidden">
             <motion.div
