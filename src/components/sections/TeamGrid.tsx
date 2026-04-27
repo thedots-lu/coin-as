@@ -17,7 +17,7 @@ export default function TeamGrid({ section, locale, teamMembers }: TeamGridProps
   const body = getLocalizedField(section.body, locale)
 
   return (
-    <section id="teams" className="py-20 bg-warm-100/60 scroll-mt-24">
+    <section id="teams" className="py-20 bg-secondary-50 scroll-mt-24">
       <div className="container-padding">
         {heading && (
           <AnimatedSection animation="slideUp" className="text-center mb-16">
