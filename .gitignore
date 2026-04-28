@@ -35,6 +35,7 @@ core
 
 # Local assets not meant for git
 dumps/
+.firebase-*-sa.json
 public/images/photos.zip
 public/images/photos/
 scripts/*.pptx
