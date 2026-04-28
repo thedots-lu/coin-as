@@ -32,9 +32,11 @@ export default async function HomePage() {
     )
   }
 
+  const visibleSections = pageData.sections.filter((s) => s.type !== 'innovation')
+
   return (
     <>
-      <PageSectionRenderer sections={pageData.sections} testimonials={testimonials} />
+      <PageSectionRenderer sections={visibleSections} testimonials={testimonials} />
       <NewsletterPopup />
     </>
   )
