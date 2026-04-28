@@ -23,15 +23,15 @@ const SLIDES = [
     description: "With over 20 years of experience in business continuity, COIN continuously develops innovative solutions to help organisations stay resilient in an increasingly complex business and regulatory environment.",
   },
   {
-    src: '/images/coin/coin-luxembourg-contern-disaster-recovery-office-big.webp',
-    alt: 'COIN AS dedicated recovery site at Contern',
-    label: 'Dedicated Site',
-    title: 'Outsource the operation of your site to COIN',
+    src: '/images/coin/Office-Design-3D-Graphic-3.webp',
+    alt: 'COIN AS dedicated recovery office 3D design',
+    label: 'Dedicated Recovery Site',
+    title: 'Outsource the operation of your own satellite and recovery site',
     bullets: [
-      'You use your second office or COIN rents a dedicated site for you',
+      'COIN builds and operates your recovery office, where you want',
       'You decide how it is designed and if it is also used as satellite office',
-      'We ensure site and procedures are documented and tested',
-      'We operate and maintain the site and assist in case of disaster, 24x7',
+      'COIN documents procedures tests and exercices',
+      'COIN maintains the site and assists in case of disaster, 24x7',
     ],
     description: null,
     secondaryCta: {
@@ -40,8 +40,8 @@ const SLIDES = [
     },
   },
   {
-    src: '/images/coin/coin-fotosharonwillems-16.webp',
-    alt: 'COIN AS recovery workplaces during a business continuity exercise',
+    src: '/images/coin/coin-luxembourg-contern-disaster-recovery-office-big.webp',
+    alt: 'COIN AS dedicated recovery site at Contern',
     label: 'Testing & Exercises',
     title: 'Test your business continuity plan with COIN',
     bullets: [

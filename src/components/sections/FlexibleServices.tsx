@@ -14,12 +14,6 @@ interface FlexibleServicesProps {
 
 const GAUGES = [
   {
-    value: '99.9%',
-    label: 'Uptime',
-    progress: 0.999,
-    color: 'var(--color-accent-500)',
-  },
-  {
     value: '24/7',
     label: 'Support',
     progress: 1,
@@ -31,6 +25,12 @@ const GAUGES = [
     label: 'Response',
     progress: 0.2,
     color: '#ffffff',
+  },
+  {
+    value: '>1000',
+    label: 'Workplaces',
+    progress: 1,
+    color: 'var(--color-accent-500)',
   },
 ]
 
@@ -155,27 +155,6 @@ export default function FlexibleServices({ section, locale, background = 'var(--
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="lg:w-1/2"
             >
-              {/* Horizontal tag-style label with pill shape */}
-              <div className="mb-8 flex items-center gap-3">
-                <span
-                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-[0.15em] uppercase font-display"
-                  style={{
-                    background: 'var(--color-secondary-100)',
-                    color: 'var(--color-secondary-700)',
-                  }}
-                >
-                  <span
-                    className="w-1.5 h-1.5 rounded-full"
-                    style={{ background: 'var(--color-accent-500)' }}
-                  />
-                  Tailored SLA
-                </span>
-                <div
-                  className="h-px flex-grow max-w-24"
-                  style={{ background: 'linear-gradient(90deg, var(--color-secondary-200), transparent)' }}
-                />
-              </div>
-
               {heading && (
                 <h2 className="text-3xl md:text-4xl lg:text-[2.75rem] font-bold text-secondary-800 mb-8 leading-[1.15] tracking-tight">
                   {heading}
@@ -203,7 +182,7 @@ export default function FlexibleServices({ section, locale, background = 'var(--
                 <div
                   className="relative rounded-2xl overflow-hidden shadow-xl"
                   role="img"
-                  aria-label="Service level dashboard: 99.9% uptime, 24/7 support, less than 4 hours response time"
+                  aria-label="Service level dashboard: 24/7 support, less than 4 hours response time, more than 1000 workplaces"
                 >
                   <div
                     className="aspect-[4/3] relative"
