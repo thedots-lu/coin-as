@@ -1,9 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { NewsItem } from '@/lib/types/news'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
+import { generateSlug } from '@/lib/utils/slug'
 import LocaleEditor from './LocaleEditor'
+import RichTextEditor from './RichTextEditor'
+import ImageUpload from './ImageUpload'
 
 interface NewsFormProps {
   news?: NewsItem
@@ -28,6 +31,16 @@ export default function NewsForm({ news, onSave, onCancel }: NewsFormProps) {
     news?.eventLocation || createEmptyLocaleString()
   )
 
+  // Track whether the user has manually edited the slug; once they do, stop auto-generating.
+  const slugManuallyEdited = useRef(Boolean(news?.slug?.en))
+
+  useEffect(() => {
+    if (slugManuallyEdited.current) return
+    if (!title.en) return
+    const auto = generateSlug(title.en)
+    setSlug((prev) => ({ ...prev, en: auto }))
+  }, [title.en])
+
   function formatDateForInput(date: unknown): string {
     if (!date) return ''
     if (date instanceof Date) return date.toISOString().split('T')[0]
@@ -35,6 +48,15 @@ export default function NewsForm({ news, onSave, onCancel }: NewsFormProps) {
       return (date as { toDate: () => Date }).toDate().toISOString().split('T')[0]
     }
     return ''
+  }
+
+  const handleSlugChange = (value: LocaleString) => {
+    slugManuallyEdited.current = true
+    setSlug(value)
+  }
+
+  const handleContentChange = (html: string) => {
+    setContent({ en: html, fr: content.fr ?? '', nl: content.nl ?? '' })
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -99,20 +121,29 @@ export default function NewsForm({ news, onSave, onCancel }: NewsFormProps) {
       </div>
 
       <LocaleEditor label="Title" value={title} onChange={setTitle} />
-      <LocaleEditor label="Slug" value={slug} onChange={setSlug} />
-      <LocaleEditor label="Excerpt" value={excerpt} onChange={setExcerpt} multiline rows={3} />
-      <LocaleEditor label="Content" value={content} onChange={setContent} multiline rows={10} />
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-        <input
-          type="text"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-          placeholder="https://..."
-        />
+        <LocaleEditor label="Slug" value={slug} onChange={handleSlugChange} />
+        <p className="mt-1 text-xs text-gray-500">
+          {slugManuallyEdited.current
+            ? 'Manually edited — will no longer auto-update from title.'
+            : 'Auto-generated from title.'}
+        </p>
       </div>
+
+      <LocaleEditor label="Excerpt" value={excerpt} onChange={setExcerpt} multiline rows={3} />
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Content</label>
+        <RichTextEditor value={content.en ?? ''} onChange={handleContentChange} />
+      </div>
+
+      <ImageUpload
+        label="Image"
+        value={imageUrl}
+        onChange={setImageUrl}
+        storagePath="news"
+      />
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Tags (comma-separated)</label>
