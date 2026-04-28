@@ -40,7 +40,7 @@ const SLIDES = [
     },
   },
   {
-    src: '/images/coin/coin-luxembourg-contern-disaster-recovery-office-big.webp',
+    src: '/images/coin/COIN_Luxembourg_Contern_Disaster_Recovery_Office_Big.webp',
     alt: 'COIN AS dedicated recovery site at Contern',
     label: 'Testing & Exercises',
     title: 'Test your business continuity plan with COIN',

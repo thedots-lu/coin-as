@@ -386,7 +386,7 @@ function pageAbout() {
         heading: ls('Our Values'),
         imageUrl: '/images/coin/coin-fotosharonwillems-54.webp',
         values: [
-          { title: ls('Expertise'), description: ls('Over 20 years of hands-on experience in business continuity management, crisis response, and cyber resilience across the BeNeLux.') },
+          { title: ls('Be the Expert'), description: ls('Over 20 years of hands-on experience in business continuity management, crisis response, and cyber resilience across the BeNeLux.') },
           { title: ls('Reliability'), description: ls('We deliver on our promises with 99.9% SLA uptime and round-the-clock support when our customers need it most.') },
           { title: ls('Innovation'), description: ls('We continuously invest in new technology and methodologies to stay ahead of evolving threats and disruptions.') },
           { title: ls('Partnership'), description: ls('We build long-term relationships with our customers, becoming a trusted extension of their team rather than just a service provider.') },
@@ -1887,19 +1887,26 @@ async function main() {
 
   const db = getFirestore();
 
-  await seedSiteConfig(db);
   await seedNavigation(db);
-  await seedPages(db);
-  await seedServices(db);
   await seedTestimonials(db);
-  await seedTeamMembers(db);
-  await seedPartners(db);
-  await seedWhitePapers(db);
-  await seedArticles(db);
+
+  // The following collections are managed via the admin UI (/admin) and are
+  // intentionally NOT touched by this seed — running them would either wipe
+  // (destructive collections) or overwrite (merge collections) content that
+  // editors created through the admin. To bootstrap a fresh Firestore project
+  // from scratch, call them manually one-time:
+  //
+  //   await seedSiteConfig(db);    // admin: Settings
+  //   await seedPages(db);         // admin: Pages
+  //   await seedServices(db);      // admin: Services
+  //   await seedTeamMembers(db);   // admin: Team
+  //   await seedPartners(db);      // admin: Partners
+  //   await seedWhitePapers(db);   // admin: White Papers
+  //   await seedArticles(db);      // admin: Articles
 
   console.log('');
   console.log('=== Seeding complete ===');
-  console.log('Collections seeded: site_config, navigation, pages, services, testimonials, team_members, partners, white_papers, articles');
+  console.log('Collections seeded: navigation, testimonials');
   // Force exit since Firebase client SDK keeps connections open
   process.exit(0);
 }
