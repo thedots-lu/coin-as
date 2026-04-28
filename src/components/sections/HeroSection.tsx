@@ -30,15 +30,15 @@ export const HERO_DEFAULT_SLIDES: HeroSlide[] = [
     visible: true,
   },
   {
-    imageUrl: '/images/coin/coin-luxembourg-contern-disaster-recovery-office-big.webp',
-    alt: 'COIN AS dedicated recovery site at Contern',
-    label: ls('Dedicated Site'),
-    title: ls('Outsource the operation of your site to COIN'),
+    imageUrl: '/images/coin/Office-Design-3D-Graphic-3.webp',
+    alt: 'COIN AS dedicated recovery office 3D design',
+    label: ls('Dedicated Recovery Site'),
+    title: ls('Outsource the operation of your own satellite and recovery site'),
     bullets: [
-      ls('You use your second office or COIN rents a dedicated site for you'),
+      ls('COIN builds and operates your recovery office, where you want'),
       ls('You decide how it is designed and if it is also used as satellite office'),
-      ls('We ensure site and procedures are documented and tested'),
-      ls('We operate and maintain the site and assist in case of disaster, 24x7'),
+      ls('COIN documents procedures tests and exercices'),
+      ls('COIN maintains the site and assists in case of disaster, 24x7'),
     ],
     description: { ...EMPTY_LS },
     ctaText: ls('Read our article'),
@@ -46,8 +46,8 @@ export const HERO_DEFAULT_SLIDES: HeroSlide[] = [
     visible: true,
   },
   {
-    imageUrl: '/images/coin/coin-fotosharonwillems-16.webp',
-    alt: 'COIN AS recovery workplaces during a business continuity exercise',
+    imageUrl: '/images/coin/COIN_Luxembourg_Contern_Disaster_Recovery_Office_Big.webp',
+    alt: 'COIN AS dedicated recovery site at Contern',
     label: ls('Testing & Exercises'),
     title: ls('Test your business continuity plan with COIN'),
     bullets: [

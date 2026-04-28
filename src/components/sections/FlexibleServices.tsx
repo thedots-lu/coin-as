@@ -17,12 +17,6 @@ interface FlexibleServicesProps {
 
 const GAUGES = [
   {
-    value: '99.9%',
-    label: 'Uptime',
-    progress: 0.999,
-    color: 'var(--color-accent-500)',
-  },
-  {
     value: '24/7',
     label: 'Support',
     progress: 1,
@@ -34,6 +28,12 @@ const GAUGES = [
     label: 'Response',
     progress: 0.2,
     color: '#ffffff',
+  },
+  {
+    value: '>1000',
+    label: 'Workplaces',
+    progress: 1,
+    color: 'var(--color-accent-500)',
   },
 ]
 
@@ -165,27 +165,6 @@ export default function FlexibleServices({
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="lg:w-1/2"
             >
-              {/* Horizontal tag-style label with pill shape */}
-              <div className="mb-8 flex items-center gap-3">
-                <span
-                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-[0.15em] uppercase font-display"
-                  style={{
-                    background: 'var(--color-secondary-100)',
-                    color: 'var(--color-secondary-700)',
-                  }}
-                >
-                  <span
-                    className="w-1.5 h-1.5 rounded-full"
-                    style={{ background: 'var(--color-accent-500)' }}
-                  />
-                  Tailored SLA
-                </span>
-                <div
-                  className="h-px flex-grow max-w-24"
-                  style={{ background: 'linear-gradient(90deg, var(--color-secondary-200), transparent)' }}
-                />
-              </div>
-
               {(heading || isEditing) && (
                 <h2 className="text-3xl md:text-4xl lg:text-[2.75rem] font-bold text-secondary-800 mb-8 leading-[1.15] tracking-tight">
                   <EditableText
@@ -207,33 +186,6 @@ export default function FlexibleServices({
                   />
                 </p>
               )}
-
-              {/* Three-column micro-stats row to reinforce precision */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-10 grid grid-cols-3 gap-4 max-w-sm"
-              >
-                {[
-                  { value: '99.9%', label: 'Uptime' },
-                  { value: '24/7', label: 'Support' },
-                  { value: '<4h', label: 'Response' },
-                ].map((stat) => (
-                  <div key={stat.label} className="text-center">
-                    <div
-                      className="text-xl md:text-2xl font-bold font-display"
-                      style={{ color: 'var(--color-primary-600)' }}
-                    >
-                      {stat.value}
-                    </div>
-                    <div className="text-xs text-secondary-400 uppercase tracking-wider mt-1">
-                      {stat.label}
-                    </div>
-                  </div>
-                ))}
-              </motion.div>
             </motion.div>
 
             {/* Chart column -- SLA dashboard visualization */}
@@ -249,7 +201,11 @@ export default function FlexibleServices({
                   className="absolute inset-3 rounded-xl border-2 pointer-events-none z-20 transition-all duration-700 group-hover:inset-4"
                   style={{ borderColor: 'rgba(255,255,255,0.18)' }}
                 />
-                <div className="relative rounded-2xl overflow-hidden shadow-xl">
+                <div
+                  className="relative rounded-2xl overflow-hidden shadow-xl"
+                  role="img"
+                  aria-label="Service level dashboard: 24/7 support, less than 4 hours response time, more than 1000 workplaces"
+                >
                   <div
                     className="aspect-[4/3] relative"
                     style={{

@@ -98,7 +98,6 @@ function navigationMain() {
           { label: ls('Articles'), path: '/knowledge-hub/articles', order: 0 },
           { label: ls('Case Studies'), path: '/knowledge-hub/case-studies', order: 1 },
           { label: ls('Videos'), path: '/knowledge-hub/videos', order: 2 },
-          { label: ls('White Papers'), path: '/knowledge-hub/white-papers', order: 3 },
           { label: ls('News'), path: '/news', order: 4 },
           { label: ls('FAQ'), path: '/knowledge-hub/faq', order: 5 },
         ],
@@ -302,9 +301,9 @@ function pageHome() {
       {
         type: 'flexible_services',
         order: 4,
-        heading: ls('Flexible Services - Customized SLA'),
+        heading: ls('Flexible Contracts – Customized SLA'),
         body: ls(
-          'COIN adjusts to your needs and constraints. We know business continuity objectives and regulatory requirements depend on your business, country, and resources available in your organisation. We can offer this unique level of flexibility because business continuity is our core business and we have experience with 300+ customers in various industries.',
+          'COIN adjusts to your needs and constraints. We know business continuity objectives and regulatory requirements depend on your business, country, and resources available in your organisation. We can offer this unique level of flexibility because business continuity is our core business and we helped more than 300+ customers in all industries.',
         ),
         imageUrl: '/images/coin/coin-luxembourg-munsbach-shared-meeting-room.webp',
       },
@@ -324,7 +323,7 @@ function pageHome() {
           { value: 20, suffix: '+', label: ls('Years of Experience') },
           { value: 300, suffix: '+', label: ls('Customers') },
           { value: 1000, suffix: '+', label: ls('Recovery Workplaces') },
-          { value: 350, suffix: '+', label: ls('Business Continuity Plans') },
+          { value: 3, label: ls('Countries') },
         ],
       },
       {
@@ -387,7 +386,7 @@ function pageAbout() {
         heading: ls('Our Values'),
         imageUrl: '/images/coin/coin-fotosharonwillems-54.webp',
         values: [
-          { title: ls('Expertise'), description: ls('Over 20 years of hands-on experience in business continuity management, crisis response, and cyber resilience across the BeNeLux.') },
+          { title: ls('Be the Expert'), description: ls('Over 20 years of hands-on experience in business continuity management, crisis response, and cyber resilience across the BeNeLux.') },
           { title: ls('Reliability'), description: ls('We deliver on our promises with 99.9% SLA uptime and round-the-clock support when our customers need it most.') },
           { title: ls('Innovation'), description: ls('We continuously invest in new technology and methodologies to stay ahead of evolving threats and disruptions.') },
           { title: ls('Partnership'), description: ls('We build long-term relationships with our customers, becoming a trusted extension of their team rather than just a service provider.') },
@@ -518,18 +517,10 @@ function pageLocations() {
     },
     sections: [
       {
-        type: 'hero_simple',
-        order: 0,
-        heading: ls('Our Locations'),
-        subtitle: ls('Business continuity centres across the BeNeLux'),
-        logoUrl: null,
-        backgroundImageUrl: '/images/coin/coin-luxembourg-contern-shared-room.webp',
-      },
-      {
         type: 'map_overview',
         order: 1,
         body: ls(
-          'COIN offers business continuity services in The Netherlands, Luxembourg and Belgium and is the only business continuity specialist providing consistent level of services across the BeNeLux. The services are delivered at COIN business centers and at customer premises.\n\nCOIN operates 4 resilience centres: 2 redundant shared sites in Luxembourg (Munsbach and Contern), one shared site near Amsterdam Schiphol-Rijk, and a dedicated site in Antwerp, Belgium.\n\nEach site features a crisis management room, dedicated and shared recovery offices with a range of facility and IT options. All sites are equipped with high-resilient power and IT systems, multiple telecom provider access, and physical/digital security compliant with ISO 27001.',
+          'COIN offers business continuity services in The Netherlands, Luxembourg and Belgium and is the only business continuity specialist providing consistent level of services across the BeNeLux. The services are delivered at COIN business centers and at customer premises.\n\nCOIN operates 4 resilience centres: 2 redundant shared sites in Luxembourg (Munsbach and Contern), one shared site near Amsterdam Schiphol-Rijk, and a dedicated site in Antwerp, Belgium.\n\nEach site features a crisis management room, dedicated and shared recovery offices with a range of facility and IT options. All sites are equipped with resilient power and IT systems, multiple telecom provider access, and physical/digital security compliant with ISO 27001.',
         ),
         mapImageUrl: null,
         mapEmbedUrl: 'https://maps.google.com/maps?q=50.5,4.8&t=&z=7&ie=UTF8&iwloc=&output=embed',
@@ -577,11 +568,11 @@ function pageLocations() {
         order: 3,
         sites: [
           {
-            name: ls('Schiphol-Rijk'),
+            name: ls('Amsterdam'),
             country: ls('The Netherlands'),
-            address: 'Schiphol-Rijk',
+            address: 'Amsterdam',
             phone: '+31 88 26 46 000',
-            imageUrl: '/images/coin/dedicated-site-meeting-room-screen.webp',
+            imageUrl: '/images/coin/COIN-Office-NL-DSC8597.webp',
             description: ls(
               'COIN Netherlands headquarters and primary business continuity centre, strategically located near Amsterdam Airport Schiphol. The facility offers dedicated and shared recovery rooms, a crisis management suite, and co-location services for Dutch and international clients.',
             ),
@@ -593,7 +584,7 @@ function pageLocations() {
             country: ls('Luxembourg'),
             address: 'Munsbach',
             phone: '+352 357 05 30',
-            imageUrl: '/images/coin/coin-luxembourg-munsbach-reception-area-2.webp',
+            imageUrl: '/images/coin/Luxembourg-Munsbach-Shared-Seat-Room.webp',
             description: ls(
               "COIN's primary Luxembourg facility, a TIER-3 certified data centre and business continuity centre with 500 recovery workplaces. Co-location infrastructure is powered in partnership with LuxConnect. The site serves Luxembourg's financial sector and CSSF-regulated organisations.",
             ),
@@ -1896,19 +1887,26 @@ async function main() {
 
   const db = getFirestore();
 
-  await seedSiteConfig(db);
   await seedNavigation(db);
-  await seedPages(db);
-  await seedServices(db);
   await seedTestimonials(db);
-  await seedTeamMembers(db);
-  await seedPartners(db);
-  await seedWhitePapers(db);
-  await seedArticles(db);
+
+  // The following collections are managed via the admin UI (/admin) and are
+  // intentionally NOT touched by this seed — running them would either wipe
+  // (destructive collections) or overwrite (merge collections) content that
+  // editors created through the admin. To bootstrap a fresh Firestore project
+  // from scratch, call them manually one-time:
+  //
+  //   await seedSiteConfig(db);    // admin: Settings
+  //   await seedPages(db);         // admin: Pages
+  //   await seedServices(db);      // admin: Services
+  //   await seedTeamMembers(db);   // admin: Team
+  //   await seedPartners(db);      // admin: Partners
+  //   await seedWhitePapers(db);   // admin: White Papers
+  //   await seedArticles(db);      // admin: Articles
 
   console.log('');
   console.log('=== Seeding complete ===');
-  console.log('Collections seeded: site_config, navigation, pages, services, testimonials, team_members, partners, white_papers, articles');
+  console.log('Collections seeded: navigation, testimonials');
   // Force exit since Firebase client SDK keeps connections open
   process.exit(0);
 }

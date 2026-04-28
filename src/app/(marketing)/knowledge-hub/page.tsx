@@ -1,16 +1,14 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, BookOpen, FileText, Video, FileDown, Newspaper, HelpCircle } from 'lucide-react'
+import { ArrowRight, BookOpen, FileText, Video, Newspaper, HelpCircle } from 'lucide-react'
 import { getPublishedArticles } from '@/lib/firestore/articles'
-import { getPublishedWhitePapers } from '@/lib/firestore/white-papers'
 import { getPublishedNews } from '@/lib/firestore/news'
 import { getCoinYoutubeVideos } from '@/lib/youtube'
 import { getLocalizedField } from '@/lib/locale'
 import { formatDate } from '@/lib/utils/date'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
 import ArticleCard from '@/components/knowledge-hub/ArticleCard'
-import WhitePaperCard from '@/components/ui/WhitePaperCard'
 import type { NewsItem } from '@/lib/types/news'
 import type { YoutubeVideo } from '@/lib/youtube'
 
@@ -18,19 +16,18 @@ export const revalidate = 300
 
 export const metadata: Metadata = {
   title: 'Knowledge Hub',
-  description: 'Articles, case studies, videos, white papers and news on business continuity, disaster recovery and cyber resilience.',
+  description: 'Articles, case studies, videos and news on business continuity, disaster recovery and cyber resilience.',
   alternates: { canonical: 'https://coin-bc.com/knowledge-hub' },
   openGraph: {
     title: 'Knowledge Hub | COIN AS',
-    description: 'Articles, case studies, videos, white papers and news on business continuity, disaster recovery and cyber resilience.',
+    description: 'Articles, case studies, videos and news on business continuity, disaster recovery and cyber resilience.',
     url: 'https://coin-bc.com/knowledge-hub',
   },
 }
 
 export default async function KnowledgeHubOverview() {
-  const [allArticles, whitePapers, news, videos] = await Promise.all([
+  const [allArticles, news, videos] = await Promise.all([
     getPublishedArticles(),
-    getPublishedWhitePapers(),
     getPublishedNews(),
     getCoinYoutubeVideos(),
   ])
@@ -38,14 +35,12 @@ export default async function KnowledgeHubOverview() {
   const articles = allArticles.filter((a) => a.category === 'resource').slice(0, 3)
   const caseStudies = allArticles.filter((a) => a.category === 'case_study').slice(0, 3)
   const latestVideos = videos.slice(0, 3)
-  const latestPapers = whitePapers.slice(0, 3)
   const latestNews = news.slice(0, 3)
 
   const quickLinks = [
     { label: 'Articles', href: '#articles', count: articles.length },
     { label: 'Case Studies', href: '#case-studies', count: caseStudies.length },
     { label: 'Videos', href: '#videos', count: latestVideos.length },
-    { label: 'White Papers', href: '#white-papers', count: latestPapers.length },
     { label: 'News', href: '#news', count: latestNews.length },
     { label: 'FAQ', href: '/knowledge-hub/faq' },
   ]
@@ -87,19 +82,8 @@ export default async function KnowledgeHubOverview() {
         )}
       </SectionWrapper>
 
-      {/* White Papers */}
-      <SectionWrapper id="white-papers" icon={FileDown} title="White Papers" viewAllHref="/knowledge-hub/white-papers" bgClass="bg-warm-50">
-        {latestPapers.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {latestPapers.map((wp) => <WhitePaperCard key={wp.id} paper={wp} />)}
-          </div>
-        ) : (
-          <EmptyHint message="No white papers yet." />
-        )}
-      </SectionWrapper>
-
       {/* News */}
-      <SectionWrapper id="news" icon={Newspaper} title="News" viewAllHref="/news" bgClass="bg-white">
+      <SectionWrapper id="news" icon={Newspaper} title="News" viewAllHref="/news" bgClass="bg-warm-50">
         {latestNews.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {latestNews.map((n) => <NewsCard key={n.id} news={n} />)}

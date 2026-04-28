@@ -10,21 +10,21 @@ import { ArrowRight, ChevronRight } from 'lucide-react'
 const STEPS = [
   {
     name: 'ASSESS',
-    subtitle: 'Identify your risks and critical vulnerabilities',
+    subtitle: 'Identify your risks and disruption scenarios',
     description:
-      'We analyse your business processes, infrastructure and exposure to ensure the right continuity strategy.',
+      'We analyse your business processes, regulatory obligations and define the right business continuity strategy.',
   },
   {
-    name: 'PREVENT',
-    subtitle: 'Protect your operations before disruption occurs',
+    name: 'PREPARE',
+    subtitle: 'Prepare for disruption and reduce their impacts',
     description:
-      'From cybersecurity to data protection, we secure your environment and reduce the likelihood of incidents.',
+      'From natural disaster to human caused incidents or phishing, we help you to prevent and get you ready and trained to manage the crisis and minimize its impact.',
   },
   {
     name: 'RESPOND',
-    subtitle: 'Stay operational when disruption happens',
+    subtitle: 'Continue to work and resume operations in case of disruption.',
     description:
-      'We provide secure environments, recovery solutions and crisis support to keep your business running.',
+      'We provide secure environments, physical and digital recovery solutions and crisis support.',
   },
 ]
 
@@ -35,31 +35,31 @@ const SOLUTIONS = [
   {
     title: 'Consultancy & Training',
     description:
-      'Assess risks, define strategies and train your teams across the full continuity lifecycle',
+      'Business Impact Analysis, Continuity Plans, Crisis Management and Disaster Simulation Exercices.',
     href: '/services/consultancy-and-training',
   },
   {
     title: 'Recovery Workplaces',
     description:
-      'Access fully equipped offices to resume operations within hours after disruption',
+      '24x7 available fully equipped offices to resume operations within hours, or for special projects.',
     href: '/services/recovery-workplaces',
   },
   {
     title: 'Crisis Management',
     description:
-      'Prepare for and manage critical situations with dedicated facilities and expert support',
+      'Prepare for and manage crisis with expert support, crisis management facilities and war rooms.',
     href: '/services/crisis-management',
   },
   {
     title: 'IT Housing',
     description:
-      'Secure and resilient infrastructure hosting in Luxembourg with high availability and redundancy',
+      'Secure and resilient DRP hosting in Luxembourg with co-located recovery offices.',
     href: '/services/it-housing',
   },
   {
     title: 'Cyber Resilience',
     description:
-      'Prevent, detect and respond to cyber threats with advanced protection and recovery solutions',
+      'Prevent phishing attacks, Clean Azure tenant, recovery laptops, and recovery USB keys.',
     href: '/services/cyberresilience',
   },
 ]
@@ -84,7 +84,7 @@ export default function ServicePillars({ section, locale }: ServicePillarsProps)
           <div className="mb-14 max-w-3xl">
             <div className="w-12 h-1 bg-accent-500 mb-6" />
             <h2 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold text-primary-900 leading-tight">
-              How we ensure your business continuity
+              Your business continuity is our mission, from risk assessment to recovery
             </h2>
           </div>
 

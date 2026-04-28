@@ -16,7 +16,7 @@ const SITES = [
     city: 'Amsterdam',
     country: 'Netherlands',
     phone: '+31 88 26 46 000',
-    detail: '500 Recovery workplaces · Crisis rooms',
+    detail: '250 Recovery workplaces · Crisis rooms',
     color: '#004779',
     image: '/images/coin/amsterdam-office.webp',
   },
@@ -26,7 +26,7 @@ const SITES = [
     phone: '',
     detail: 'Customer dedicated recovery site',
     color: '#009900',
-    image: null,
+    image: '/images/coin/coin_office_antwerp.jpg',
   },
   {
     city: 'Munsbach',
@@ -34,7 +34,7 @@ const SITES = [
     phone: '+352 357 05 30',
     detail: '500 recovery workplaces · IT Housing',
     color: '#A51218',
-    image: null,
+    image: '/images/coin/COIN_Luxembourg_Munsbach_Office_Ext.webp',
   },
   {
     city: 'Contern',

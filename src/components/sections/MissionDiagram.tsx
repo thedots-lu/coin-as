@@ -34,7 +34,7 @@ export default function MissionDiagram({ section, locale }: MissionDiagramProps)
   const stepColors = rotate(sourceColors)
 
   return (
-    <section id="mission" className="py-20 bg-warm-50 scroll-mt-24">
+    <section id="mission" className="py-20 bg-secondary-50 scroll-mt-24">
       <div className="container-padding">
         {heading && (
           <AnimatedSection animation="slideUp" className="text-center mb-16">

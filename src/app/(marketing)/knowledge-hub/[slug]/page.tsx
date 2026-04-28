@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { getArticleBySlug } from '@/lib/firestore/articles'
 import { getLocalizedField } from '@/lib/locale'
 import { formatDate } from '@/lib/utils/date'
+import { isHtml, sanitizeRichHtml } from '@/lib/utils/html'
 import Badge from '@/components/ui/Badge'
 import Markdown from 'react-markdown'
 
@@ -88,7 +89,11 @@ export default async function ArticleDetailPage({ params }: PageProps) {
           )}
 
           <div className="prose prose-lg max-w-none text-secondary-700 prose-headings:text-primary-900 prose-headings:font-display prose-strong:text-secondary-800 prose-li:marker:text-accent-500">
-            <Markdown>{content}</Markdown>
+            {isHtml(content) ? (
+              <div dangerouslySetInnerHTML={{ __html: sanitizeRichHtml(content) }} />
+            ) : (
+              <Markdown>{content}</Markdown>
+            )}
           </div>
 
           {article.tags.length > 0 && (
@@ -112,3 +117,4 @@ export default async function ArticleDetailPage({ params }: PageProps) {
     </>
   )
 }
+
