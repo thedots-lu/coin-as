@@ -74,7 +74,12 @@ export default function SectionSettingsDrawer({
     return () => window.removeEventListener('keydown', handler)
   }, [onClose])
 
+  const ctx = useEditing()!
   const label = TYPE_LABELS[section.type] ?? section.type
+  const visible = section.visible !== false
+  const toggleVisible = () => {
+    ctx.updateAt(`${basePath}.visible`, !visible)
+  }
 
   return (
     <>
@@ -123,6 +128,26 @@ export default function SectionSettingsDrawer({
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               <ArrowDown className="w-3.5 h-3.5" /> Down
+            </button>
+            <button
+              type="button"
+              onClick={toggleVisible}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border rounded-md transition-colors ${
+                visible
+                  ? 'text-gray-700 bg-white border-gray-300 hover:bg-gray-100'
+                  : 'text-amber-700 bg-amber-50 border-amber-300 hover:bg-amber-100'
+              }`}
+              title={visible ? 'Hide on site' : 'Show on site'}
+            >
+              {visible ? (
+                <>
+                  <Eye className="w-3.5 h-3.5" /> Visible
+                </>
+              ) : (
+                <>
+                  <EyeOff className="w-3.5 h-3.5" /> Hidden
+                </>
+              )}
             </button>
             <button
               type="button"

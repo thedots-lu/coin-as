@@ -1,5 +1,5 @@
 import { Fragment, ReactNode } from 'react'
-import { PageSection } from '@/lib/types/page'
+import { PageSection, isSectionVisible } from '@/lib/types/page'
 import { Testimonial } from '@/lib/types/testimonial'
 import { Locale } from '@/lib/types/locale'
 import { TeamMember } from '@/lib/types/team'
@@ -37,6 +37,7 @@ interface PageSectionRendererProps {
   testimonials?: Testimonial[]
   teamMembers?: TeamMember[]
   partners?: Partner[]
+  customerLogos?: Array<{ url: string; name: string }>
   /** When true, each section is wrapped in a CMS edit overlay (admin only). */
   withSectionOverlay?: boolean
 }
@@ -47,6 +48,7 @@ export default function PageSectionRenderer({
   testimonials,
   teamMembers = [],
   partners = [],
+  customerLogos,
   withSectionOverlay = false,
 }: PageSectionRendererProps) {
   // Sort while preserving each section's index in the original Firestore array,
@@ -115,7 +117,7 @@ export default function PageSectionRenderer({
         return (
           <>
             <MissionStatement section={section} locale={locale} basePath={basePath} />
-            <TrustedByMarquee />
+            <TrustedByMarquee logos={customerLogos} />
           </>
         )
       case 'benefits':
@@ -134,11 +136,19 @@ export default function PageSectionRenderer({
     <>
       {sorted.map(({ section, originalIndex }) => {
         const key = `${section.type}-${originalIndex}`
+        const visible = isSectionVisible(section)
+        // Public site: skip hidden sections entirely.
+        if (!withSectionOverlay && !visible) return null
         const node = renderSection(section, originalIndex)
         if (node === null) return null
         if (!withSectionOverlay) return <Fragment key={key}>{node}</Fragment>
         return (
-          <SectionEditOverlay key={key} originalIndex={originalIndex} type={section.type}>
+          <SectionEditOverlay
+            key={key}
+            originalIndex={originalIndex}
+            type={section.type}
+            visible={visible}
+          >
             {node}
           </SectionEditOverlay>
         )

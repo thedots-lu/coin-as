@@ -1,12 +1,13 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { Settings } from 'lucide-react'
+import { Settings, Eye, EyeOff } from 'lucide-react'
 import { useEditing } from './EditingContext'
 
 interface Props {
   originalIndex: number
   type: string
+  visible?: boolean
   children: ReactNode
 }
 
@@ -39,7 +40,12 @@ const TYPE_LABELS: Record<string, string> = {
   featured_carousel: 'Featured Carousel',
 }
 
-export default function SectionEditOverlay({ originalIndex, type, children }: Props) {
+export default function SectionEditOverlay({
+  originalIndex,
+  type,
+  visible = true,
+  children,
+}: Props) {
   const ctx = useEditing()
   if (!ctx?.isEditing) {
     return <>{children}</>
@@ -48,27 +54,49 @@ export default function SectionEditOverlay({ originalIndex, type, children }: Pr
   const isSelected = ctx.selectedSectionIndex === originalIndex
   const label = TYPE_LABELS[type] ?? type
 
+  const toggleVisibility = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    ctx.updateAt(`sections.${originalIndex}.visible`, !visible)
+  }
+
   return (
     <div
       className={[
-        'cms-section-wrap',
+        'cms-section-wrap relative',
         isSelected ? 'cms-section-selected' : '',
+        visible ? '' : 'cms-section-hidden opacity-50',
       ].join(' ')}
       data-cms-section-index={originalIndex}
     >
       {children}
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation()
-          ctx.openSectionSettings(originalIndex)
-        }}
-        className="cms-section-handle absolute top-3 right-3 z-40 inline-flex items-center gap-1.5 bg-primary-950/95 hover:bg-primary-900 text-white text-[11px] font-semibold px-2.5 py-1.5 rounded-md shadow-lg backdrop-blur-sm border border-white/10"
-        title={`Settings · ${label}`}
-      >
-        <Settings className="w-3.5 h-3.5" />
-        <span>{label}</span>
-      </button>
+      {!visible && (
+        <div className="absolute top-3 left-3 z-40 inline-flex items-center gap-1.5 bg-amber-500/95 text-white text-[11px] font-semibold px-2.5 py-1.5 rounded-md shadow-lg">
+          <EyeOff className="w-3.5 h-3.5" />
+          <span>Hidden on site</span>
+        </div>
+      )}
+      <div className="absolute top-3 right-3 z-40 flex items-center gap-2">
+        <button
+          type="button"
+          onClick={toggleVisibility}
+          className="inline-flex items-center justify-center bg-primary-950/95 hover:bg-primary-900 text-white p-1.5 rounded-md shadow-lg backdrop-blur-sm border border-white/10"
+          title={visible ? 'Hide on site' : 'Show on site'}
+        >
+          {visible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+        </button>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            ctx.openSectionSettings(originalIndex)
+          }}
+          className="cms-section-handle inline-flex items-center gap-1.5 bg-primary-950/95 hover:bg-primary-900 text-white text-[11px] font-semibold px-2.5 py-1.5 rounded-md shadow-lg backdrop-blur-sm border border-white/10"
+          title={`Settings · ${label}`}
+        >
+          <Settings className="w-3.5 h-3.5" />
+          <span>{label}</span>
+        </button>
+      </div>
     </div>
   )
 }

@@ -284,7 +284,14 @@ export interface FeaturedCarouselSection {
   }>
 }
 
-export type PageSection =
+/**
+ * Per-section visibility. When false, the section is hidden on the public site
+ * but remains visible (with a "hidden" indicator) in the visual CMS editor so
+ * editors can toggle it back on. Defaults to true when undefined.
+ */
+type WithVisibility<T> = T & { visible?: boolean }
+
+export type PageSection = WithVisibility<
   | HeroSection
   | ServicePillarsSection
   | InnovationSection
@@ -311,6 +318,11 @@ export type PageSection =
   | BusinessCaseSection
   | RichTextSection
   | FeaturedCarouselSection
+>
+
+export function isSectionVisible(section: { visible?: boolean }): boolean {
+  return section.visible !== false
+}
 
 export interface SeoMeta {
   metaTitle: LocaleString
