@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { getNewsBySlug } from '@/lib/firestore/news'
 import { getLocalizedField } from '@/lib/locale'
 import { formatDate } from '@/lib/utils/date'
+import { isHtml, sanitizeRichHtml } from '@/lib/utils/html'
 import Badge from '@/components/ui/Badge'
 
 export const revalidate = 300
@@ -98,9 +99,16 @@ export default async function NewsDetailPage({ params }: PageProps) {
             </div>
           )}
 
-          <div className="prose prose-lg max-w-none" style={{ whiteSpace: 'pre-line' }}>
-            {content}
-          </div>
+          {isHtml(content) ? (
+            <div
+              className="prose prose-lg max-w-none"
+              dangerouslySetInnerHTML={{ __html: sanitizeRichHtml(content) }}
+            />
+          ) : (
+            <div className="prose prose-lg max-w-none" style={{ whiteSpace: 'pre-line' }}>
+              {content}
+            </div>
+          )}
 
           {item.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-10 pt-6 border-t border-slate-200">
@@ -123,3 +131,4 @@ export default async function NewsDetailPage({ params }: PageProps) {
     </>
   )
 }
+
