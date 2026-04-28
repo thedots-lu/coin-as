@@ -25,6 +25,9 @@ export default async function TrustedByMarquee() {
         <h2 className="text-2xl md:text-3xl font-bold text-secondary-800 font-display">
           Trusted by leading organisations across the BeNeLux
         </h2>
+        <p className="mt-5 max-w-3xl mx-auto text-secondary-600 leading-relaxed">
+          COIN has been the first and last line of defence for dozens of organizations with critical operations and help them cope with facility outages, telecom or power cuts, pandemics, social events and ransomware.
+        </p>
       </div>
 
       <LogoMarquee logos={logos} />
