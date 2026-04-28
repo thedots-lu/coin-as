@@ -10,7 +10,10 @@
     "seed": "npx tsx scripts/seed-firestore.ts",
     "seed-faq": "npx tsx scripts/seed-faq.ts",
     "seed-challenges": "npx tsx scripts/seed-challenges.ts",
-    "migrate-news": "npx tsx scripts/migrate-news.ts"
+    "migrate-news": "npx tsx scripts/migrate-news.ts",
+    "dump-firestore": "npx tsx scripts/dump-firestore.ts",
+    "dump-storage": "npx tsx scripts/dump-storage.ts",
+    "dump-all": "npm run dump-firestore && npm run dump-storage"
   },
   "keywords": [],
   "author": "",
