@@ -17,6 +17,7 @@ import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { Partner } from '@/lib/types/partner'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'
+import ImageUpload from '@/components/admin/ImageUpload'
 
 export default function AdminPartnersPage() {
   const [items, setItems] = useState<Partner[]>([])
@@ -88,6 +89,10 @@ export default function AdminPartnersPage() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!logoUrl.trim()) {
+      alert('Please upload a logo or provide a logo URL.')
+      return
+    }
     setSaving(true)
     try {
       const now = Timestamp.now()
@@ -180,17 +185,14 @@ export default function AdminPartnersPage() {
           </div>
         </div>
 
+        <ImageUpload
+          label="Logo"
+          value={logoUrl}
+          onChange={setLogoUrl}
+          storagePath="partners"
+        />
+
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Logo URL</label>
-            <input
-              type="text"
-              value={logoUrl}
-              onChange={(e) => setLogoUrl(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-              required
-            />
-          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Website URL</label>
             <input
@@ -200,16 +202,15 @@ export default function AdminPartnersPage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
             />
           </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
-          <input
-            type="number"
-            value={order}
-            onChange={(e) => setOrder(parseInt(e.target.value) || 0)}
-            className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md text-sm"
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
+            <input
+              type="number"
+              value={order}
+              onChange={(e) => setOrder(parseInt(e.target.value) || 0)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            />
+          </div>
         </div>
 
         <LocaleEditor label="Description" value={description} onChange={setDescription} multiline />

@@ -291,6 +291,15 @@ h1, h2, h3, h4, h5, h6 {
   100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
 }
 
+/* Mission diagram arrow flow */
+@keyframes missionFlow {
+  to { stroke-dashoffset: -16; }
+}
+.mission-arrow-flow {
+  stroke-dasharray: 6 4;
+  animation: missionFlow 1.2s linear infinite;
+}
+
 @keyframes gradientBackground {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }

@@ -1,10 +1,10 @@
-import { Fragment } from 'react'
 import { getPublishedServices } from '@/lib/firestore/services'
 import { getLocalizedField } from '@/lib/locale'
 import Link from 'next/link'
 import { Metadata } from 'next'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
-import { ArrowRight, Building2, ChevronRight, GraduationCap, Server, Shield, AlertTriangle, Briefcase, LucideIcon } from 'lucide-react'
+import BusinessContinuityDiagram from '@/components/sections/BusinessContinuityDiagram'
+import { ArrowRight, Building2, GraduationCap, Server, Shield, ShieldCheck, ScrollText, Wallet, AlertTriangle, Briefcase, LucideIcon } from 'lucide-react'
 
 export const revalidate = 300
 
@@ -80,18 +80,39 @@ const DEFAULT_CARD_META: CardMeta = {
 const APPROACH_STEPS = [
   {
     title: 'Assess',
+    tagline: 'Understand your risks and possible disruption scenarios',
     description:
-      'Understand your risks and define the right strategy. We analyse your business processes, critical assets and exposure to identify vulnerabilities and design a tailored continuity plan.',
+      'Perform Business Impact Analysis.',
   },
   {
     title: 'Prevent',
+    tagline: 'Reduce your risks and strengthen your resilience',
     description:
-      'Reduce risks and strengthen your resilience. We implement security, monitoring and protection solutions to minimise the likelihood and impact of disruptions.',
+      'Improve your technical resiliency and redundancy and prevent phishing.',
+  },
+  {
+    title: 'Prepare',
+    tagline: 'Get your teams ready to address crisis and disasters',
+    description:
+      'Design Business Continuity Plan, perform training, simulations and exercises.',
   },
   {
     title: 'Respond',
+    tagline: 'Ensure the continuity of your operations when disruption occurs',
     description:
-      'Ensure continuity when disruption occurs. We provide recovery environments, crisis management support and secure access solutions to keep your operations running.',
+      'Provide Recovery offices, alternate IT infrastructure and crisis management facilities.',
+  },
+  {
+    title: 'Recover',
+    tagline: 'Support your organisation to get back to business as usual',
+    description:
+      'Flexible solution for recovery, project management and logistics to rebuild operations.',
+  },
+  {
+    title: 'Improve',
+    tagline: 'Avoid reoccurrence of disrupting events and limit impact',
+    description:
+      'Review and improve business continuity plans and adjust prevention and training schemes.',
   },
 ]
 
@@ -131,18 +152,38 @@ export default async function ServicesPage() {
       <section id="overview" className="bg-white py-16 md:py-20 scroll-mt-24">
         <div className="container-padding">
           <div className="max-w-6xl mx-auto">
-            <div className="max-w-4xl">
-              <p className="text-sm font-semibold uppercase tracking-wider text-accent-500 mb-4">
-                Business Continuity &amp; Cyber Resilience
-              </p>
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-900 leading-tight mb-6">
-                We enable organisations to strengthen their resilience across three key areas
+            <div className="max-w-4xl mb-12">
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-900 leading-tight">
+                Advisory Services and Solutions that enable organisations to achieve their business continuity objectives
               </h2>
-              <p className="text-lg text-secondary-600 leading-relaxed">
-                COIN has a unique blend of competences in Business Continuity, Digital Workplaces,
-                Facility Management, High Resiliency Systems and Security. We help organisations
-                with critical operations prepare for, respond to, and recover from any disruption.
-              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                {
+                  icon: ShieldCheck,
+                  text: 'Tested continuity plans and solutions to prevent and respond to crisis and business disruptions 24x7',
+                },
+                {
+                  icon: ScrollText,
+                  text: 'Regulatory compliance with local business continuity laws and resilience frameworks such as NIS2 and DORA',
+                },
+                {
+                  icon: Wallet,
+                  text: 'Cost-effective and flexible contracts for alternative facilities, IT infrastructure and disaster recovery services',
+                },
+              ].map(({ icon: Icon, text }, i) => (
+                <div
+                  key={i}
+                  className="relative bg-white rounded-2xl p-6 border border-secondary-100 shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <div className="absolute top-0 left-6 right-6 h-1 bg-accent-500 rounded-b-full" />
+                  <div className="w-12 h-12 rounded-xl bg-accent-50 flex items-center justify-center mb-4">
+                    <Icon className="w-6 h-6 text-accent-600" strokeWidth={2} />
+                  </div>
+                  <p className="text-secondary-700 leading-relaxed">{text}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -157,31 +198,36 @@ export default async function ServicesPage() {
                 Our approach to business continuity
               </h2>
               <p className="text-lg text-primary-200 leading-relaxed">
-                COIN supports your organisation across the full business continuity lifecycle:
+                COIN unique core business is to provide continuity solutions and services that span the full business continuity lifecycle:
               </p>
             </div>
 
-            <div className="flex flex-col md:flex-row md:items-stretch gap-6 md:gap-4">
-              {APPROACH_STEPS.map((step, index) => (
-                <Fragment key={step.title}>
-                  <div className="relative bg-primary-900/50 rounded-2xl p-8 border border-white/10 flex-1">
-                    <h3 className="font-display text-xl font-bold text-white mb-3">
+            <div className="grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+              <div className="lg:sticky lg:top-24">
+                <BusinessContinuityDiagram
+                  steps={APPROACH_STEPS.map((s) => s.title)}
+                  theme="dark"
+                />
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                {APPROACH_STEPS.map((step) => (
+                  <div
+                    key={step.title}
+                    className="relative bg-primary-900/50 rounded-2xl p-6 border border-white/10"
+                  >
+                    <h3 className="font-display text-lg font-bold text-white mb-2">
                       {step.title}
                     </h3>
-                    <p className="text-primary-200 leading-relaxed text-sm">
+                    <p className="text-primary-100 text-sm font-medium mb-2 leading-snug">
+                      {step.tagline}
+                    </p>
+                    <p className="text-primary-200/80 leading-relaxed text-sm">
                       {step.description}
                     </p>
                   </div>
-                  {index < APPROACH_STEPS.length - 1 && (
-                    <div className="flex items-center justify-center py-2 md:py-0">
-                      <ChevronRight
-                        className="w-12 h-12 text-accent-500 rotate-90 md:rotate-0 shrink-0"
-                        aria-hidden="true"
-                      />
-                    </div>
-                  )}
-                </Fragment>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
