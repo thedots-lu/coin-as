@@ -1,9 +1,10 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, ReactNode } from 'react'
+import { useEffect, useState, ReactNode } from 'react'
 import { X, ArrowUp, ArrowDown, Trash2, Plus, Eye, EyeOff } from 'lucide-react'
 import { useEditing } from './EditingContext'
+import LinkPickerControls from './LinkPickerControls'
 import {
   PageSection,
   HeroSection,
@@ -202,17 +203,26 @@ const inputClass =
 
 function UrlField({ label, path, value, hint }: { label: string; path: string; value: string; hint?: string }) {
   const ctx = useEditing()!
+  const [draft, setDraft] = useState(value ?? '')
+
+  // Sync draft when the canonical value changes externally (e.g. discard).
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDraft(value ?? '')
+  }, [value])
+
+  const commit = (next: string) => {
+    const trimmed = next.trim()
+    if (trimmed !== (value ?? '')) ctx.updateAt(path, trimmed)
+  }
+
   return (
     <Field label={label} hint={hint}>
-      <input
-        type="text"
-        defaultValue={value || ''}
-        onBlur={(e) => {
-          const v = e.target.value
-          if (v !== (value || '')) ctx.updateAt(path, v)
-        }}
-        placeholder="/path or https://..."
-        className={inputClass}
+      <LinkPickerControls
+        value={draft}
+        onChange={setDraft}
+        onUrlBlur={commit}
+        onPick={commit}
       />
     </Field>
   )

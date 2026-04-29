@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { isExternalUrl } from '@/lib/utils/links'
 
 interface ButtonProps {
   children: React.ReactNode
@@ -37,6 +38,13 @@ export default function Button({
   const classes = `${baseClasses} ${variantClasses[variant]} ${disabledClasses} ${className}`
 
   if (href) {
+    if (isExternalUrl(href)) {
+      return (
+        <a href={href} target="_blank" rel="noopener noreferrer" className={classes}>
+          {children}
+        </a>
+      )
+    }
     return (
       <Link href={href} className={classes}>
         {children}
