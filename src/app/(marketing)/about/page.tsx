@@ -29,11 +29,12 @@ export default async function AboutPage() {
     )
   }
 
-  // Filter out hero_simple — we use the minimal HubBanner instead
-  const sections = pageData.sections.filter((s) => s.type !== 'hero_simple')
+  // Filter out hero_simple (HubBanner handles it) and mission (moved to Services page)
+  const sections = pageData.sections.filter(
+    (s) => s.type !== 'hero_simple' && s.type !== 'mission',
+  )
 
   const quickLinks = [
-    { label: 'Our Mission', href: '#mission' },
     { label: 'Our Values', href: '#values' },
     { label: 'Our Experts', href: '#teams' },
     { label: 'Our Partners', href: '#partners' },

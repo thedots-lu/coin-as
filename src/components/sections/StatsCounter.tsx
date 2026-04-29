@@ -65,7 +65,7 @@ export default function StatsCounter({ section, basePath }: StatsCounterProps) {
               />
 
               {/* The number -- oversized, authoritative */}
-              <div className="flex items-baseline justify-center md:justify-start gap-1">
+              <div className="flex items-baseline justify-center gap-1">
                 <span
                   className="font-display tabular-nums tracking-tighter leading-none"
                   style={{
@@ -103,7 +103,7 @@ export default function StatsCounter({ section, basePath }: StatsCounterProps) {
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.4 + index * 0.12 }}
-                className="mt-3 text-sm md:text-base tracking-wide uppercase text-center md:text-left"
+                className="mt-3 text-sm md:text-base tracking-wide uppercase text-center"
                 style={{
                   color: 'var(--color-secondary-400)',
                   fontWeight: 500,

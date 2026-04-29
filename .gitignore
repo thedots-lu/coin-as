@@ -43,3 +43,6 @@ scripts/originals/
 scripts/enhanced_source/
 scripts/content-export/
 scripts/2024-06-17 COIN-FotoSharonWillems-16.jpg
+
+# admin uploads (user content, not source)
+public/uploads/

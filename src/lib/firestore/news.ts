@@ -26,12 +26,13 @@ export async function getNewsBySlug(slug: string): Promise<NewsItem | null> {
   try {
     const q = query(
       collection(db, 'news'),
-      where('slug.en', '==', slug)
+      where('published', '==', true),
+      where('slug.en', '==', slug),
     )
     const snapshot = await getDocs(q)
     if (snapshot.empty) return null
     const d = snapshot.docs[0]
-    return { id: d.id, ...d.data() } as NewsItem
+    return serializeFirestoreData<NewsItem>({ id: d.id, ...d.data() })
   } catch (error) {
     console.error('Error fetching news by slug:', error)
     return null
