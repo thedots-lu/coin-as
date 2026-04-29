@@ -17,6 +17,7 @@ import {
 } from '@/components/admin/cms/EditingContext'
 import EditorToolbar from '@/components/admin/cms/EditorToolbar'
 import SectionSettingsDrawer from '@/components/admin/cms/SectionSettingsDrawer'
+import { InternalRoutesDatalist } from '@/components/admin/cms/EditableLink'
 import { computeLocaleStats } from '@/components/admin/cms/localeStats'
 
 export default function HomeVisualEditor() {
@@ -218,6 +219,7 @@ export default function HomeVisualEditor() {
 
   return (
     <div className="-m-6 bg-gray-100 min-h-[calc(100vh-64px)]">
+      <InternalRoutesDatalist />
       <EditorToolbar
         title="Home page"
         activeLocale={activeLocale}

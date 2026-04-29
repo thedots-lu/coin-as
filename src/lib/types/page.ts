@@ -33,15 +33,19 @@ export interface HeroSection {
 export interface ServicePillarsSection {
   type: 'service_pillars'
   order: number
-  heading: LocaleString
-  subtitle: LocaleString
-  ctaText: LocaleString
-  pillars: Array<{
+  // Block 1 — lifecycle steps (Assess / Prepare / Respond ...)
+  stepsHeading: LocaleString
+  steps: Array<{
+    name: LocaleString
+    subtitle: LocaleString
+    description: LocaleString
+  }>
+  // Block 2 — solutions catalog (links to /services/*)
+  solutionsHeading: LocaleString
+  solutions: Array<{
     title: LocaleString
     description: LocaleString
-    tagline: LocaleString
-    imageUrl: string | null
-    link: string
+    href: string
   }>
 }
 

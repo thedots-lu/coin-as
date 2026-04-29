@@ -207,47 +207,68 @@ function pageHome() {
       {
         type: 'service_pillars',
         order: 1,
-        heading: ls('We enable customers to improve their resilience in three key areas'),
-        subtitle: ls(
-          'COIN has a unique blend of competences in Business Continuity, Digital Workplaces, Facility Management, High Resiliency Systems and Security. We are dedicated to helping organisations with mission critical employees prepare for, respond to, and recover from any disruption.',
+        stepsHeading: ls(
+          'Your business continuity is our mission, from risk assessment to recovery',
         ),
-        ctaText: ls('Discover our solutions'),
-        pillars: [
+        steps: [
           {
-            title: ls('Business Continuity'),
+            name: ls('ASSESS'),
+            subtitle: ls('Identify your risks and disruption scenarios'),
             description: ls(
-              'Reduce the impact of external events that disrupt business: natural disasters, office unavailability, pandemics, social events, power cuts or telecom failure.',
+              'We analyse your business processes, regulatory obligations and define the right business continuity strategy.',
             ),
-            tagline: ls('Prepare. Respond. Recover.'),
-            imageUrl: '/images/coin/coin-fotosharonwillems-27.webp',
-            link: '/services/business-continuity',
+          },
+          {
+            name: ls('PREPARE'),
+            subtitle: ls('Prepare for disruption and reduce their impacts'),
+            description: ls(
+              'From natural disaster to human caused incidents or phishing, we help you to prevent and get you ready and trained to manage the crisis and minimize its impact.',
+            ),
+          },
+          {
+            name: ls('RESPOND'),
+            subtitle: ls('Continue to work and resume operations in case of disruption.'),
+            description: ls(
+              'We provide secure environments, physical and digital recovery solutions and crisis support.',
+            ),
+          },
+        ],
+        solutionsHeading: ls('Our solutions'),
+        solutions: [
+          {
+            title: ls('Consultancy & Training'),
+            description: ls(
+              'Business Impact Analysis, Continuity Plans, Crisis Management and Disaster Simulation Exercices.',
+            ),
+            href: '/services/consultancy-and-training',
+          },
+          {
+            title: ls('Recovery Workplaces'),
+            description: ls(
+              '24x7 available fully equipped offices to resume operations within hours, or for special projects.',
+            ),
+            href: '/services/recovery-workplaces',
+          },
+          {
+            title: ls('Crisis Management'),
+            description: ls(
+              'Prepare for and manage crisis with expert support, crisis management facilities and war rooms.',
+            ),
+            href: '/services/crisis-management',
+          },
+          {
+            title: ls('IT Housing'),
+            description: ls(
+              'Secure and resilient DRP hosting in Luxembourg with co-located recovery offices.',
+            ),
+            href: '/services/it-housing',
           },
           {
             title: ls('Cyber Resilience'),
             description: ls(
-              'Prevent and restore from cyber incidents: ransomware, compromised laptops, compromised Active Directory, and data loss. Your teams back online in minutes, not days.',
+              'Prevent phishing attacks, Clean Azure tenant, recovery laptops, and recovery USB keys.',
             ),
-            tagline: ls('Stay operational after any cyber attack'),
-            imageUrl: '/images/coin/co-location-area-munsbach.webp',
-            link: '/services/cyber-resilience',
-          },
-          {
-            title: ls('Regulatory Compliance'),
-            description: ls(
-              'Means and methods to comply with regulations on cyber resilience (NIS2, DORA) and business continuity requirements for financial institutions (CSSF, DNB).',
-            ),
-            tagline: ls('DORA · NIS2 · CSSF · DNB compliant'),
-            imageUrl: '/images/coin/coin-fotosharonwillems-58.webp',
-            link: '/services/nis2-dora',
-          },
-          {
-            title: ls('New Ways of Work'),
-            description: ls(
-              'Well-being, efficiency and security for hybrid work models, combining main office, homeworking and alternate offices, for employees and freelancers alike.',
-            ),
-            tagline: ls('Work securely from anywhere'),
-            imageUrl: '/images/coin/luxembourg-munsbach-shared-seat-room-2.webp',
-            link: '/services/satellite-offices',
+            href: '/services/cyberresilience',
           },
         ],
       },

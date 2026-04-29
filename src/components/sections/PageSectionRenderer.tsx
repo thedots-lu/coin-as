@@ -64,7 +64,7 @@ export default function PageSectionRenderer({
       case 'hero_simple':
         return <HeroSimple section={section} locale={locale} />
       case 'service_pillars':
-        return <ServicePillars section={section} locale={locale} />
+        return <ServicePillars section={section} locale={locale} basePath={basePath} />
       case 'stats':
         return <StatsCounter section={section} locale={locale} basePath={basePath} />
       case 'timeline':

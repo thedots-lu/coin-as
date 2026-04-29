@@ -10,6 +10,7 @@ import { Locale, LocaleString, ls } from '@/lib/types/locale'
 import Button from '@/components/ui/Button'
 import EditableText from '@/components/admin/cms/EditableText'
 import EditableImage from '@/components/admin/cms/EditableImage'
+import EditableLink from '@/components/admin/cms/EditableLink'
 import { useEditing } from '@/components/admin/cms/EditingContext'
 
 const EMPTY_LS: LocaleString = { en: '', fr: '', nl: '' }
@@ -325,38 +326,68 @@ export default function HeroSection({ section, locale, basePath }: HeroSectionPr
                 {/* CTA buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">
                   {(primaryBtnText || isEditing) && (
-                    <Button
-                      href={section.primaryButtonLink}
-                      variant="primary"
-                      className="text-base px-7 py-3.5 !bg-accent-500 hover:!bg-accent-600 !shadow-accent-500/25"
-                    >
-                      <EditableText
-                        path={`${basePath}.primaryButtonText`}
-                        value={section.primaryButtonText}
-                        as="span"
-                      />
-                    </Button>
+                    <div className="relative">
+                      <Button
+                        href={section.primaryButtonLink}
+                        variant="primary"
+                        className="text-base px-7 py-3.5 !bg-accent-500 hover:!bg-accent-600 !shadow-accent-500/25"
+                      >
+                        <EditableText
+                          path={`${basePath}.primaryButtonText`}
+                          value={section.primaryButtonText}
+                          as="span"
+                        />
+                      </Button>
+                      {isEditing && (
+                        <div className="absolute top-full left-0 mt-1 z-40">
+                          <EditableLink
+                            path={`${basePath}.primaryButtonLink`}
+                            value={section.primaryButtonLink}
+                            label="Primary CTA"
+                          />
+                        </div>
+                      )}
+                    </div>
                   )}
                   {showSecondary && (
-                    <Button
-                      href={renderedSecondaryHref}
-                      variant="outline"
-                      className="text-base px-7 py-3.5 border-white/30 text-white hover:shadow-lg hover:shadow-white/10 hover:border-white/60"
-                    >
-                      {slideHasOverride && slidePath ? (
-                        <EditableText
-                          path={`${slidePath}.ctaText`}
-                          value={currentSlide.ctaText ?? EMPTY_LS}
-                          as="span"
-                        />
-                      ) : (
-                        <EditableText
-                          path={`${basePath}.secondaryButtonText`}
-                          value={section.secondaryButtonText}
-                          as="span"
-                        />
+                    <div className="relative">
+                      <Button
+                        href={renderedSecondaryHref}
+                        variant="outline"
+                        className="text-base px-7 py-3.5 border-white/30 text-white hover:shadow-lg hover:shadow-white/10 hover:border-white/60"
+                      >
+                        {slideHasOverride && slidePath ? (
+                          <EditableText
+                            path={`${slidePath}.ctaText`}
+                            value={currentSlide.ctaText ?? EMPTY_LS}
+                            as="span"
+                          />
+                        ) : (
+                          <EditableText
+                            path={`${basePath}.secondaryButtonText`}
+                            value={section.secondaryButtonText}
+                            as="span"
+                          />
+                        )}
+                      </Button>
+                      {isEditing && (
+                        <div className="absolute top-full left-0 mt-1 z-40">
+                          {slideHasOverride && slidePath ? (
+                            <EditableLink
+                              path={`${slidePath}.ctaLink`}
+                              value={currentSlide.ctaLink}
+                              label="Slide CTA"
+                            />
+                          ) : (
+                            <EditableLink
+                              path={`${basePath}.secondaryButtonLink`}
+                              value={section.secondaryButtonLink}
+                              label="Secondary CTA"
+                            />
+                          )}
+                        </div>
                       )}
-                    </Button>
+                    </div>
                   )}
                 </div>
               </div>
