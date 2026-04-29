@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { getPage } from '@/lib/firestore/pages'
 import { getPublishedTestimonials } from '@/lib/firestore/testimonials'
+import { getVisibleCustomerLogos } from '@/lib/firestore/customer-logos'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
 import NewsletterPopup from '@/components/NewsletterPopup'
 
@@ -19,9 +20,10 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const [pageData, testimonials] = await Promise.all([
+  const [pageData, testimonials, logosFromDb] = await Promise.all([
     getPage('home'),
     getPublishedTestimonials(),
+    getVisibleCustomerLogos(),
   ])
 
   if (!pageData) {
@@ -33,10 +35,15 @@ export default async function HomePage() {
   }
 
   const visibleSections = pageData.sections.filter((s) => s.type !== 'innovation')
+  const customerLogos = logosFromDb.map((l) => ({ url: l.imageUrl, name: l.name }))
 
   return (
     <>
-      <PageSectionRenderer sections={visibleSections} testimonials={testimonials} />
+      <PageSectionRenderer
+        sections={visibleSections}
+        testimonials={testimonials}
+        customerLogos={customerLogos}
+      />
       <NewsletterPopup />
     </>
   )

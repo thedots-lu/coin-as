@@ -1,22 +1,24 @@
 /**
  * Compact logo marquee — "Trusted by" strip for the landing page.
- * Server component: fetches customer logos from Firestore, falls back to defaults
- * when the collection is empty (so the section never renders blank pre-seed).
- * Interactive rendering (auto-scroll, prev/next, drag) is delegated to LogoMarquee.
+ * Pure presentational. Data is fetched at the page level and passed in via
+ * `logos`; falls back to defaults when none provided. Kept synchronous so it
+ * can be rendered from both server and client trees (visual CMS editor).
  */
 
-import { getVisibleCustomerLogos } from '@/lib/firestore/customer-logos'
 import { DEFAULT_CUSTOMER_LOGOS } from '@/lib/defaults/customer-logos'
 import LogoMarquee from './LogoMarquee'
 
-export default async function TrustedByMarquee() {
-  const fromDb = await getVisibleCustomerLogos()
-  const logos =
-    fromDb.length > 0
-      ? fromDb.map((l) => ({ url: l.imageUrl, name: l.name }))
+interface Props {
+  logos?: Array<{ url: string; name: string }>
+}
+
+export default function TrustedByMarquee({ logos }: Props) {
+  const resolved =
+    logos && logos.length > 0
+      ? logos
       : DEFAULT_CUSTOMER_LOGOS.map((l) => ({ url: l.imageUrl, name: l.name }))
 
-  if (logos.length === 0) return null
+  if (resolved.length === 0) return null
 
   return (
     <section className="py-14 bg-warm-50 overflow-hidden">
@@ -30,7 +32,7 @@ export default async function TrustedByMarquee() {
         </p>
       </div>
 
-      <LogoMarquee logos={logos} />
+      <LogoMarquee logos={resolved} />
     </section>
   )
 }

@@ -291,6 +291,15 @@ h1, h2, h3, h4, h5, h6 {
   100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
 }
 
+/* Mission diagram arrow flow */
+@keyframes missionFlow {
+  to { stroke-dashoffset: -16; }
+}
+.mission-arrow-flow {
+  stroke-dasharray: 6 4;
+  animation: missionFlow 1.2s linear infinite;
+}
+
 @keyframes gradientBackground {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -430,4 +439,49 @@ h1, h2, h3, h4, h5, h6 {
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display), Arial, Helvetica, sans-serif;
   }
+}
+
+/* =============================================================
+   CMS inline editing affordances
+   Active only inside <EditingProvider> (admin visual editor).
+   ============================================================= */
+.cms-editable {
+  position: relative;
+  cursor: text;
+  border-radius: 4px;
+  transition: box-shadow 0.15s ease, background-color 0.15s ease;
+  min-width: 1ch;
+}
+.cms-editable:hover {
+  box-shadow: 0 0 0 2px rgba(59, 126, 176, 0.35);
+  background-color: rgba(59, 126, 176, 0.06);
+}
+.cms-editable:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 71, 121, 0.7);
+  background-color: rgba(0, 71, 121, 0.06);
+}
+.cms-editable.cms-fallback {
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.45);
+}
+.cms-editable.cms-fallback:hover {
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.7);
+}
+.cms-editable.cms-empty:empty::before {
+  content: attr(data-cms-placeholder);
+  color: rgba(107, 114, 128, 0.7);
+  font-style: italic;
+  pointer-events: none;
+}
+
+/* Section overlay: ghost handle that appears on hover */
+.cms-section-wrap {
+  position: relative;
+}
+.cms-section-wrap > .cms-section-handle {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.cms-section-wrap:hover > .cms-section-handle {
+  opacity: 1;
 }

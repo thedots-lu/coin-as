@@ -1,4 +1,5 @@
-import { PageSection } from '@/lib/types/page'
+import { Fragment, ReactNode } from 'react'
+import { PageSection, isSectionVisible } from '@/lib/types/page'
 import { Testimonial } from '@/lib/types/testimonial'
 import { Locale } from '@/lib/types/locale'
 import { TeamMember } from '@/lib/types/team'
@@ -16,7 +17,6 @@ import FeaturesSection from '@/components/sections/FeaturesSection'
 import ProcessPipeline from '@/components/sections/ProcessPipeline'
 import RoomTypes from '@/components/sections/RoomTypes'
 import SiteGallery from '@/components/sections/SiteGallery'
-import TestimonialsCarousel from '@/components/sections/TestimonialsCarousel'
 import TeamGrid from '@/components/sections/TeamGrid'
 import PartnersPreview from '@/components/sections/PartnersPreview'
 import CustomersSection from '@/components/sections/CustomersSection'
@@ -28,8 +28,8 @@ import MissionStatement from '@/components/sections/MissionStatement'
 import ValuesGrid from '@/components/sections/ValuesGrid'
 import BenefitsSection from '@/components/sections/BenefitsSection'
 import BusinessCase from '@/components/sections/BusinessCase'
-import FeaturedCarousel from '@/components/sections/FeaturedCarousel'
 import TrustedByMarquee from '@/components/sections/TrustedByMarquee'
+import SectionEditOverlay from '@/components/admin/cms/SectionEditOverlay'
 
 interface PageSectionRendererProps {
   sections: PageSection[]
@@ -37,6 +37,9 @@ interface PageSectionRendererProps {
   testimonials?: Testimonial[]
   teamMembers?: TeamMember[]
   partners?: Partner[]
+  customerLogos?: Array<{ url: string; name: string }>
+  /** When true, each section is wrapped in a CMS edit overlay (admin only). */
+  withSectionOverlay?: boolean
 }
 
 export default function PageSectionRenderer({
@@ -45,87 +48,110 @@ export default function PageSectionRenderer({
   testimonials,
   teamMembers = [],
   partners = [],
+  customerLogos,
+  withSectionOverlay = false,
 }: PageSectionRendererProps) {
-  const sorted = [...sections].sort((a, b) => a.order - b.order)
+  // Sort while preserving each section's index in the original Firestore array,
+  // so CMS edit paths address the actual stored slot regardless of render order.
+  const indexed = sections.map((section, originalIndex) => ({ section, originalIndex }))
+  const sorted = [...indexed].sort((a, b) => a.section.order - b.section.order)
+
+  function renderSection(section: PageSection, originalIndex: number): ReactNode {
+    const basePath = `sections.${originalIndex}`
+    switch (section.type) {
+      case 'hero':
+        return <HeroSection section={section} locale={locale} basePath={basePath} />
+      case 'hero_simple':
+        return <HeroSimple section={section} locale={locale} />
+      case 'service_pillars':
+        return <ServicePillars section={section} locale={locale} />
+      case 'stats':
+        return <StatsCounter section={section} locale={locale} basePath={basePath} />
+      case 'timeline':
+        return <Timeline section={section} locale={locale} />
+      case 'cta_banner':
+        return <CTABanner section={section} locale={locale} basePath={basePath} />
+      case 'contact_form':
+        return <ContactForm section={section} locale={locale} />
+      case 'contact_info':
+        return <ContactInfo section={section} locale={locale} />
+      case 'rich_text':
+        return <RichTextBlock section={section} locale={locale} />
+      case 'features_list':
+        return <FeaturesSection section={section} locale={locale} />
+      case 'process_pipeline':
+        return <ProcessPipeline section={section} locale={locale} />
+      case 'room_types':
+        return <RoomTypes section={section} locale={locale} />
+      case 'site_gallery':
+        return <SiteGallery section={section} locale={locale} />
+      // Hidden for now
+      // case 'testimonials_ref':
+      //   if (testimonials && testimonials.length > 0) {
+      //     return (
+      //       <TestimonialsCarousel
+      //         testimonials={testimonials}
+      //         heading={section.heading}
+      //         locale={locale}
+      //       />
+      //     )
+      //   }
+      //   return null
+      case 'teams':
+        return <TeamGrid section={section} locale={locale} teamMembers={teamMembers} />
+      case 'partners_preview':
+        return <PartnersPreview section={section} locale={locale} partners={partners} />
+      case 'customers':
+        return <CustomersSection section={section} locale={locale} />
+      case 'values':
+        return <ValuesGrid section={section} locale={locale} />
+      case 'mission':
+        return <MissionDiagram section={section} locale={locale} />
+      case 'map_overview':
+        return <MapOverview section={section} locale={locale} />
+      case 'innovation':
+        return <InnovationBlock section={section} locale={locale} basePath={basePath} />
+      case 'flexible_services':
+        return <FlexibleServices section={section} locale={locale} basePath={basePath} />
+      case 'mission_statement':
+        return (
+          <>
+            <MissionStatement section={section} locale={locale} basePath={basePath} />
+            <TrustedByMarquee logos={customerLogos} />
+          </>
+        )
+      case 'benefits':
+        return <BenefitsSection section={section} locale={locale} />
+      case 'business_case':
+        return <BusinessCase section={section} locale={locale} />
+      // Hidden for now — hero carousel replaces this
+      // case 'featured_carousel':
+      //   return <FeaturedCarousel section={section} locale={locale} />
+      default:
+        return null
+    }
+  }
 
   return (
     <>
-      {sorted.map((section, index) => {
-        const key = `${section.type}-${index}`
-
-        switch (section.type) {
-          case 'hero':
-            return <HeroSection key={key} section={section} locale={locale} />
-          case 'hero_simple':
-            return <HeroSimple key={key} section={section} locale={locale} />
-          case 'service_pillars':
-            return <ServicePillars key={key} section={section} locale={locale} />
-          case 'stats':
-            return <StatsCounter key={key} section={section} locale={locale} />
-          case 'timeline':
-            return <Timeline key={key} section={section} locale={locale} />
-          case 'cta_banner':
-            return <CTABanner key={key} section={section} locale={locale} />
-          case 'contact_form':
-            return <ContactForm key={key} section={section} locale={locale} />
-          case 'contact_info':
-            return <ContactInfo key={key} section={section} locale={locale} />
-          case 'rich_text':
-            return <RichTextBlock key={key} section={section} locale={locale} />
-          case 'features_list':
-            return <FeaturesSection key={key} section={section} locale={locale} />
-          case 'process_pipeline':
-            return <ProcessPipeline key={key} section={section} locale={locale} />
-          case 'room_types':
-            return <RoomTypes key={key} section={section} locale={locale} />
-          case 'site_gallery':
-            return <SiteGallery key={key} section={section} locale={locale} />
-          // Hidden for now
-          // case 'testimonials_ref':
-          //   if (testimonials && testimonials.length > 0) {
-          //     return (
-          //       <TestimonialsCarousel
-          //         key={key}
-          //         testimonials={testimonials}
-          //         heading={section.heading}
-          //         locale={locale}
-          //       />
-          //     )
-          //   }
-          //   return null
-          case 'teams':
-            return <TeamGrid key={key} section={section} locale={locale} teamMembers={teamMembers} />
-          case 'partners_preview':
-            return <PartnersPreview key={key} section={section} locale={locale} partners={partners} />
-          case 'customers':
-            return <CustomersSection key={key} section={section} locale={locale} />
-          case 'values':
-            return <ValuesGrid key={key} section={section} locale={locale} />
-          case 'mission':
-            return <MissionDiagram key={key} section={section} locale={locale} />
-          case 'map_overview':
-            return <MapOverview key={key} section={section} locale={locale} />
-          case 'innovation':
-            return <InnovationBlock key={key} section={section} locale={locale} />
-          case 'flexible_services':
-            return <FlexibleServices key={key} section={section} locale={locale} />
-          case 'mission_statement':
-            return (
-              <div key={key}>
-                <MissionStatement section={section} locale={locale} />
-                <TrustedByMarquee />
-              </div>
-            )
-          case 'benefits':
-            return <BenefitsSection key={key} section={section} locale={locale} />
-          case 'business_case':
-            return <BusinessCase key={key} section={section} locale={locale} />
-          // Hidden for now — hero carousel replaces this
-          // case 'featured_carousel':
-          //   return <FeaturedCarousel key={key} section={section} locale={locale} />
-          default:
-            return null
-        }
+      {sorted.map(({ section, originalIndex }) => {
+        const key = `${section.type}-${originalIndex}`
+        const visible = isSectionVisible(section)
+        // Public site: skip hidden sections entirely.
+        if (!withSectionOverlay && !visible) return null
+        const node = renderSection(section, originalIndex)
+        if (node === null) return null
+        if (!withSectionOverlay) return <Fragment key={key}>{node}</Fragment>
+        return (
+          <SectionEditOverlay
+            key={key}
+            originalIndex={originalIndex}
+            type={section.type}
+            visible={visible}
+          >
+            {node}
+          </SectionEditOverlay>
+        )
       })}
     </>
   )

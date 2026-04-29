@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
+import { deleteFile } from '@/lib/firebase/upload'
 import { TEAM_COLLECTION } from '@/lib/firestore/team'
 import { TeamMember, normalizeTeamMemberName } from '@/lib/types/team'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
@@ -101,6 +102,9 @@ export default function AdminTeamPage() {
       }
       if (editing) {
         await updateDoc(doc(db, TEAM_COLLECTION, editing.id), data)
+        if (editing.photoUrl && editing.photoUrl !== photoUrl) {
+          await deleteFile(editing.photoUrl)
+        }
       } else {
         await addDoc(collection(db, TEAM_COLLECTION), { ...data, createdAt: now })
       }
@@ -117,8 +121,10 @@ export default function AdminTeamPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this team member? This cannot be undone.')) return
+    const item = items.find((m) => m.id === id)
     try {
       await deleteDoc(doc(db, TEAM_COLLECTION, id))
+      if (item?.photoUrl) await deleteFile(item.photoUrl)
       await revalidate('/about')
       await fetchTeam()
     } catch (err) {

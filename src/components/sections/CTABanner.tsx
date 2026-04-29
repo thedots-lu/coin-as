@@ -5,15 +5,20 @@ import { getLocalizedField } from '@/lib/locale'
 import { CTABannerSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
 import Button from '@/components/ui/Button'
+import EditableText from '@/components/admin/cms/EditableText'
+import { useEditing } from '@/components/admin/cms/EditingContext'
 
 interface CTABannerProps {
   section: CTABannerSection
   locale: Locale
+  basePath: string
 }
 
-export default function CTABanner({ section, locale }: CTABannerProps) {
+export default function CTABanner({ section, locale, basePath }: CTABannerProps) {
+  const isEditing = !!useEditing()
   const heading = getLocalizedField(section.heading, locale)
   const buttonText = getLocalizedField(section.buttonText, locale)
+  const showButton = !!buttonText || isEditing
 
   return (
     <section className="relative overflow-hidden bg-white">
@@ -30,19 +35,26 @@ export default function CTABanner({ section, locale }: CTABannerProps) {
           />
 
           {/* Heading */}
-          <motion.h2
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="font-display tracking-tight leading-[1.1] text-primary-900 mb-8"
-            style={{ fontSize: 'clamp(2rem, 4.5vw, 3.5rem)', fontWeight: 700 }}
-          >
-            {heading}
-          </motion.h2>
+          {(heading || isEditing) && (
+            <motion.h2
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              className="font-display tracking-tight leading-[1.1] text-primary-900 mb-8"
+              style={{ fontSize: 'clamp(2rem, 4.5vw, 3.5rem)', fontWeight: 700 }}
+            >
+              <EditableText
+                path={`${basePath}.heading`}
+                value={section.heading}
+                as="span"
+                multiline
+              />
+            </motion.h2>
+          )}
 
           {/* CTA button */}
-          {buttonText && (
+          {showButton && (
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -54,7 +66,11 @@ export default function CTABanner({ section, locale }: CTABannerProps) {
                 variant="primary"
                 className="text-base px-8 py-4 !bg-accent-500 hover:!bg-accent-600 transition-all duration-300 group"
               >
-                <span>{buttonText}</span>
+                <EditableText
+                  path={`${basePath}.buttonText`}
+                  value={section.buttonText}
+                  as="span"
+                />
                 <svg
                   className="ml-3 w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"
                   fill="none"

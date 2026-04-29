@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
+import { deleteFile } from '@/lib/firebase/upload'
 import { Article } from '@/lib/types/article'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
 import { generateSlug } from '@/lib/utils/slug'
@@ -127,6 +128,9 @@ export default function AdminArticlesPage() {
       }
       if (editing) {
         await updateDoc(doc(db, 'articles', editing.id), data)
+        if (editing.imageUrl && editing.imageUrl !== imageUrl) {
+          await deleteFile(editing.imageUrl)
+        }
       } else {
         await addDoc(collection(db, 'articles'), { ...data, createdAt: now })
       }
@@ -143,8 +147,10 @@ export default function AdminArticlesPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this article? This cannot be undone.')) return
+    const item = items.find((a) => a.id === id)
     try {
       await deleteDoc(doc(db, 'articles', id))
+      if (item?.imageUrl) await deleteFile(item.imageUrl)
       await revalidate('/knowledge-hub')
       await fetchArticles()
     } catch (err) {

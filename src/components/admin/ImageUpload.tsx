@@ -1,8 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
-import { storage } from '@/lib/firebase/config'
+import { auth } from '@/lib/firebase/config'
 import { Upload, X, ImageIcon, Link as LinkIcon } from 'lucide-react'
 
 interface ImageUploadProps {
@@ -25,27 +24,57 @@ export default function ImageUpload({ value, onChange, storagePath, label }: Ima
     }
     setError(null)
     setProgress(0)
+
     try {
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, '-')
-      const path = `${storagePath}/${Date.now()}-${safeName}`
-      const storageRef = ref(storage, path)
-      const task = uploadBytesResumable(storageRef, file)
-      task.on(
-        'state_changed',
-        (snap) =>
-          setProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)),
-        (err) => {
-          setError(err.message || 'Upload failed.')
-          setProgress(null)
-        },
-        async () => {
-          const url = await getDownloadURL(task.snapshot.ref)
-          onChange(url)
-          setProgress(null)
-        },
-      )
+      const user = auth.currentUser
+      if (!user) {
+        setError('Not authenticated.')
+        setProgress(null)
+        return
+      }
+      const token = await user.getIdToken()
+
+      const form = new FormData()
+      form.append('file', file)
+      form.append('path', storagePath)
+
+      const url: string = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhr.open('POST', '/api/upload')
+        xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+        xhr.upload.addEventListener('progress', (e) => {
+          if (e.lengthComputable) {
+            setProgress(Math.round((e.loaded / e.total) * 100))
+          }
+        })
+        xhr.addEventListener('load', () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const body = JSON.parse(xhr.responseText) as { url?: string; error?: string }
+              if (body.url) resolve(body.url)
+              else reject(new Error(body.error || 'Upload failed.'))
+            } catch {
+              reject(new Error('Invalid server response.'))
+            }
+          } else {
+            let message = `HTTP ${xhr.status}`
+            try {
+              const body = JSON.parse(xhr.responseText) as { error?: string }
+              if (body.error) message = body.error
+            } catch { /* keep default */ }
+            reject(new Error(message))
+          }
+        })
+        xhr.addEventListener('error', () => reject(new Error('Network error.')))
+        xhr.addEventListener('abort', () => reject(new Error('Upload cancelled.')))
+        xhr.send(form)
+      })
+
+      onChange(url)
     } catch (err) {
+      console.error('[ImageUpload] upload failed', err)
       setError(err instanceof Error ? err.message : 'Upload failed.')
+    } finally {
       setProgress(null)
     }
   }

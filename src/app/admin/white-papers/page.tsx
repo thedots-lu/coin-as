@@ -12,8 +12,8 @@ import {
   query,
   Timestamp,
 } from 'firebase/firestore'
-import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'
-import { dbAdmin as db, storage } from '@/lib/firebase/config'
+import { dbAdmin as db } from '@/lib/firebase/config'
+import { uploadFile, deleteFile } from '@/lib/firebase/upload'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { WhitePaper } from '@/lib/types/article'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
@@ -107,26 +107,6 @@ export default function AdminWhitePapersPage() {
     resetForm()
   }
 
-  // Upload a file to Firebase Storage and return the download URL
-  async function uploadFile(
-    file: File,
-    path: string,
-    onProgress: (pct: number) => void
-  ): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const storageRef = ref(storage, path)
-      const task = uploadBytesResumable(storageRef, file)
-      task.on(
-        'state_changed',
-        (snap) => onProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)),
-        reject,
-        async () => {
-          const url = await getDownloadURL(task.snapshot.ref)
-          resolve(url)
-        }
-      )
-    })
-  }
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -175,6 +155,13 @@ export default function AdminWhitePapersPage() {
 
       if (editing) {
         await updateDoc(doc(db, 'white_papers', editing.id), data)
+        // If files were replaced, drop old objects from R2
+        if (editing.fileUrl && editing.fileUrl !== fileUrl) {
+          await deleteFile(editing.fileUrl)
+        }
+        if (editing.thumbnailUrl && editing.thumbnailUrl !== thumbnailUrl) {
+          await deleteFile(editing.thumbnailUrl)
+        }
       } else {
         await addDoc(collection(db, 'white_papers'), { ...data, downloadCount: 0, createdAt: now })
       }
@@ -193,14 +180,9 @@ export default function AdminWhitePapersPage() {
   const handleDelete = async (item: WhitePaper) => {
     if (!confirm('Delete this white paper? This cannot be undone.')) return
     try {
-      // Attempt to remove files from Storage (best-effort)
-      if (item.fileUrl) {
-        try { await deleteObject(ref(storage, `white_papers/${item.id}/document.pdf`)) } catch { /* ok */ }
-      }
-      if (item.thumbnailUrl) {
-        try { await deleteObject(ref(storage, `white_papers/${item.id}/thumbnail.jpg`)) } catch { /* ok */ }
-      }
       await deleteDoc(doc(db, 'white_papers', item.id))
+      if (item.fileUrl) await deleteFile(item.fileUrl)
+      if (item.thumbnailUrl) await deleteFile(item.thumbnailUrl)
       await revalidate('/knowledge-hub')
       await fetchItems()
     } catch (err) {

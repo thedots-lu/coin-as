@@ -2,6 +2,19 @@ import { LocaleString } from './locale'
 import { Timestamp } from 'firebase/firestore/lite'
 
 // Section types for pages
+
+export interface HeroSlide {
+  imageUrl: string | null
+  alt: string
+  label: LocaleString
+  title: LocaleString
+  bullets: LocaleString[]
+  description: LocaleString
+  ctaText?: LocaleString
+  ctaLink?: string
+  visible: boolean
+}
+
 export interface HeroSection {
   type: 'hero'
   order: number
@@ -12,6 +25,9 @@ export interface HeroSection {
   secondaryButtonText: LocaleString
   secondaryButtonLink: string
   backgroundImageUrl: string | null
+  // Optional — when populated, the hero carousel renders these slides from Firestore.
+  // When undefined or empty, the component falls back to hardcoded defaults.
+  slides?: HeroSlide[]
 }
 
 export interface ServicePillarsSection {
@@ -268,7 +284,14 @@ export interface FeaturedCarouselSection {
   }>
 }
 
-export type PageSection =
+/**
+ * Per-section visibility. When false, the section is hidden on the public site
+ * but remains visible (with a "hidden" indicator) in the visual CMS editor so
+ * editors can toggle it back on. Defaults to true when undefined.
+ */
+type WithVisibility<T> = T & { visible?: boolean }
+
+export type PageSection = WithVisibility<
   | HeroSection
   | ServicePillarsSection
   | InnovationSection
@@ -295,6 +318,11 @@ export type PageSection =
   | BusinessCaseSection
   | RichTextSection
   | FeaturedCarouselSection
+>
+
+export function isSectionVisible(section: { visible?: boolean }): boolean {
+  return section.visible !== false
+}
 
 export interface SeoMeta {
   metaTitle: LocaleString
