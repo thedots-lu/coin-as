@@ -1,0 +1,46 @@
+name: Cleanup R2 orphans
+
+on:
+  schedule:
+    # Sundays at 03:00 UTC — quiet hours, weekly cadence
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: 'Actually delete orphans (otherwise dry-run)'
+        type: boolean
+        default: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run cleanup
+        env:
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+          FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+          FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
+        run: |
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            # scheduled runs always apply (we already trust them)
+            npm run cleanup-orphans -- --apply
+          elif [[ "${{ github.event.inputs.apply }}" == "true" ]]; then
+            npm run cleanup-orphans -- --apply
+          else
+            npm run cleanup-orphans
+          fi

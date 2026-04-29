@@ -15,7 +15,8 @@
     "dump-storage": "npx tsx scripts/dump-storage.ts",
     "dump-all": "npm run dump-firestore && npm run dump-storage",
     "restore-firestore": "npx tsx scripts/restore-firestore.ts",
-    "set-admin": "npx tsx scripts/set-admin.ts"
+    "set-admin": "npx tsx scripts/set-admin.ts",
+    "cleanup-orphans": "npx tsx scripts/cleanup-orphans.ts"
   },
   "keywords": [],
   "author": "",

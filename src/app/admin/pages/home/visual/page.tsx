@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
+import { deleteFile } from '@/lib/firebase/upload'
+import { extractUrls } from '@/lib/utils/extract-urls'
 import { PageDocument } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
@@ -155,6 +157,14 @@ export default function HomeVisualEditor() {
       } catch {
         /* best-effort */
       }
+      // Cleanup: delete URLs that were in original but no longer in draft
+      // (i.e. images that were replaced or removed during this editing session)
+      if (original) {
+        const before = extractUrls(original)
+        const after = extractUrls(draft)
+        const removed = [...before].filter((u) => !after.has(u))
+        await Promise.all(removed.map((u) => deleteFile(u)))
+      }
       setOriginal(draft)
     } catch (err) {
       console.error('Save failed:', err)
@@ -162,12 +172,19 @@ export default function HomeVisualEditor() {
     } finally {
       setSaving(false)
     }
-  }, [draft])
+  }, [draft, original])
 
-  const handleBack = useCallback(() => {
+  const handleBack = useCallback(async () => {
     if (isDirty && !confirm('You have unsaved changes. Leave anyway?')) return
+    // Cleanup: delete URLs uploaded in this session that won't be persisted
+    if (isDirty && original && draft) {
+      const before = extractUrls(original)
+      const after = extractUrls(draft)
+      const added = [...after].filter((u) => !before.has(u))
+      await Promise.all(added.map((u) => deleteFile(u)))
+    }
     router.push('/admin/pages')
-  }, [isDirty, router])
+  }, [isDirty, router, original, draft])
 
   if (loading) {
     return (

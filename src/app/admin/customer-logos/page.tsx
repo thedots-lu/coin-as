@@ -11,9 +11,9 @@ import {
   Timestamp,
   writeBatch,
 } from 'firebase/firestore'
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
-import { dbAdmin as db, storage } from '@/lib/firebase/config'
+import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
+import { uploadFile, deleteFile } from '@/lib/firebase/upload'
 import { CustomerLogo } from '@/lib/types/customer-logo'
 import { DEFAULT_CUSTOMER_LOGOS } from '@/lib/defaults/customer-logos'
 import {
@@ -117,23 +117,6 @@ export default function AdminCustomerLogosPage() {
     resetForm()
   }
 
-  async function uploadFile(file: File, path: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const storageRef = ref(storage, path)
-      const task = uploadBytesResumable(storageRef, file)
-      task.on(
-        'state_changed',
-        (snap) =>
-          setProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)),
-        reject,
-        async () => {
-          const url = await getDownloadURL(task.snapshot.ref)
-          resolve(url)
-        },
-      )
-    })
-  }
-
   async function revalidateHome() {
     try {
       await triggerRevalidate('/')
@@ -160,7 +143,7 @@ export default function AdminCustomerLogosPage() {
       if (imageFile) {
         const docId = editing?.id ?? `logo_${Date.now()}`
         const ext = imageFile.name.split('.').pop() || 'png'
-        imageUrl = await uploadFile(imageFile, `customer_logos/${docId}/logo.${ext}`)
+        imageUrl = await uploadFile(imageFile, `customer_logos/${docId}/logo.${ext}`, setProgress)
       }
 
       if (editing) {
@@ -170,6 +153,10 @@ export default function AdminCustomerLogosPage() {
           visible,
           updatedAt: now,
         })
+        // If the image was replaced, drop the old object from R2
+        if (editing.imageUrl && editing.imageUrl !== imageUrl) {
+          await deleteFile(editing.imageUrl)
+        }
       } else {
         await addDoc(collection(db, 'customer_logos'), {
           name: name.trim(),
@@ -196,6 +183,7 @@ export default function AdminCustomerLogosPage() {
     if (!confirm(`Delete "${item.name}"?`)) return
     try {
       await deleteDoc(doc(db, 'customer_logos', item.id))
+      if (item.imageUrl) await deleteFile(item.imageUrl)
       await revalidateHome()
       await fetchItems()
     } catch (err) {

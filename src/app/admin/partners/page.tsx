@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
+import { deleteFile } from '@/lib/firebase/upload'
 import { Partner } from '@/lib/types/partner'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'
@@ -110,6 +111,10 @@ export default function AdminPartnersPage() {
       }
       if (editing) {
         await updateDoc(doc(db, 'partners', editing.id), data)
+        // If the logo was replaced, drop the old object from R2
+        if (editing.logoUrl && editing.logoUrl !== logoUrl) {
+          await deleteFile(editing.logoUrl)
+        }
       } else {
         await addDoc(collection(db, 'partners'), { ...data, createdAt: now })
       }
@@ -126,8 +131,10 @@ export default function AdminPartnersPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this partner? This cannot be undone.')) return
+    const item = items.find((p) => p.id === id)
     try {
       await deleteDoc(doc(db, 'partners', id))
+      if (item?.logoUrl) await deleteFile(item.logoUrl)
       await revalidate('/partners')
       await fetchPartners()
     } catch (err) {
