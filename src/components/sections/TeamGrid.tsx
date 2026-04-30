@@ -17,17 +17,31 @@ export default function TeamGrid({ section, locale }: TeamGridProps) {
   const body = getLocalizedField(section.body, locale)
 
   return (
-    <section id="teams" className="py-20 bg-secondary-50 scroll-mt-24">
+    <section
+      id="teams"
+      className="py-20 scroll-mt-24"
+      style={{ background: 'var(--color-surface-dark)' }}
+    >
       <div className="container-padding">
         {heading && (
           <AnimatedSection animation="slideUp" className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-black mb-4">{heading}</h2>
+            <h2
+              className="text-3xl md:text-4xl font-bold mb-4"
+              style={{ color: 'var(--color-warm-50)' }}
+            >
+              {heading}
+            </h2>
           </AnimatedSection>
         )}
 
         {body && (
           <AnimatedSection animation="slideUp" className="text-center">
-            <p className="text-lg text-secondary-600 max-w-2xl mx-auto">{body}</p>
+            <p
+              className="text-lg max-w-2xl mx-auto"
+              style={{ color: 'var(--color-secondary-300)' }}
+            >
+              {body}
+            </p>
           </AnimatedSection>
         )}
       </div>
