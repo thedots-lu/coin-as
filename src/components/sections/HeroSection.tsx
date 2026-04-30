@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, Pause, Play, Plus, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
 import { getLocalizedField } from '@/lib/locale'
 import { HeroSection as HeroSectionType, HeroSlide } from '@/lib/types/page'
 import { Locale, LocaleString, ls } from '@/lib/types/locale'
@@ -11,6 +11,7 @@ import Button from '@/components/ui/Button'
 import EditableText from '@/components/admin/cms/EditableText'
 import EditableImage from '@/components/admin/cms/EditableImage'
 import EditableLink from '@/components/admin/cms/EditableLink'
+import RichInlineText from '@/components/admin/cms/RichInlineText'
 import { useEditing } from '@/components/admin/cms/EditingContext'
 import { isAvifUrl } from '@/lib/utils/image'
 
@@ -162,27 +163,32 @@ export default function HeroSection({ section, locale, basePath }: HeroSectionPr
   const showPrimary = isEditing || (!!primaryBtnText && !!section.primaryButtonLink)
   const showSecondary = isEditing || (!!renderedSecondaryText && !!renderedSecondaryHref)
 
-  // Bullets vs description: bullets take precedence if any. In edit mode with both empty, prefer description editor.
+  // Slide body is a single rich-text field on `description`. The legacy
+  // `bullets[]` array is still read for backward compatibility: if a slide
+  // has bullets but no description, we synthesise a <ul> from them on the
+  // fly so the slide keeps rendering its old content. After the first save
+  // through the visual editor, `description` carries the HTML forward and
+  // `bullets` becomes inert legacy data (purgeable later).
+  const hasDescription =
+    (currentSlide.description?.en ?? '').trim() !== '' ||
+    (currentSlide.description?.fr ?? '').trim() !== '' ||
+    (currentSlide.description?.nl ?? '').trim() !== ''
   const hasBullets = currentSlide.bullets.length > 0
-  const descText = getLocalizedField(currentSlide.description, locale)
-  const showBullets = hasBullets
-  const showDescription = !hasBullets && (descText !== '' || isEditing)
+  const showBody = hasDescription || hasBullets || isEditing
 
-  const addBullet = () => {
-    if (!ctx || !slidePath) return
-    ctx.updateAt(`${slidePath}.bullets`, [...currentSlide.bullets, { ...EMPTY_LS, en: 'New point' }])
+  const escapeHtml = (s: string) =>
+    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  const bulletsToHtml = (l: 'en' | 'fr' | 'nl') => {
+    const items = currentSlide.bullets
+      .map((b) => `<li>${escapeHtml(b?.[l] ?? '')}</li>`)
+      .join('')
+    return items ? `<ul>${items}</ul>` : ''
   }
-  const removeBullet = (idx: number) => {
-    if (!ctx || !slidePath) return
-    ctx.updateAt(
-      `${slidePath}.bullets`,
-      currentSlide.bullets.filter((_, i) => i !== idx),
-    )
-  }
-  const convertDescriptionToBullets = () => {
-    if (!ctx || !slidePath) return
-    ctx.updateAt(`${slidePath}.bullets`, [{ ...EMPTY_LS, en: 'New point' }])
-  }
+  const effectiveDescription: LocaleString = hasDescription
+    ? currentSlide.description
+    : hasBullets
+      ? { en: bulletsToHtml('en'), fr: bulletsToHtml('fr'), nl: bulletsToHtml('nl') }
+      : currentSlide.description ?? EMPTY_LS
 
   return (
     <section className="pt-4 pb-8 bg-white">
@@ -260,75 +266,31 @@ export default function HeroSection({ section, locale, basePath }: HeroSectionPr
                   )}
                 </h1>
 
-                {/* Bullets or description */}
-                {showBullets ? (
-                  <ul className="text-primary-200 mb-6 text-[13px] md:text-sm max-w-lg space-y-1.5">
-                    {currentSlide.bullets.map((bullet, i) => (
-                      <li key={i} className="group/bullet flex items-start gap-2 leading-snug">
-                        <span className="shrink-0 mt-[7px] w-1 h-1 rounded-full bg-accent-500" />
-                        <span className="flex-1 min-w-0">
-                          {slidePath ? (
-                            <EditableText
-                              path={`${slidePath}.bullets.${i}`}
-                              value={bullet}
-                              as="span"
-                              multiline
-                            />
-                          ) : (
-                            getLocalizedField(bullet, locale)
-                          )}
-                        </span>
-                        {isEditing && slidePath && (
-                          <button
-                            type="button"
-                            onClick={() => removeBullet(i)}
-                            className="opacity-0 group-hover/bullet:opacity-100 transition-opacity shrink-0 text-primary-300 hover:text-red-400 p-0.5 mt-0.5"
-                            aria-label="Remove bullet"
-                            title="Remove bullet"
-                          >
-                            <X className="w-3 h-3" />
-                          </button>
-                        )}
-                      </li>
-                    ))}
-                    {isEditing && slidePath && (
-                      <li className="ml-3 mt-2">
-                        <button
-                          type="button"
-                          onClick={addBullet}
-                          className="inline-flex items-center gap-1 text-[11px] font-medium text-accent-400 hover:text-accent-300"
-                        >
-                          <Plus className="w-3 h-3" /> Add bullet
-                        </button>
-                      </li>
-                    )}
-                  </ul>
-                ) : showDescription ? (
+                {/* Body: single rich-text field — paragraph, bullets or numbered list, all in one. */}
+                {showBody && (
                   <div className="mb-6">
-                    <p className="text-primary-200 leading-relaxed text-sm md:text-base max-w-lg">
-                      {slidePath ? (
-                        <EditableText
-                          path={`${slidePath}.description`}
-                          value={currentSlide.description}
-                          as="span"
-                          multiline
-                        />
-                      ) : (
-                        descText
-                      )}
-                    </p>
-                    {isEditing && slidePath && !hasBullets && (
-                      <button
-                        type="button"
-                        onClick={convertDescriptionToBullets}
-                        className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-accent-400/70 hover:text-accent-300"
-                        title="Switch to bullet points instead of a paragraph"
-                      >
-                        <Plus className="w-3 h-3" /> Use bullet points instead
-                      </button>
+                    {slidePath ? (
+                      <RichInlineText
+                        path={`${slidePath}.description`}
+                        value={effectiveDescription}
+                        className="text-primary-200 leading-relaxed text-sm prose prose-sm prose-invert !max-w-lg [&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1 [&_ul]:!pl-4 [&_ol]:!pl-5 [&_li]:!my-0.5 [&_li]:!pl-1 [&_ul>li]:marker:text-accent-500"
+                      />
+                    ) : hasBullets ? (
+                      <ul className="text-primary-200 text-[13px] md:text-sm max-w-lg space-y-1.5">
+                        {currentSlide.bullets.map((bullet, i) => (
+                          <li key={i} className="flex items-start gap-2 leading-snug">
+                            <span className="shrink-0 mt-[7px] w-1 h-1 rounded-full bg-accent-500" />
+                            <span>{getLocalizedField(bullet, locale)}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-primary-200 leading-relaxed text-sm md:text-base max-w-lg">
+                        {getLocalizedField(currentSlide.description, locale)}
+                      </p>
                     )}
                   </div>
-                ) : null}
+                )}
 
                 {/* CTA buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">

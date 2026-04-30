@@ -5,6 +5,7 @@ import { FlexibleServicesSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
 import { motion } from 'framer-motion'
 import EditableText from '@/components/admin/cms/EditableText'
+import RichInlineText from '@/components/admin/cms/RichInlineText'
 import { useEditing } from '@/components/admin/cms/EditingContext'
 
 interface FlexibleServicesProps {
@@ -177,14 +178,11 @@ export default function FlexibleServices({
               )}
 
               {(body || isEditing) && (
-                <p className="text-secondary-500 leading-relaxed text-lg max-w-lg">
-                  <EditableText
-                    path={`${basePath}.body`}
-                    value={section.body}
-                    as="span"
-                    multiline
-                  />
-                </p>
+                <RichInlineText
+                  path={`${basePath}.body`}
+                  value={section.body}
+                  className="text-secondary-500 leading-relaxed text-lg prose prose-lg !max-w-lg [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2"
+                />
               )}
             </motion.div>
 

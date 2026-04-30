@@ -6,6 +6,7 @@ import { Locale } from '@/lib/types/locale'
 import { motion } from 'framer-motion'
 import EditableText from '@/components/admin/cms/EditableText'
 import EditableImage from '@/components/admin/cms/EditableImage'
+import RichInlineText from '@/components/admin/cms/RichInlineText'
 import { useEditing } from '@/components/admin/cms/EditingContext'
 
 interface MissionStatementProps {
@@ -33,6 +34,7 @@ export default function MissionStatement({ section, locale, basePath }: MissionS
             fill
             className="object-cover"
             sizes="100vw"
+            actionPlacement="bottom-right"
           />
           {/* Dark gradient overlay for text legibility */}
           <div
@@ -94,21 +96,18 @@ export default function MissionStatement({ section, locale, basePath }: MissionS
             )}
 
             {(body || isEditing) && (
-              <motion.p
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-60px' }}
                 transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="text-lg md:text-xl leading-relaxed max-w-2xl"
-                style={{ color: 'var(--color-secondary-300)' }}
               >
-                <EditableText
+                <RichInlineText
                   path={`${basePath}.body`}
                   value={section.body}
-                  as="span"
-                  multiline
+                  className="text-lg md:text-xl leading-relaxed prose prose-lg prose-invert !max-w-2xl [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2"
                 />
-              </motion.p>
+              </motion.div>
             )}
 
             {/* Bottom decorative element -- three stacked lines fading out */}

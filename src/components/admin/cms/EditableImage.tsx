@@ -7,13 +7,42 @@ import { useEditing } from './EditingContext'
 import { uploadFile } from '@/lib/firebase/upload'
 import { isAvifUrl } from '@/lib/utils/image'
 
+type Placement = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
+
 type Props = Omit<ImageProps, 'src' | 'alt'> & {
   path: string
   src: string | null
   alt: string
+  /**
+   * Where to anchor the Replace/Upload action button. Default `top-right`.
+   * Use `bottom-right` (or another corner) when the image fills a section
+   * whose own SectionEditOverlay already occupies the top-right corner —
+   * otherwise the two buttons overlap.
+   */
+  actionPlacement?: Placement
 }
 
-export default function EditableImage({ path, src, alt, ...rest }: Props) {
+const PLACEMENT_CLASS: Record<Placement, string> = {
+  'top-right': 'top-2 right-2',
+  'top-left': 'top-2 left-2',
+  'bottom-right': 'bottom-2 right-2',
+  'bottom-left': 'bottom-2 left-2',
+}
+
+const ERROR_PLACEMENT_CLASS: Record<Placement, string> = {
+  'top-right': 'top-12 right-2',
+  'top-left': 'top-12 left-2',
+  'bottom-right': 'bottom-12 right-2',
+  'bottom-left': 'bottom-12 left-2',
+}
+
+export default function EditableImage({
+  path,
+  src,
+  alt,
+  actionPlacement = 'top-right',
+  ...rest
+}: Props) {
   const ctx = useEditing()
   const inputRef = useRef<HTMLInputElement>(null)
   const [progress, setProgress] = useState<number | null>(null)
@@ -70,7 +99,7 @@ export default function EditableImage({ path, src, alt, ...rest }: Props) {
         type="button"
         onClick={onPick}
         disabled={progress !== null}
-        className="cms-image-action absolute top-2 right-2 z-50 bg-white/95 hover:bg-white text-gray-900 text-xs px-3 py-1.5 rounded-md shadow-lg flex items-center gap-1.5 font-medium disabled:opacity-70"
+        className={`cms-image-action absolute ${PLACEMENT_CLASS[actionPlacement]} z-50 bg-white/95 hover:bg-white text-gray-900 text-xs px-3 py-1.5 rounded-md shadow-lg flex items-center gap-1.5 font-medium disabled:opacity-70`}
       >
         {progress !== null ? (
           <>
@@ -85,7 +114,7 @@ export default function EditableImage({ path, src, alt, ...rest }: Props) {
         )}
       </button>
       {error && (
-        <div className="absolute top-12 right-2 z-50 bg-red-500 text-white text-xs px-2 py-1 rounded shadow">
+        <div className={`absolute ${ERROR_PLACEMENT_CLASS[actionPlacement]} z-50 bg-red-500 text-white text-xs px-2 py-1 rounded shadow`}>
           {error}
         </div>
       )}

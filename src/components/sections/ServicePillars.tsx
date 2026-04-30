@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { ArrowRight, ChevronRight } from 'lucide-react'
 import EditableText from '@/components/admin/cms/EditableText'
 import EditableLink from '@/components/admin/cms/EditableLink'
+import RichInlineText from '@/components/admin/cms/RichInlineText'
 import { useEditing } from '@/components/admin/cms/EditingContext'
 import { isExternalUrl } from '@/lib/utils/links'
 
@@ -159,14 +160,11 @@ export default function ServicePillars({ section, basePath }: ServicePillarsProp
                       multiline
                     />
                   </p>
-                  <p className="text-sm text-secondary-600 leading-relaxed">
-                    <EditableText
-                      path={`${basePath}.steps.${index}.description`}
-                      value={step.description}
-                      as="span"
-                      multiline
-                    />
-                  </p>
+                  <RichInlineText
+                    path={`${basePath}.steps.${index}.description`}
+                    value={step.description}
+                    className="text-sm text-secondary-600 leading-relaxed prose prose-sm max-w-none [&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1 [&_ul]:!pl-4 [&_ol]:!pl-5 [&_li]:!my-0.5 [&_li]:!pl-1"
+                  />
                 </div>
                 {index < steps.length - 1 && (
                   <div className="flex items-center justify-center py-2 md:py-0">
@@ -211,14 +209,11 @@ export default function ServicePillars({ section, basePath }: ServicePillarsProp
                         as="span"
                       />
                     </h3>
-                    <p className="text-sm text-white/70 leading-relaxed mb-4">
-                      <EditableText
-                        path={`${basePath}.solutions.${index}.description`}
-                        value={solution.description}
-                        as="span"
-                        multiline
-                      />
-                    </p>
+                    <RichInlineText
+                      path={`${basePath}.solutions.${index}.description`}
+                      value={solution.description}
+                      className="text-sm text-white/70 leading-relaxed mb-4 prose prose-sm prose-invert max-w-none [&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1 [&_ul]:!pl-4 [&_ol]:!pl-5 [&_li]:!my-0.5 [&_li]:!pl-1"
+                    />
                   </div>
                   <div className="flex items-center gap-1.5 text-sm font-semibold text-accent-400">
                     <span>Learn more</span>

@@ -6,6 +6,7 @@ import { Locale } from '@/lib/types/locale'
 import { motion } from 'framer-motion'
 import EditableText from '@/components/admin/cms/EditableText'
 import EditableImage from '@/components/admin/cms/EditableImage'
+import RichInlineText from '@/components/admin/cms/RichInlineText'
 import { useEditing } from '@/components/admin/cms/EditingContext'
 
 interface InnovationBlockProps {
@@ -75,14 +76,11 @@ export default function InnovationBlock({ section, locale, basePath }: Innovatio
               )}
 
               {(body || isEditing) && (
-                <p className="text-primary-200 leading-relaxed text-lg md:text-xl max-w-xl">
-                  <EditableText
-                    path={`${basePath}.body`}
-                    value={section.body}
-                    as="span"
-                    multiline
-                  />
-                </p>
+                <RichInlineText
+                  path={`${basePath}.body`}
+                  value={section.body}
+                  className="text-primary-200 leading-relaxed text-lg md:text-xl prose prose-lg prose-invert !max-w-xl [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2"
+                />
               )}
 
               {/* Horizontal rule with data points feel */}

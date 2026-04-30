@@ -37,6 +37,7 @@ export default function TeamGrid({ section, locale, basePath }: TeamGridProps) {
             fill
             className="object-cover"
             sizes="100vw"
+            actionPlacement="bottom-right"
           />
           <div
             className="absolute inset-0 pointer-events-none"
