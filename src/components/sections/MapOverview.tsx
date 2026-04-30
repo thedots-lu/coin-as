@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { Phone } from 'lucide-react'
 import { MapOverviewSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
-import EditableText from '@/components/admin/cms/EditableText'
+import RichInlineText from '@/components/admin/cms/RichInlineText'
 
 interface MapOverviewProps {
   section: MapOverviewSection
@@ -57,14 +57,11 @@ export default function MapOverview({ section, basePath }: MapOverviewProps) {
           <h2 className="text-3xl md:text-4xl font-bold text-black font-display tracking-tight mb-4">
             Our Locations
           </h2>
-          <p className="text-secondary-600 text-base md:text-lg leading-relaxed max-w-3xl">
-            <EditableText
-              path={`${basePath}.body`}
-              value={section.body}
-              as="span"
-              multiline
-            />
-          </p>
+          <RichInlineText
+            path={`${basePath}.body`}
+            value={section.body}
+            className="text-secondary-600 text-base md:text-lg leading-relaxed prose !max-w-3xl [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2"
+          />
         </div>
 
         {/* Map + sites grid */}

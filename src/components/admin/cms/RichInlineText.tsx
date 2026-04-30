@@ -154,6 +154,10 @@ function RichInlineEditor({
           shouldShow={({ from, to, editor }) =>
             from !== to && editor.isEditable
           }
+          // The plugin-managed div has no z-index by default; nested
+          // stacking contexts on the page (e.g. `relative z-10` wrappers)
+          // can render in front of it. Force the bubble above everything.
+          style={{ zIndex: 1000 }}
         >
           <BubbleToolbar editor={editor} />
         </BubbleMenu>
@@ -173,25 +177,45 @@ function BubbleToolbar({ editor }: ToolbarProps) {
   const [colorOpen, setColorOpen] = useState(false)
   if (!editor) return null
 
+  // Run a chain command after restoring the selection that was active when
+  // the toolbar received the mousedown. Even with preventDefault, some
+  // browser/contexts collapse the ProseMirror selection on click — saving
+  // it and restoring before the command keeps formatting reliable.
+  const runWithSavedSelection = (
+    fn: (chain: ReturnType<typeof editor.chain>) => ReturnType<typeof editor.chain>,
+  ) => {
+    const { from, to } = editor.state.selection
+    fn(editor.chain().focus().setTextSelection({ from, to })).run()
+  }
+
   return (
-    <div className="flex items-center gap-0.5 bg-primary-950/95 text-white rounded-md shadow-xl border border-white/10 px-1 py-1 backdrop-blur-sm">
+    <div
+      // Prevent any mousedown on the toolbar (incl. dividers, gaps) from
+      // shifting focus out of the editor — losing focus collapses the
+      // selection and shouldShow then hides the bubble before our onClick
+      // can run the command.
+      onMouseDown={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+      }}
+      className="flex items-center gap-0.5 bg-primary-950/95 text-white rounded-md shadow-xl border border-white/10 px-1 py-1 backdrop-blur-sm">
       <ToolbarButton
         active={editor.isActive('bold')}
-        onClick={() => editor.chain().focus().toggleBold().run()}
+        onClick={() => runWithSavedSelection((c) => c.toggleBold())}
         title="Bold"
       >
         <Bold className="w-3.5 h-3.5" />
       </ToolbarButton>
       <ToolbarButton
         active={editor.isActive('italic')}
-        onClick={() => editor.chain().focus().toggleItalic().run()}
+        onClick={() => runWithSavedSelection((c) => c.toggleItalic())}
         title="Italic"
       >
         <Italic className="w-3.5 h-3.5" />
       </ToolbarButton>
       <ToolbarButton
         active={editor.isActive('underline')}
-        onClick={() => editor.chain().focus().toggleUnderline().run()}
+        onClick={() => runWithSavedSelection((c) => c.toggleUnderline())}
         title="Underline"
       >
         <UnderlineIcon className="w-3.5 h-3.5" />
@@ -199,21 +223,21 @@ function BubbleToolbar({ editor }: ToolbarProps) {
       <Divider />
       <ToolbarButton
         active={editor.isActive({ textAlign: 'left' })}
-        onClick={() => editor.chain().focus().setTextAlign('left').run()}
+        onClick={() => runWithSavedSelection((c) => c.setTextAlign('left'))}
         title="Align left"
       >
         <AlignLeft className="w-3.5 h-3.5" />
       </ToolbarButton>
       <ToolbarButton
         active={editor.isActive({ textAlign: 'center' })}
-        onClick={() => editor.chain().focus().setTextAlign('center').run()}
+        onClick={() => runWithSavedSelection((c) => c.setTextAlign('center'))}
         title="Align centre"
       >
         <AlignCenter className="w-3.5 h-3.5" />
       </ToolbarButton>
       <ToolbarButton
         active={editor.isActive({ textAlign: 'right' })}
-        onClick={() => editor.chain().focus().setTextAlign('right').run()}
+        onClick={() => runWithSavedSelection((c) => c.setTextAlign('right'))}
         title="Align right"
       >
         <AlignRight className="w-3.5 h-3.5" />
@@ -221,14 +245,14 @@ function BubbleToolbar({ editor }: ToolbarProps) {
       <Divider />
       <ToolbarButton
         active={editor.isActive('bulletList')}
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
+        onClick={() => runWithSavedSelection((c) => c.toggleBulletList())}
         title="Bulleted list"
       >
         <List className="w-3.5 h-3.5" />
       </ToolbarButton>
       <ToolbarButton
         active={editor.isActive('orderedList')}
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        onClick={() => runWithSavedSelection((c) => c.toggleOrderedList())}
         title="Numbered list"
       >
         <ListOrdered className="w-3.5 h-3.5" />
@@ -251,9 +275,9 @@ function BubbleToolbar({ editor }: ToolbarProps) {
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => {
                   if (preset.value === null) {
-                    editor.chain().focus().unsetColor().run()
+                    runWithSavedSelection((c) => c.unsetColor())
                   } else {
-                    editor.chain().focus().setColor(preset.value).run()
+                    runWithSavedSelection((c) => c.setColor(preset.value as string))
                   }
                   setColorOpen(false)
                 }}

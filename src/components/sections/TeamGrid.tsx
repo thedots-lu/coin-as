@@ -7,6 +7,7 @@ import { Locale } from '@/lib/types/locale'
 import AnimatedSection from '@/components/ui/AnimatedSection'
 import EditableText from '@/components/admin/cms/EditableText'
 import EditableImage from '@/components/admin/cms/EditableImage'
+import RichInlineText from '@/components/admin/cms/RichInlineText'
 import { useEditing } from '@/components/admin/cms/EditingContext'
 
 interface TeamGridProps {
@@ -66,17 +67,11 @@ export default function TeamGrid({ section, locale, basePath }: TeamGridProps) {
 
         {(body || isEditing) && (
           <AnimatedSection animation="slideUp" className="text-center">
-            <p
-              className="text-lg max-w-2xl mx-auto"
-              style={{ color: 'var(--color-secondary-300)' }}
-            >
-              <EditableText
-                path={`${basePath}.body`}
-                value={section.body}
-                as="span"
-                multiline
-              />
-            </p>
+            <RichInlineText
+              path={`${basePath}.body`}
+              value={section.body}
+              className="text-lg mx-auto prose prose-lg prose-invert max-w-2xl [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2"
+            />
           </AnimatedSection>
         )}
       </div>

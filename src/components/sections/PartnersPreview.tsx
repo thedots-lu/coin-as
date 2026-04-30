@@ -7,6 +7,7 @@ import { Locale } from '@/lib/types/locale'
 import AnimatedSection from '@/components/ui/AnimatedSection'
 import EditableText from '@/components/admin/cms/EditableText'
 import EditableLink from '@/components/admin/cms/EditableLink'
+import RichInlineText from '@/components/admin/cms/RichInlineText'
 import { useEditing } from '@/components/admin/cms/EditingContext'
 import Link from 'next/link'
 
@@ -42,14 +43,11 @@ export default function PartnersPreview({ section, locale, basePath }: PartnersP
 
         {(body || isEditing) && (
           <AnimatedSection animation="slideUp" className="text-center mb-16">
-            <p className="text-lg text-secondary-600 max-w-2xl mx-auto">
-              <EditableText
-                path={`${basePath}.body`}
-                value={section.body}
-                as="span"
-                multiline
-              />
-            </p>
+            <RichInlineText
+              path={`${basePath}.body`}
+              value={section.body}
+              className="text-lg text-secondary-600 mx-auto prose prose-lg !max-w-2xl [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2"
+            />
           </AnimatedSection>
         )}
 

@@ -1,6 +1,7 @@
 import { ValuesSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
 import EditableText from '@/components/admin/cms/EditableText'
+import RichInlineText from '@/components/admin/cms/RichInlineText'
 
 interface ValuesGridProps {
   section: ValuesSection
@@ -35,14 +36,11 @@ export default function ValuesGrid({ section, basePath }: ValuesGridProps) {
                   as="span"
                 />
               </h3>
-              <p className="text-secondary-600 leading-relaxed">
-                <EditableText
-                  path={`${basePath}.values.${i}.description`}
-                  value={value.description}
-                  as="span"
-                  multiline
-                />
-              </p>
+              <RichInlineText
+                path={`${basePath}.values.${i}.description`}
+                value={value.description}
+                className="text-secondary-600 leading-relaxed prose prose-sm max-w-none [&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1"
+              />
             </div>
           ))}
         </div>
