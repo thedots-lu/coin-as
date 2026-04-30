@@ -5,6 +5,7 @@ import { MissionSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
 import AnimatedSection from '@/components/ui/AnimatedSection'
 import EditableText from '@/components/admin/cms/EditableText'
+import RichInlineText from '@/components/admin/cms/RichInlineText'
 import { useEditing } from '@/components/admin/cms/EditingContext'
 
 interface MissionDiagramProps {
@@ -36,14 +37,11 @@ export default function MissionDiagram({ section, locale, basePath }: MissionDia
 
         {(body || isEditing) && (
           <AnimatedSection animation="slideUp" className="text-center">
-            <p className="text-lg text-secondary-600 max-w-3xl mx-auto leading-relaxed">
-              <EditableText
-                path={`${basePath}.body`}
-                value={section.body}
-                as="span"
-                multiline
-              />
-            </p>
+            <RichInlineText
+              path={`${basePath}.body`}
+              value={section.body}
+              className="text-lg text-secondary-600 max-w-3xl mx-auto leading-relaxed prose prose-lg [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2"
+            />
           </AnimatedSection>
         )}
       </div>
