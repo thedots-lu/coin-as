@@ -171,6 +171,7 @@ export interface TimelineSection {
 export interface MapOverviewSection {
   type: 'map_overview'
   order: number
+  heading?: LocaleString
   body: LocaleString
   mapImageUrl: string | null
   mapEmbedUrl?: string | null

@@ -1,35 +1,73 @@
 'use client'
 
 import Image from 'next/image'
+import { Lock } from 'lucide-react'
 import { getLocalizedField } from '@/lib/locale'
 import { SiteGallerySection } from '@/lib/types/page'
+import { Site } from '@/lib/types/site'
 import { Locale } from '@/lib/types/locale'
 import AnimatedSection from '@/components/ui/AnimatedSection'
+import { useEditing } from '@/components/admin/cms/EditingContext'
+import { isHtml, sanitizeRichHtml } from '@/lib/utils/html'
 
 interface SiteGalleryProps {
   section: SiteGallerySection
   locale: Locale
+  /**
+   * Sites sourced from the `sites` collection — single source of truth shared
+   * with the MapOverview compact cards on the About page. Falls back to the
+   * legacy `section.sites` array when not provided (transitional support).
+   */
+  sites?: Site[]
 }
 
-export default function SiteGallery({ section, locale }: SiteGalleryProps) {
+export default function SiteGallery({ section, locale, sites }: SiteGalleryProps) {
+  const isEditing = !!useEditing()
+  // Prefer the shared collection. Fall back to the legacy embedded sites
+  // array so a fresh-install or pre-migration page keeps rendering.
+  const items = sites && sites.length > 0
+    ? sites.map((s) => ({
+        name: s.name,
+        country: s.country,
+        // Prefer the interior / office shot for the gallery; fall back to
+        // the exterior building image so cards always render an image.
+        imageUrl: s.officeImageUrl || s.imageUrl,
+        description: s.description,
+        address: s.address,
+        phone: s.phone,
+        capacity: s.capacity,
+        mapUrl: s.mapUrl,
+      }))
+    : section.sites
+
   return (
     <section className="py-20 bg-secondary-50">
       <div className="container-padding">
+        {isEditing && (
+          <div className="max-w-3xl mx-auto mb-8 bg-amber-50 border border-amber-200 rounded-md px-4 py-2.5 text-[12px] text-amber-900 flex items-center gap-2">
+            <Lock className="w-3.5 h-3.5 shrink-0" />
+            <span>
+              The site cards below are managed in{' '}
+              <a
+                href="/admin/sites"
+                className="font-semibold underline hover:no-underline"
+              >
+                Sites
+              </a>
+              .
+            </span>
+          </div>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {section.sites.map((site, index) => {
+          {items.map((site, index) => {
             const name = getLocalizedField(site.name, locale)
             const country = getLocalizedField(site.country, locale)
             const description = getLocalizedField(site.description, locale)
             const capacity = site.capacity ? getLocalizedField(site.capacity, locale) : null
 
             return (
-              <AnimatedSection
-                key={index}
-                animation="zoomIn"
-                delay={index * 0.1}
-              >
+              <AnimatedSection key={index} animation="zoomIn" delay={index * 0.1}>
                 <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
-                  {/* Image */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden group">
                     <Image
                       src={site.imageUrl}
@@ -47,11 +85,16 @@ export default function SiteGallery({ section, locale }: SiteGalleryProps) {
                     </div>
                   </div>
 
-                  {/* Details */}
                   <div className="p-6 flex flex-col gap-4 flex-1">
-                    {description && (
-                      <p className="text-secondary-600 text-sm leading-relaxed">{description}</p>
-                    )}
+                    {description &&
+                      (isHtml(description) ? (
+                        <div
+                          className="text-secondary-600 text-sm leading-relaxed prose prose-sm max-w-none [&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1"
+                          dangerouslySetInnerHTML={{ __html: sanitizeRichHtml(description) }}
+                        />
+                      ) : (
+                        <p className="text-secondary-600 text-sm leading-relaxed">{description}</p>
+                      ))}
 
                     <div className="mt-auto space-y-2 pt-4 border-t border-secondary-100">
                       {site.address && (

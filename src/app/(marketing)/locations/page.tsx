@@ -1,4 +1,5 @@
 import { getPage } from '@/lib/firestore/pages'
+import { getPublishedSites } from '@/lib/firestore/sites'
 import { Metadata } from 'next'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
@@ -12,7 +13,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function LocationsPage() {
-  const pageData = await getPage('locations')
+  const [pageData, sites] = await Promise.all([
+    getPage('locations'),
+    getPublishedSites(),
+  ])
 
   if (!pageData) {
     return (
@@ -22,5 +26,5 @@ export default async function LocationsPage() {
     )
   }
 
-  return <PageSectionRenderer sections={pageData.sections} />
+  return <PageSectionRenderer sections={pageData.sections} sites={sites} />
 }

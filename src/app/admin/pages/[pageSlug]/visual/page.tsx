@@ -24,15 +24,18 @@ import { getPublishedTeamMembers } from '@/lib/firestore/team'
 import { getPublishedPartners } from '@/lib/firestore/partners'
 import { getPublishedTestimonials } from '@/lib/firestore/testimonials'
 import { getVisibleCustomerLogos } from '@/lib/firestore/customer-logos'
+import { getPublishedSites } from '@/lib/firestore/sites'
 import type { Testimonial } from '@/lib/types/testimonial'
 import type { TeamMember } from '@/lib/types/team'
 import type { Partner } from '@/lib/types/partner'
+import type { Site } from '@/lib/types/site'
 
 interface PageAuxData {
   testimonials?: Testimonial[]
   teamMembers?: TeamMember[]
   partners?: Partner[]
   customerLogos?: Array<{ url: string; name: string }>
+  sites?: Site[]
 }
 
 interface PageConfig {
@@ -58,16 +61,23 @@ async function fetchHomeAux(): Promise<PageAuxData> {
 }
 
 async function fetchAboutAux(): Promise<PageAuxData> {
-  const [teamMembers, partners, customerLogos] = await Promise.all([
+  const [teamMembers, partners, customerLogos, sites] = await Promise.all([
     getPublishedTeamMembers(),
     getPublishedPartners(),
     getVisibleCustomerLogos(),
+    getPublishedSites(),
   ])
   return {
     teamMembers,
     partners,
     customerLogos: customerLogos.map((l) => ({ url: l.imageUrl, name: l.name })),
+    sites,
   }
+}
+
+async function fetchLocationsAux(): Promise<PageAuxData> {
+  const sites = await getPublishedSites()
+  return { sites }
 }
 
 const ABOUT_QUICK_LINKS = [
@@ -88,7 +98,7 @@ const PAGE_CONFIG: Record<string, PageConfig> = {
     hideTypes: ['hero_simple'],
     topChrome: () => <HubBanner title="About COIN" quickLinks={ABOUT_QUICK_LINKS} />,
   },
-  locations: { title: 'Locations page', previewPath: '/locations' },
+  locations: { title: 'Locations page', previewPath: '/locations', fetchAux: fetchLocationsAux },
   contact: { title: 'Contact page', previewPath: '/contact' },
   'legal-notice': { title: 'Legal Notice', previewPath: '/legal-notice' },
   'privacy-policy': { title: 'Privacy Policy', previewPath: '/privacy-policy' },
@@ -335,6 +345,7 @@ export default function PageVisualEditor() {
             teamMembers={aux.teamMembers}
             partners={aux.partners}
             customerLogos={aux.customerLogos}
+            sites={aux.sites}
             hideTypes={config.hideTypes}
             withSectionOverlay
           />

@@ -2,6 +2,7 @@ import { getPage } from '@/lib/firestore/pages'
 import { getPublishedTeamMembers } from '@/lib/firestore/team'
 import { getPublishedPartners } from '@/lib/firestore/partners'
 import { getVisibleCustomerLogos } from '@/lib/firestore/customer-logos'
+import { getPublishedSites } from '@/lib/firestore/sites'
 import { Metadata } from 'next'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
@@ -16,11 +17,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const [pageData, teamMembers, partners, logosFromDb] = await Promise.all([
+  const [pageData, teamMembers, partners, logosFromDb, sites] = await Promise.all([
     getPage('about'),
     getPublishedTeamMembers(),
     getPublishedPartners(),
     getVisibleCustomerLogos(),
+    getPublishedSites(),
   ])
 
   if (!pageData) {
@@ -52,6 +54,7 @@ export default async function AboutPage() {
         teamMembers={teamMembers}
         partners={partners}
         customerLogos={logosFromDb.map((l) => ({ url: l.imageUrl, name: l.name }))}
+        sites={sites}
       />
     </>
   )

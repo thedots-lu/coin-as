@@ -4,6 +4,7 @@ import { Testimonial } from '@/lib/types/testimonial'
 import { Locale } from '@/lib/types/locale'
 import { TeamMember } from '@/lib/types/team'
 import { Partner } from '@/lib/types/partner'
+import { Site } from '@/lib/types/site'
 import HeroSection from '@/components/sections/HeroSection'
 import HeroSimple from '@/components/sections/HeroSimple'
 import ServicePillars from '@/components/sections/ServicePillars'
@@ -38,6 +39,7 @@ interface PageSectionRendererProps {
   teamMembers?: TeamMember[]
   partners?: Partner[]
   customerLogos?: Array<{ url: string; name: string }>
+  sites?: Site[]
   /** When true, each section is wrapped in a CMS edit overlay (admin only). */
   withSectionOverlay?: boolean
   /** Section types to skip rendering. originalIndex is preserved for the
@@ -52,6 +54,7 @@ export default function PageSectionRenderer({
   teamMembers = [],
   partners = [],
   customerLogos,
+  sites,
   withSectionOverlay = false,
   hideTypes,
 }: PageSectionRendererProps) {
@@ -86,9 +89,9 @@ export default function PageSectionRenderer({
       case 'process_pipeline':
         return <ProcessPipeline section={section} locale={locale} />
       case 'room_types':
-        return <RoomTypes section={section} locale={locale} />
+        return <RoomTypes section={section} locale={locale} basePath={basePath} />
       case 'site_gallery':
-        return <SiteGallery section={section} locale={locale} />
+        return <SiteGallery section={section} locale={locale} sites={sites} />
       // Hidden for now
       // case 'testimonials_ref':
       //   if (testimonials && testimonials.length > 0) {
@@ -112,7 +115,7 @@ export default function PageSectionRenderer({
       case 'mission':
         return <MissionDiagram section={section} locale={locale} basePath={basePath} />
       case 'map_overview':
-        return <MapOverview section={section} locale={locale} basePath={basePath} />
+        return <MapOverview section={section} locale={locale} basePath={basePath} sites={sites} />
       case 'innovation':
         return <InnovationBlock section={section} locale={locale} basePath={basePath} />
       case 'flexible_services':
