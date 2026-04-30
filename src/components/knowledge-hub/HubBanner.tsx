@@ -20,11 +20,11 @@ export default function HubBanner({ title, quickLinks, backToHub = false }: HubB
         <div className="max-w-6xl mx-auto">
           {backToHub && (
             <Link
-              href="/knowledge-hub"
+              href="/resources"
               className="inline-flex items-center gap-1.5 text-sm text-secondary-500 hover:text-primary-600 font-medium mb-4 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
-              Knowledge Hub
+              Resources
             </Link>
           )}
 

@@ -134,7 +134,7 @@ export default function AdminArticlesPage() {
       } else {
         await addDoc(collection(db, 'articles'), { ...data, createdAt: now })
       }
-      await revalidate('/knowledge-hub')
+      await revalidate('/resources')
       await fetchArticles()
       handleCancel()
     } catch (err) {
@@ -151,7 +151,7 @@ export default function AdminArticlesPage() {
     try {
       await deleteDoc(doc(db, 'articles', id))
       if (item?.imageUrl) await deleteFile(item.imageUrl)
-      await revalidate('/knowledge-hub')
+      await revalidate('/resources')
       await fetchArticles()
     } catch (err) {
       console.error('Error deleting article:', err)
@@ -164,7 +164,7 @@ export default function AdminArticlesPage() {
         published: !item.published,
         updatedAt: Timestamp.now(),
       })
-      await revalidate('/knowledge-hub')
+      await revalidate('/resources')
       await fetchArticles()
     } catch (err) {
       console.error('Error toggling published:', err)

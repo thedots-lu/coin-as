@@ -8,7 +8,7 @@ export const revalidate = 300
 export const metadata: Metadata = {
   title: 'Videos',
   description: 'All videos from the COIN Business Continuity YouTube channel, playable directly on the site.',
-  alternates: { canonical: 'https://coin-bc.com/knowledge-hub/videos' },
+  alternates: { canonical: 'https://coin-bc.com/resources/videos' },
 }
 
 export default async function VideosPage() {

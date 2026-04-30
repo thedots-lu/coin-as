@@ -12,8 +12,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/services`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.9 },
     { url: `${BASE_URL}/locations`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.7 },
     { url: `${BASE_URL}/news`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.8 },
-    { url: `${BASE_URL}/knowledge-hub`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.7 },
-    { url: `${BASE_URL}/knowledge-hub/faq`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.5 },
+    { url: `${BASE_URL}/resources`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.7 },
+    { url: `${BASE_URL}/resources/faq`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.5 },
     { url: `${BASE_URL}/partners`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.6 },
     { url: `${BASE_URL}/contact`, lastModified: new Date(), changeFrequency: 'yearly' as const, priority: 0.7 },
     { url: `${BASE_URL}/legal-notice`, lastModified: new Date(), changeFrequency: 'yearly' as const, priority: 0.3 },
@@ -44,7 +44,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }))
 
   const articlePages = articles.map(a => ({
-    url: `${BASE_URL}/knowledge-hub/${typeof a.slug === 'object' ? a.slug.en : a.slug}`,
+    url: `${BASE_URL}/resources/${typeof a.slug === 'object' ? a.slug.en : a.slug}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.6,

@@ -15,13 +15,13 @@ import type { YoutubeVideo } from '@/lib/youtube'
 export const revalidate = 300
 
 export const metadata: Metadata = {
-  title: 'Knowledge Hub',
+  title: 'Resources',
   description: 'Articles, case studies, videos and news on business continuity, disaster recovery and cyber resilience.',
-  alternates: { canonical: 'https://coin-bc.com/knowledge-hub' },
+  alternates: { canonical: 'https://coin-bc.com/resources' },
   openGraph: {
-    title: 'Knowledge Hub | COIN AS',
+    title: 'Resources | COIN AS',
     description: 'Articles, case studies, videos and news on business continuity, disaster recovery and cyber resilience.',
-    url: 'https://coin-bc.com/knowledge-hub',
+    url: 'https://coin-bc.com/resources',
   },
 }
 
@@ -42,15 +42,15 @@ export default async function KnowledgeHubOverview() {
     { label: 'Case Studies', href: '#case-studies', count: caseStudies.length },
     { label: 'Videos', href: '#videos', count: latestVideos.length },
     { label: 'News', href: '#news', count: latestNews.length },
-    { label: 'FAQ', href: '/knowledge-hub/faq' },
+    { label: 'FAQ', href: '/resources/faq' },
   ]
 
   return (
     <>
-      <HubBanner title="Knowledge Hub" quickLinks={quickLinks} />
+      <HubBanner title="Resources" quickLinks={quickLinks} />
 
       {/* Articles */}
-      <SectionWrapper id="articles" icon={BookOpen} title="Articles" viewAllHref="/knowledge-hub/articles" bgClass="bg-white">
+      <SectionWrapper id="articles" icon={BookOpen} title="Articles" viewAllHref="/resources/articles" bgClass="bg-white">
         {articles.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {articles.map((a) => <ArticleCard key={a.id} article={a} variant="resource" />)}
@@ -61,7 +61,10 @@ export default async function KnowledgeHubOverview() {
       </SectionWrapper>
 
       {/* Case Studies */}
-      <SectionWrapper id="case-studies" icon={FileText} title="Case Studies" viewAllHref="/knowledge-hub/case-studies" bgClass="bg-warm-50">
+      <SectionWrapper id="case-studies" icon={FileText} title="Case Studies" viewAllHref="/resources/case-studies" bgClass="bg-warm-50">
+        <p className="font-display text-lg md:text-xl font-semibold text-primary-900 leading-snug mb-8 max-w-3xl">
+          You can&rsquo;t plan the unexpected but you can get prepared to respond.
+        </p>
         {caseStudies.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {caseStudies.map((a) => <ArticleCard key={a.id} article={a} variant="case_study" />)}
@@ -72,7 +75,7 @@ export default async function KnowledgeHubOverview() {
       </SectionWrapper>
 
       {/* Videos */}
-      <SectionWrapper id="videos" icon={Video} title="Videos" viewAllHref="/knowledge-hub/videos" bgClass="bg-white">
+      <SectionWrapper id="videos" icon={Video} title="Videos" viewAllHref="/resources/videos" bgClass="bg-white">
         {latestVideos.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {latestVideos.map((v) => <VideoCard key={v.id} video={v} />)}
@@ -102,7 +105,7 @@ export default async function KnowledgeHubOverview() {
             Browse our frequently asked questions on business continuity, recovery and compliance.
           </p>
           <Link
-            href="/knowledge-hub/faq"
+            href="/resources/faq"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-accent-500 hover:bg-accent-600 text-white font-semibold transition-colors"
           >
             <span>Visit our FAQ</span>

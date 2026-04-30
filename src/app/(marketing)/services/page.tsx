@@ -10,11 +10,11 @@ export const revalidate = 300
 
 export const metadata: Metadata = {
   title: 'Services',
-  description: 'COIN business continuity services: consultancy & training, recovery workplaces, crisis management, IT housing, cyberresilience.',
+  description: 'COIN business continuity services: consultancy & training, recovery workplaces, crisis management, IT housing, cyber resilience.',
   alternates: { canonical: 'https://coin-bc.com/services' },
   openGraph: {
     title: 'Our Services | COIN AS',
-    description: 'COIN business continuity services: consultancy & training, recovery workplaces, crisis management, IT housing, cyberresilience.',
+    description: 'COIN business continuity services: consultancy & training, recovery workplaces, crisis management, IT housing, cyber resilience.',
     url: 'https://coin-bc.com/services',
   },
 }
@@ -139,7 +139,7 @@ export default async function ServicesPage() {
     { label: 'Recovery Workplaces', href: '/services/recovery-workplaces' },
     { label: 'Consultancy and Training', href: '/services/consultancy-and-training' },
     { label: 'IT Housing', href: '/services/it-housing' },
-    { label: 'Cyberresilience', href: '/services/cyberresilience' },
+    { label: 'Cyber Resilience', href: '/services/cyberresilience' },
     { label: 'Crisis Management', href: '/services/crisis-management' },
   ]
 

@@ -13,6 +13,12 @@ const nextConfig: NextConfig = {
     ],
   },
   allowedDevOrigins: ['100.67.235.50'],
+  async redirects() {
+    return [
+      { source: '/knowledge-hub', destination: '/resources', permanent: true },
+      { source: '/knowledge-hub/:path*', destination: '/resources/:path*', permanent: true },
+    ]
+  },
 }
 
 export default nextConfig

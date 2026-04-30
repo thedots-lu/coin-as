@@ -12,6 +12,7 @@ import EditableText from '@/components/admin/cms/EditableText'
 import EditableImage from '@/components/admin/cms/EditableImage'
 import EditableLink from '@/components/admin/cms/EditableLink'
 import { useEditing } from '@/components/admin/cms/EditingContext'
+import { isAvifUrl } from '@/lib/utils/image'
 
 const EMPTY_LS: LocaleString = { en: '', fr: '', nl: '' }
 
@@ -43,7 +44,7 @@ export const HERO_DEFAULT_SLIDES: HeroSlide[] = [
     ],
     description: { ...EMPTY_LS },
     ctaText: ls('Read our article'),
-    ctaLink: '/knowledge-hub',
+    ctaLink: '/resources',
     visible: true,
   },
   {
@@ -148,13 +149,18 @@ export default function HeroSection({ section, locale, basePath }: HeroSectionPr
   const { slide: currentSlide, originalIdx: currentOriginalIdx } = visible[activeIdx]
   const slidePath = isFirestoreDriven ? `${basePath}.slides.${currentOriginalIdx}` : null
 
-  // Per-slide CTA override
+  // Per-slide CTA: each slide can have its own text/link. Empty per-slide
+  // values fall back to the section-level secondary button (acts as default).
+  // The inline editor — when the slide is Firestore-driven (slidePath set) —
+  // always targets the slide so changes are independent across slides.
   const slideCtaText = currentSlide.ctaText ? getLocalizedField(currentSlide.ctaText, locale) : ''
   const slideCtaLink = currentSlide.ctaLink ?? ''
-  const slideHasOverride = !!slideCtaText && !!slideCtaLink
-  const renderedSecondaryText = slideHasOverride ? slideCtaText : secondaryBtnText
-  const renderedSecondaryHref = slideHasOverride ? slideCtaLink : section.secondaryButtonLink
-  const showSecondary = !!renderedSecondaryText || isEditing
+  const renderedSecondaryText = slideCtaText || secondaryBtnText
+  const renderedSecondaryHref = slideCtaLink || section.secondaryButtonLink
+  // Public site: show a CTA only if it has both a label and a link.
+  // Edit mode: always show so the inline editor stays reachable.
+  const showPrimary = isEditing || (!!primaryBtnText && !!section.primaryButtonLink)
+  const showSecondary = isEditing || (!!renderedSecondaryText && !!renderedSecondaryHref)
 
   // Bullets vs description: bullets take precedence if any. In edit mode with both empty, prefer description editor.
   const hasBullets = currentSlide.bullets.length > 0
@@ -223,6 +229,7 @@ export default function HeroSection({ section, locale, basePath }: HeroSectionPr
                     priority={activeIdx === 0}
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover"
+                    unoptimized={isAvifUrl(currentSlide.imageUrl)}
                   />
                 ) : null}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black/10 pointer-events-none" />
@@ -325,7 +332,7 @@ export default function HeroSection({ section, locale, basePath }: HeroSectionPr
 
                 {/* CTA buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">
-                  {(primaryBtnText || isEditing) && (
+                  {showPrimary && (
                     <div className="relative">
                       <Button
                         href={section.primaryButtonLink}
@@ -356,35 +363,24 @@ export default function HeroSection({ section, locale, basePath }: HeroSectionPr
                         variant="outline"
                         className="text-base px-7 py-3.5 border-white/30 text-white hover:shadow-lg hover:shadow-white/10 hover:border-white/60"
                       >
-                        {slideHasOverride && slidePath ? (
+                        {slidePath ? (
                           <EditableText
                             path={`${slidePath}.ctaText`}
                             value={currentSlide.ctaText ?? EMPTY_LS}
+                            placeholder={secondaryBtnText || 'CTA text'}
                             as="span"
                           />
                         ) : (
-                          <EditableText
-                            path={`${basePath}.secondaryButtonText`}
-                            value={section.secondaryButtonText}
-                            as="span"
-                          />
+                          renderedSecondaryText
                         )}
                       </Button>
-                      {isEditing && (
+                      {isEditing && slidePath && (
                         <div className="absolute top-full left-0 mt-1 z-40">
-                          {slideHasOverride && slidePath ? (
-                            <EditableLink
-                              path={`${slidePath}.ctaLink`}
-                              value={currentSlide.ctaLink}
-                              label="Slide CTA"
-                            />
-                          ) : (
-                            <EditableLink
-                              path={`${basePath}.secondaryButtonLink`}
-                              value={section.secondaryButtonLink}
-                              label="Secondary CTA"
-                            />
-                          )}
+                          <EditableLink
+                            path={`${slidePath}.ctaLink`}
+                            value={currentSlide.ctaLink}
+                            label="Slide CTA link"
+                          />
                         </div>
                       )}
                     </div>

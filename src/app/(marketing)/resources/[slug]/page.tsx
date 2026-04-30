@@ -53,10 +53,10 @@ export default async function ArticleDetailPage({ params }: PageProps) {
         <div className="absolute inset-0 bg-[url('/images/grid-pattern.svg')] opacity-10" />
         <div className="relative container-padding max-w-4xl mx-auto">
           <Link
-            href="/knowledge-hub"
+            href="/resources"
             className="inline-flex items-center text-primary-200 hover:text-white mb-6 transition-colors"
           >
-            &larr; Back to Knowledge Hub
+            &larr; Back to Resources
           </Link>
           <div className="flex items-center gap-3 mb-4">
             <Badge>{categoryLabel}</Badge>
@@ -106,10 +106,10 @@ export default async function ArticleDetailPage({ params }: PageProps) {
 
           <div className="mt-10">
             <Link
-              href="/knowledge-hub"
+              href="/resources"
               className="text-primary-600 hover:text-primary-700 font-medium transition-colors"
             >
-              &larr; Back to Knowledge Hub
+              &larr; Back to Resources
             </Link>
           </div>
         </div>

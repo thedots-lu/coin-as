@@ -15,7 +15,6 @@ import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { uploadFile, deleteFile } from '@/lib/firebase/upload'
 import { CustomerLogo } from '@/lib/types/customer-logo'
-import { DEFAULT_CUSTOMER_LOGOS } from '@/lib/defaults/customer-logos'
 import {
   Eye,
   EyeOff,
@@ -51,7 +50,6 @@ export default function AdminCustomerLogosPage() {
   const [editing, setEditing] = useState<CustomerLogo | null>(null)
   const [creating, setCreating] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [seeding, setSeeding] = useState(false)
   const [reordering, setReordering] = useState(false)
 
   // Form state
@@ -237,39 +235,6 @@ export default function AdminCustomerLogosPage() {
     }
   }
 
-  const handleSeedDefaults = async () => {
-    if (
-      !confirm(
-        `Seed ${DEFAULT_CUSTOMER_LOGOS.length} default logos into Firestore? This appends to existing logos.`,
-      )
-    )
-      return
-    setSeeding(true)
-    try {
-      const now = Timestamp.now()
-      const startOrder = items.length
-      await Promise.all(
-        DEFAULT_CUSTOMER_LOGOS.map((logo, i) =>
-          addDoc(collection(db, 'customer_logos'), {
-            name: logo.name,
-            imageUrl: logo.imageUrl,
-            order: startOrder + i,
-            visible: true,
-            createdAt: now,
-            updatedAt: now,
-          }),
-        ),
-      )
-      await revalidateHome()
-      await fetchItems()
-    } catch (err) {
-      console.error('Seed failed:', err)
-      alert('Seed failed. Check console.')
-    } finally {
-      setSeeding(false)
-    }
-  }
-
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -291,23 +256,12 @@ export default function AdminCustomerLogosPage() {
           </p>
         </div>
         {!isFormOpen && (
-          <div className="flex items-center gap-2">
-            {items.length === 0 && (
-              <button
-                onClick={handleSeedDefaults}
-                disabled={seeding}
-                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-md text-sm font-medium transition-colors disabled:opacity-60"
-              >
-                {seeding ? 'Seeding…' : 'Initialize from defaults'}
-              </button>
-            )}
-            <button
-              onClick={startCreate}
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-primary-600 text-white rounded-md text-sm font-medium hover:bg-primary-700 transition-colors"
-            >
-              <Plus className="w-4 h-4" /> Add logo
-            </button>
-          </div>
+          <button
+            onClick={startCreate}
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-primary-600 text-white rounded-md text-sm font-medium hover:bg-primary-700 transition-colors"
+          >
+            <Plus className="w-4 h-4" /> Add logo
+          </button>
         )}
       </div>
 
@@ -431,9 +385,7 @@ export default function AdminCustomerLogosPage() {
       {!isFormOpen && items.length === 0 && (
         <div className="bg-white rounded-lg border border-dashed border-gray-300 p-8 text-center">
           <p className="text-gray-600 text-sm mb-4">
-            No customer logos in Firestore yet. Click <strong>Initialize from defaults</strong>{' '}
-            to seed the {DEFAULT_CUSTOMER_LOGOS.length} existing logos, or use{' '}
-            <strong>Add logo</strong> to start fresh.
+            No customer logos yet. Use <strong>Add logo</strong> to create one.
           </p>
         </div>
       )}

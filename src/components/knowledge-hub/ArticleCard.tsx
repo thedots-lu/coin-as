@@ -19,7 +19,7 @@ export default function ArticleCard({ article, variant = 'resource' }: ArticleCa
 
   return (
     <Link
-      href={`/knowledge-hub/${slug}`}
+      href={`/resources/${slug}`}
       className="group flex flex-col bg-white rounded-2xl border border-secondary-100 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
     >
       {article.imageUrl ? (

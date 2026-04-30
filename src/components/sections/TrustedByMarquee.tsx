@@ -1,11 +1,10 @@
 /**
  * Compact logo marquee — "Trusted by" strip for the landing page.
  * Pure presentational. Data is fetched at the page level and passed in via
- * `logos`; falls back to defaults when none provided. Kept synchronous so it
- * can be rendered from both server and client trees (visual CMS editor).
+ * `logos`. Renders nothing when no logos are available. Kept synchronous so
+ * it can be rendered from both server and client trees (visual CMS editor).
  */
 
-import { DEFAULT_CUSTOMER_LOGOS } from '@/lib/defaults/customer-logos'
 import LogoMarquee from './LogoMarquee'
 
 interface Props {
@@ -13,11 +12,7 @@ interface Props {
 }
 
 export default function TrustedByMarquee({ logos }: Props) {
-  const resolved =
-    logos && logos.length > 0
-      ? logos
-      : DEFAULT_CUSTOMER_LOGOS.map((l) => ({ url: l.imageUrl, name: l.name }))
-
+  const resolved = logos ?? []
   if (resolved.length === 0) return null
 
   return (

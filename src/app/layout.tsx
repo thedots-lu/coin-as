@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     default: 'COIN - Business Continuity & Cyber Resilience | BeNeLux',
     template: '%s | COIN',
   },
-  description: 'For over 20 years dedicated to business continuity in the BeNeLux. Consulting, training, business continuity centres, and cyberresilience solutions.',
+  description: 'For over 20 years dedicated to business continuity in the BeNeLux. Consulting, training, business continuity centres, and cyber resilience solutions.',
   keywords: ['business continuity', 'disaster recovery', 'cyber resilience', 'NIS2', 'DORA', 'BeNeLux', 'COIN AS'],
   metadataBase: new URL(BASE_URL),
   openGraph: {

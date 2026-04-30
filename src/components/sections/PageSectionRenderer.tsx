@@ -102,7 +102,7 @@ export default function PageSectionRenderer({
       case 'partners_preview':
         return <PartnersPreview section={section} locale={locale} partners={partners} />
       case 'customers':
-        return <CustomersSection section={section} locale={locale} />
+        return <CustomersSection section={section} locale={locale} customerLogos={customerLogos} />
       case 'values':
         return <ValuesGrid section={section} locale={locale} />
       case 'mission':

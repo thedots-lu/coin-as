@@ -6,21 +6,21 @@ import TagFilterGrid from '@/components/knowledge-hub/TagFilterGrid'
 export const revalidate = 300
 
 export const metadata: Metadata = {
-  title: 'Case Studies',
-  description: 'Real customer success stories on business continuity and disaster recovery solutions.',
-  alternates: { canonical: 'https://coin-bc.com/knowledge-hub/case-studies' },
+  title: 'Articles',
+  description: 'Articles and resources on business continuity, disaster recovery and cyber resilience.',
+  alternates: { canonical: 'https://coin-bc.com/resources/articles' },
 }
 
-export default async function CaseStudiesPage() {
+export default async function ArticlesPage() {
   const all = await getPublishedArticles()
-  const cases = all.filter((a) => a.category === 'case_study')
+  const articles = all.filter((a) => a.category === 'resource')
 
   return (
     <>
-      <HubBanner title="Case Studies" backToHub />
+      <HubBanner title="Articles" backToHub />
       <section className="py-12 md:py-16 bg-white">
         <div className="container-padding max-w-6xl mx-auto">
-          <TagFilterGrid articles={cases} variant="case_study" />
+          <TagFilterGrid articles={articles} variant="resource" />
         </div>
       </section>
     </>

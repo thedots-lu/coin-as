@@ -19,6 +19,7 @@
     "cleanup-orphans": "npx tsx scripts/cleanup-orphans.ts",
     "migrate-service-pillars": "npx tsx scripts/migrate-service-pillars.ts",
     "migrate-hero-images-to-r2": "npx tsx scripts/migrate-hero-images-to-r2.ts",
+    "migrate-customer-logos-to-r2": "npx tsx scripts/migrate-customer-logos-to-r2.ts",
     "migrate-trusted-by-section": "npx tsx scripts/migrate-trusted-by-section.ts"
   },
   "keywords": [],

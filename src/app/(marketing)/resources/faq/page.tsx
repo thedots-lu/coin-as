@@ -8,11 +8,11 @@ export const revalidate = 300
 export const metadata: Metadata = {
   title: 'FAQ',
   description: 'Frequently asked questions about business continuity, NIS2, DORA, and COIN services.',
-  alternates: { canonical: 'https://coin-bc.com/knowledge-hub/faq' },
+  alternates: { canonical: 'https://coin-bc.com/resources/faq' },
   openGraph: {
     title: 'FAQ - Business Continuity & COIN Services | COIN AS',
     description: 'Frequently asked questions about business continuity, NIS2, DORA, and COIN services.',
-    url: 'https://coin-bc.com/knowledge-hub/faq',
+    url: 'https://coin-bc.com/resources/faq',
   },
 }
 

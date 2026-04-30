@@ -1,17 +1,12 @@
 import { config } from 'dotenv';
 config({ path: '.env.local' });
-import { initializeApp } from 'firebase/app';
+import { readFileSync, existsSync } from 'node:fs';
+import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import {
-  getFirestore as getFs,
-  doc,
-  setDoc,
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  serverTimestamp,
+  getFirestore as getAdminFirestore,
+  FieldValue,
   Firestore,
-} from 'firebase/firestore';
+} from 'firebase-admin/firestore';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -20,21 +15,36 @@ import {
 type LocaleString = { en: string; fr: string; nl: string };
 const ls = (en: string): LocaleString => ({ en, fr: '', nl: '' });
 
+function loadCredentials(): { projectId: string; clientEmail: string; privateKey: string } {
+  if (process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
+    return {
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? '',
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    };
+  }
+  const saPath = process.env.TARGET_SERVICE_ACCOUNT ?? '.firebase-target-sa.json';
+  if (!existsSync(saPath)) {
+    throw new Error(`No credentials. Provide ${saPath} or set FIREBASE_CLIENT_EMAIL / FIREBASE_PRIVATE_KEY.`);
+  }
+  const sa = JSON.parse(readFileSync(saPath, 'utf8')) as {
+    project_id: string;
+    client_email: string;
+    private_key: string;
+  };
+  return { projectId: sa.project_id, clientEmail: sa.client_email, privateKey: sa.private_key };
+}
+
 function getFirestore(): Firestore {
-  const app = initializeApp({
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
-    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!,
-    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
-    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
-  });
-  return getFs(app);
+  if (getApps().length === 0) {
+    initializeApp({ credential: cert(loadCredentials()) });
+  }
+  return getAdminFirestore();
 }
 
 const ts = () => ({
-  createdAt: serverTimestamp(),
-  updatedAt: serverTimestamp(),
+  createdAt: FieldValue.serverTimestamp(),
+  updatedAt: FieldValue.serverTimestamp(),
 });
 
 // ---------------------------------------------------------------------------
@@ -86,20 +96,20 @@ function navigationMain() {
           { label: ls('Recovery Workplaces'), path: '/services/recovery-workplaces', order: 1 },
           { label: ls('Consultancy and Training'), path: '/services/consultancy-and-training', order: 2 },
           { label: ls('IT Housing'), path: '/services/it-housing', order: 3 },
-          { label: ls('Cyberresilience'), path: '/services/cyberresilience', order: 4 },
+          { label: ls('Cyber Resilience'), path: '/services/cyberresilience', order: 4 },
           { label: ls('Crisis Management'), path: '/services/crisis-management', order: 5 },
         ],
       },
       {
         label: ls('Resources'),
-        path: '/knowledge-hub',
+        path: '/resources',
         order: 2,
         children: [
-          { label: ls('Articles'), path: '/knowledge-hub/articles', order: 0 },
-          { label: ls('Case Studies'), path: '/knowledge-hub/case-studies', order: 1 },
-          { label: ls('Videos'), path: '/knowledge-hub/videos', order: 2 },
+          { label: ls('Articles'), path: '/resources/articles', order: 0 },
+          { label: ls('Case Studies'), path: '/resources/case-studies', order: 1 },
+          { label: ls('Videos'), path: '/resources/videos', order: 2 },
           { label: ls('News'), path: '/news', order: 4 },
-          { label: ls('FAQ'), path: '/knowledge-hub/faq', order: 5 },
+          { label: ls('FAQ'), path: '/resources/faq', order: 5 },
         ],
       },
       {
@@ -135,7 +145,7 @@ function navigationFooter() {
           { label: ls('Our Customers'), path: '/about#customers' },
           { label: ls('Our History'), path: '/about#history' },
           { label: ls('Our Locations'), path: '/locations' },
-          { label: ls('FAQ'), path: '/knowledge-hub/faq' },
+          { label: ls('FAQ'), path: '/resources/faq' },
         ],
       },
       {
@@ -151,10 +161,10 @@ function navigationFooter() {
       {
         heading: ls('Ressources'),
         links: [
-          { label: ls('Articles'), path: '/knowledge-hub' },
+          { label: ls('Articles'), path: '/resources' },
           { label: ls('News'), path: '/news' },
-          { label: ls('Case Studies'), path: '/knowledge-hub?category=case_study' },
-          { label: ls('FAQ'), path: '/knowledge-hub/faq' },
+          { label: ls('Case Studies'), path: '/resources?category=case_study' },
+          { label: ls('FAQ'), path: '/resources/faq' },
         ],
       },
       {
@@ -286,7 +296,7 @@ function pageHome() {
             ),
             imageUrl: '/images/coin/coin-fotosharonwillems-33.webp',
             linkText: ls('Read more'),
-            linkHref: '/knowledge-hub',
+            linkHref: '/resources',
           },
           {
             label: ls('New Service'),
@@ -393,7 +403,7 @@ function pageAbout() {
         order: 1,
         heading: ls('Our Mission'),
         body: ls(
-          'Our mission is to increase business continuity and cyberresilience of organisations by designing and delivering customized services and infrastructure that ensure the availability of digital workplaces. We address business continuity and crisis management comprehensively from analysis of risks and crisis scenarios to provision of services and alternate infrastructure to prevent, get prepared, respond and recover from disrupting events.',
+          'Our mission is to increase business continuity and cyber resilience of organisations by designing and delivering customized services and infrastructure that ensure the availability of digital workplaces. We address business continuity and crisis management comprehensively from analysis of risks and crisis scenarios to provision of services and alternate infrastructure to prevent, get prepared, respond and recover from disrupting events.',
         ),
         diagramSteps: [
           ls('Improve'),
@@ -423,7 +433,7 @@ function pageAbout() {
         order: 3,
         heading: ls('Our Experts'),
         body: ls(
-          "COIN experts brings together an unmatched level of experience in the many areas required to ensure business continuity and cyberresilience. They know that ensuring continuity is a matter of preparation, training, documented processes, redundant infrastructure but also being ready and committed to address unexpected situations as a team. The operational resiliency of our customers puts high demand on COIN teams to act transparently and reliably and be committed to the continuity of customers' activities while taking care of their staff, whatever the situation at hand.",
+          "COIN experts brings together an unmatched level of experience in the many areas required to ensure business continuity and cyber resilience. They know that ensuring continuity is a matter of preparation, training, documented processes, redundant infrastructure but also being ready and committed to address unexpected situations as a team. The operational resiliency of our customers puts high demand on COIN teams to act transparently and reliably and be committed to the continuity of customers' activities while taking care of their staff, whatever the situation at hand.",
         ),
         imageUrl: '/images/coin/luxembourg-munsbach-shared-seat-room-2.webp',
       },
@@ -453,27 +463,6 @@ function pageAbout() {
           ls('Government & Public Sector'),
           ls('Healthcare'),
           ls('Telecoms & Technology'),
-        ],
-        logoUrls: [
-          '/images/customers/frieslandcampina.png',
-          '/images/customers/robeco.jpg',
-          '/images/customers/mediq.png',
-          '/images/customers/bat.jpg',
-          '/images/customers/bkr.jpg',
-          '/images/customers/crocs.jpg',
-          '/images/customers/erasmus-leven.jpg',
-          '/images/customers/aac.jpg',
-          '/images/customers/cak.jpg',
-          '/images/customers/tentoo.jpg',
-          '/images/customers/intrum.png',
-          '/images/customers/gemeente-amsterdam.jpg',
-          '/images/customers/generali.jpg',
-          '/images/customers/fca-capital.jpg',
-          '/images/customers/credit-europe.jpg',
-          '/images/customers/harmony.jpg',
-          '/images/customers/infomedics.jpg',
-          '/images/customers/howden.jpg',
-          '/images/customers/ems.png',
         ],
       },
       {
@@ -789,7 +778,7 @@ function servicesData() {
           order: 0,
           heading: ls('Complete Business Continuity Solutions'),
           body: ls(
-            'From consulting and training to fully equipped recovery facilities and cyberresilience solutions, COIN provides everything you need to ensure your organisation can continue operating during any disruption.',
+            'From consulting and training to fully equipped recovery facilities and cyber resilience solutions, COIN provides everything you need to ensure your organisation can continue operating during any disruption.',
           ),
         },
       ],
@@ -898,8 +887,8 @@ function servicesData() {
     },
     {
       slug: 'cyberresilience',
-      title: ls('Cyberresilience'),
-      shortTitle: ls('Cyberresilience'),
+      title: ls('Cyber Resilience'),
+      shortTitle: ls('Cyber Resilience'),
       category: 'cyber',
       order: 4,
       heroSubtitle: ls('A range of services to prevent and respond to cyberincidents'),
@@ -911,7 +900,7 @@ function servicesData() {
         {
           type: 'features_list',
           order: 0,
-          heading: ls('Our Cyberresilience solution'),
+          heading: ls('Our Cyber Resilience solution'),
           features: [
             {
               title: ls('SAAS for security awareness and behavioural change'),
@@ -1041,8 +1030,8 @@ function servicesData() {
     },
     {
       slug: 'cyber-resilience',
-      title: ls('Cyberresilience Solutions'),
-      shortTitle: ls('Cyberresilience'),
+      title: ls('Cyber Resilience Solutions'),
+      shortTitle: ls('Cyber Resilience'),
       category: 'cyber',
       order: 3,
       heroSubtitle: ls('Prevent and restore from cyber incidents: ransomware, compromised laptops, data loss'),
@@ -1640,15 +1629,15 @@ function teamMembersData() {
 
 async function seedSiteConfig(db: Firestore) {
   console.log('[1/7] Seeding site_config...');
-  await setDoc(doc(db, 'site_config', 'global'), siteConfigGlobal(), { merge: true });
+  await db.collection('site_config').doc('global').set(siteConfigGlobal(), { merge: true });
   console.log('  -> site_config/global written');
 }
 
 async function seedNavigation(db: Firestore) {
   console.log('[2/7] Seeding navigation...');
-  await setDoc(doc(db, 'navigation', 'main'), navigationMain(), { merge: true });
+  await db.collection('navigation').doc('main').set(navigationMain(), { merge: true });
   console.log('  -> navigation/main written');
-  await setDoc(doc(db, 'navigation', 'footer'), navigationFooter(), { merge: true });
+  await db.collection('navigation').doc('footer').set(navigationFooter(), { merge: true });
   console.log('  -> navigation/footer written');
 }
 
@@ -1664,7 +1653,7 @@ async function seedPages(db: Firestore) {
     pageCookiesPolicy(),
   ];
   for (const page of pages) {
-    await setDoc(doc(db, 'pages', page.slug), page, { merge: true });
+    await db.collection('pages').doc(page.slug).set(page, { merge: true });
     console.log(`  -> pages/${page.slug} written`);
   }
 }
@@ -1726,7 +1715,7 @@ async function seedWhitePapers(db: Firestore) {
   ];
 
   for (const paper of papers) {
-    const ref = await addDoc(collection(db, 'white_papers'), { ...paper, ...ts() });
+    const ref = await db.collection('white_papers').add({ ...paper, ...ts() });
     console.log(`  -> white_papers/${ref.id} written (${paper.title.en})`);
   }
 }
@@ -1842,7 +1831,7 @@ A fully operational, regulator-compliant disaster recovery site delivered in 3 m
   ];
 
   for (const article of articles) {
-    const ref = await addDoc(collection(db, 'articles'), { ...article, ...ts() });
+    const ref = await db.collection('articles').add({ ...article, ...ts() });
     console.log(`  -> articles/${ref.id} written (${article.title.en})`);
   }
 }
@@ -1852,15 +1841,15 @@ async function seedServices(db: Firestore) {
   const services = servicesData();
   for (const svc of services) {
     const data = { ...svc, published: true, ...ts() };
-    await setDoc(doc(db, 'services', svc.slug), data, { merge: true });
+    await db.collection('services').doc(svc.slug).set(data, { merge: true });
     console.log(`  -> services/${svc.slug} written`);
   }
 }
 
 async function deleteCollection(db: Firestore, collectionName: string) {
-  const snapshot = await getDocs(collection(db, collectionName));
+  const snapshot = await db.collection(collectionName).get();
   for (const d of snapshot.docs) {
-    await deleteDoc(d.ref);
+    await d.ref.delete();
   }
   return snapshot.size;
 }
@@ -1872,7 +1861,7 @@ async function seedTestimonials(db: Firestore) {
 
   const items = testimonialsData();
   for (const item of items) {
-    const ref = await addDoc(collection(db, 'testimonials'), { ...item, ...ts() });
+    const ref = await db.collection('testimonials').add({ ...item, ...ts() });
     console.log(`  -> testimonials/${ref.id} written (${item.authorName})`);
   }
 }
@@ -1884,7 +1873,7 @@ async function seedTeamMembers(db: Firestore) {
 
   const items = teamMembersData();
   for (const item of items) {
-    const ref = await addDoc(collection(db, 'team_members'), { ...item, ...ts() });
+    const ref = await db.collection('team_members').add({ ...item, ...ts() });
     console.log(`  -> team_members/${ref.id} written (${item.name})`);
   }
 }
@@ -1896,7 +1885,7 @@ async function seedPartners(db: Firestore) {
 
   const items = partnersData();
   for (const item of items) {
-    const ref = await addDoc(collection(db, 'partners'), { ...item, ...ts() });
+    const ref = await db.collection('partners').add({ ...item, ...ts() });
     console.log(`  -> partners/${ref.id} written (${item.name})`);
   }
 }

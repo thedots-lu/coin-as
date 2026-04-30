@@ -20,7 +20,7 @@ const quickActions = [
   { label: 'Manage Pages', href: '/admin/pages', description: 'Edit page content and sections' },
   { label: 'Manage News', href: '/admin/news', description: 'Create and edit news articles' },
   { label: 'Manage Services', href: '/admin/services', description: 'Edit service details' },
-  { label: 'Manage Articles', href: '/admin/articles', description: 'Knowledge hub articles' },
+  { label: 'Manage Articles', href: '/admin/articles', description: 'Resources articles' },
   { label: 'White Papers', href: '/admin/white-papers', description: 'Downloadable PDFs and guides' },
   { label: 'Manage Partners', href: '/admin/partners', description: 'Business and tech partners' },
   { label: 'Manage Team', href: '/admin/team', description: 'Team members' },

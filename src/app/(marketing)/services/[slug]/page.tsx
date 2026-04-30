@@ -69,7 +69,7 @@ export default async function ServicePage({
       {/*
       <section className="py-8">
         <div className="container-padding max-w-4xl mx-auto">
-          <Link href="/knowledge-hub" className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-800 font-semibold transition-colors">
+          <Link href="/resources" className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-800 font-semibold transition-colors">
             <FileText className="h-4 w-4" />
             Learn more - Read our article
             <ArrowRight className="h-4 w-4" />

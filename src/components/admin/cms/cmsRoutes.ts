@@ -93,10 +93,10 @@ export const ROUTE_CATEGORIES: RouteCategory[] = [
     load: () => cached('news', () => loadFromCollection('news', '/news')),
   },
   {
-    id: 'knowledge-hub',
-    label: 'Knowledge Hub (articles & case studies)',
+    id: 'resources',
+    label: 'Resources (articles & case studies)',
     load: () =>
-      cached('articles', () => loadFromCollection('articles', '/knowledge-hub')),
+      cached('articles', () => loadFromCollection('articles', '/resources')),
   },
   {
     id: 'challenges',

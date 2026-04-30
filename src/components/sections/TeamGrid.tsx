@@ -1,10 +1,12 @@
 'use client'
 
+import Image from 'next/image'
 import { getLocalizedField } from '@/lib/locale'
 import { TeamsSection } from '@/lib/types/page'
 import { TeamMember } from '@/lib/types/team'
 import { Locale } from '@/lib/types/locale'
 import AnimatedSection from '@/components/ui/AnimatedSection'
+import { isAvifUrl } from '@/lib/utils/image'
 
 interface TeamGridProps {
   section: TeamsSection
@@ -19,10 +21,30 @@ export default function TeamGrid({ section, locale }: TeamGridProps) {
   return (
     <section
       id="teams"
-      className="py-20 scroll-mt-24"
+      className="relative overflow-hidden py-20 scroll-mt-24"
       style={{ background: 'var(--color-surface-dark)' }}
     >
-      <div className="container-padding">
+      {section.imageUrl && (
+        <div className="absolute inset-0">
+          <Image
+            src={section.imageUrl}
+            alt=""
+            fill
+            className="object-cover"
+            sizes="100vw"
+            unoptimized={isAvifUrl(section.imageUrl)}
+          />
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                'linear-gradient(to right, rgba(11,26,46,0.95) 0%, rgba(11,26,46,0.85) 40%, rgba(11,26,46,0.6) 100%)',
+            }}
+          />
+        </div>
+      )}
+
+      <div className="container-padding relative z-10">
         {heading && (
           <AnimatedSection animation="slideUp" className="text-center mb-8">
             <h2

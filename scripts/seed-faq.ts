@@ -9,7 +9,7 @@ function faq(en: string, fr: string, nl: string): LocaleString {
 }
 
 // Preserved verbatim from the original hardcoded content of
-// src/app/(marketing)/knowledge-hub/faq/page.tsx
+// src/app/(marketing)/resources/faq/page.tsx
 const faqItems = [
   {
     question: faq(
@@ -83,8 +83,8 @@ const faqItems = [
       'Welke diensten biedt COIN aan?'
     ),
     answer: faq(
-      'COIN offers comprehensive business continuity services including: consulting and advisory services to assess and improve your resilience posture; training programs and certifications for your teams; fully equipped business continuity centres with ready-to-use workspaces; and cyberresilience solutions to protect against and recover from cyber threats. We serve organizations across the BeNeLux region.',
-      'COIN propose des services complets de continuite des activites : conseil et accompagnement pour evaluer et ameliorer votre posture de resilience ; programmes de formation et certifications pour vos equipes ; centres de continuite entierement equipes avec des espaces de travail prets a l\'emploi ; et des solutions de cyberresilience pour proteger et recuperer face aux cybermenaces.',
+      'COIN offers comprehensive business continuity services including: consulting and advisory services to assess and improve your resilience posture; training programs and certifications for your teams; fully equipped business continuity centres with ready-to-use workspaces; and cyber resilience solutions to protect against and recover from cyber threats. We serve organizations across the BeNeLux region.',
+      'COIN propose des services complets de continuite des activites : conseil et accompagnement pour evaluer et ameliorer votre posture de resilience ; programmes de formation et certifications pour vos equipes ; centres de continuite entierement equipes avec des espaces de travail prets a l\'emploi ; et des solutions de cyber resilience pour proteger et recuperer face aux cybermenaces.',
       'COIN biedt uitgebreide bedrijfscontinueiteitsdiensten aan, waaronder: advies- en consultancydiensten om uw weerbaarheid te beoordelen en te verbeteren; opleidingsprogramma\'s en certificeringen voor uw teams; volledig uitgeruste bedrijfscontinuiteitscentra met kant-en-klare werkruimten; en cyberweerbaarheidoplossingen om u te beschermen tegen en te herstellen van cyberdreigingen.'
     ),
     category: 'services',

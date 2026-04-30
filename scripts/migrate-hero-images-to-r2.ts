@@ -60,7 +60,7 @@ const HERO_DEFAULT_SLIDES = [
     ],
     description: { ...EMPTY_LS },
     ctaText: ls('Read our article'),
-    ctaLink: '/knowledge-hub',
+    ctaLink: '/resources',
     visible: true,
   },
   {

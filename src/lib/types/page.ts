@@ -155,7 +155,6 @@ export interface CustomersSection {
   heading: LocaleString
   body: LocaleString
   imageUrl: string | null
-  logoUrls: string[]
 }
 
 export interface TimelineSection {

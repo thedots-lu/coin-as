@@ -30,7 +30,10 @@ function getS3(): S3Client {
 }
 
 function sanitizeSegment(s: string): string {
-  return s.replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/^-+|-+$/g, '')
+  // Allow dots inside segments so file extensions (.avif, .png, ...) survive,
+  // but strip leading/trailing dots and dashes so we never produce names like
+  // ".hidden" or "..".
+  return s.replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/^[-.]+|[-.]+$/g, '')
 }
 
 function safeStoragePath(raw: string): string | null {
@@ -39,7 +42,7 @@ function safeStoragePath(raw: string): string | null {
     .map((s) => s.trim())
     .filter(Boolean)
     .map(sanitizeSegment)
-    .filter((s) => s && s !== '.' && s !== '..')
+    .filter((s) => s.length > 0 && s !== '.' && s !== '..')
   if (parts.length === 0) return null
   return parts.join('/')
 }

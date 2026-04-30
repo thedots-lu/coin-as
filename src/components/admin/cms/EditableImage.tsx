@@ -5,6 +5,7 @@ import { useRef, useState } from 'react'
 import { Upload, Loader2, Image as ImageIcon } from 'lucide-react'
 import { useEditing } from './EditingContext'
 import { uploadFile } from '@/lib/firebase/upload'
+import { isAvifUrl } from '@/lib/utils/image'
 
 type Props = Omit<ImageProps, 'src' | 'alt'> & {
   path: string
@@ -41,15 +42,19 @@ export default function EditableImage({ path, src, alt, ...rest }: Props) {
     }
   }
 
+  // Bypass /_next/image for AVIF inputs — Next 16 rejects valid AVIF files
+  // whose major brand isn't `avif` (e.g. `avis`) with a 400.
+  const unoptimized = rest.unoptimized ?? isAvifUrl(src)
+
   if (!isEditing) {
     if (!src) return null
-    return <Image src={src} alt={alt} {...rest} />
+    return <Image src={src} alt={alt} {...rest} unoptimized={unoptimized} />
   }
 
   return (
     <>
       {src ? (
-        <Image src={src} alt={alt} {...rest} />
+        <Image src={src} alt={alt} {...rest} unoptimized={unoptimized} />
       ) : (
         <div
           className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-500"

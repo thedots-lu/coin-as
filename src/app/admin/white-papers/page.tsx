@@ -166,7 +166,7 @@ export default function AdminWhitePapersPage() {
         await addDoc(collection(db, 'white_papers'), { ...data, downloadCount: 0, createdAt: now })
       }
 
-      await revalidate('/knowledge-hub')
+      await revalidate('/resources')
       await fetchItems()
       handleCancel()
     } catch (err) {
@@ -183,7 +183,7 @@ export default function AdminWhitePapersPage() {
       await deleteDoc(doc(db, 'white_papers', item.id))
       if (item.fileUrl) await deleteFile(item.fileUrl)
       if (item.thumbnailUrl) await deleteFile(item.thumbnailUrl)
-      await revalidate('/knowledge-hub')
+      await revalidate('/resources')
       await fetchItems()
     } catch (err) {
       console.error('Error deleting white paper:', err)
@@ -196,7 +196,7 @@ export default function AdminWhitePapersPage() {
         published: !item.published,
         updatedAt: Timestamp.now(),
       })
-      await revalidate('/knowledge-hub')
+      await revalidate('/resources')
       await fetchItems()
     } catch (err) {
       console.error('Error toggling published:', err)
