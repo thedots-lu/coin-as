@@ -114,12 +114,9 @@ export default function PageSectionRenderer({
       case 'flexible_services':
         return <FlexibleServices section={section} locale={locale} basePath={basePath} />
       case 'mission_statement':
-        return (
-          <>
-            <MissionStatement section={section} locale={locale} basePath={basePath} />
-            <TrustedByMarquee logos={customerLogos} />
-          </>
-        )
+        return <MissionStatement section={section} locale={locale} basePath={basePath} />
+      case 'trusted_by':
+        return <TrustedByMarquee logos={customerLogos} />
       case 'benefits':
         return <BenefitsSection section={section} locale={locale} />
       case 'business_case':

@@ -22,6 +22,7 @@ const TYPE_LABELS: Record<string, string> = {
   innovation: 'Innovation',
   flexible_services: 'Flexible Services',
   mission_statement: 'Mission Statement',
+  trusted_by: 'Trusted By',
   stats: 'Stats',
   cta_banner: 'CTA Banner',
   testimonials_ref: 'Testimonials',

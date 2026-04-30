@@ -338,8 +338,12 @@ function pageHome() {
         imageUrl: '/images/coin/coin-fotosharonwillems-51.webp',
       },
       {
-        type: 'stats',
+        type: 'trusted_by',
         order: 6,
+      },
+      {
+        type: 'stats',
+        order: 7,
         stats: [
           { value: 20, suffix: '+', label: ls('Years of Experience') },
           { value: 300, suffix: '+', label: ls('Customers') },
@@ -349,12 +353,12 @@ function pageHome() {
       },
       {
         type: 'testimonials_ref',
-        order: 7,
+        order: 8,
         heading: ls('What our clients say'),
       },
       {
         type: 'cta_banner',
-        order: 8,
+        order: 9,
         heading: ls('Ready to strengthen your business continuity?'),
         buttonText: ls('Contact us today'),
         buttonLink: '/contact',

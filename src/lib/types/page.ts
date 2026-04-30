@@ -73,6 +73,11 @@ export interface MissionStatementSection {
   imageUrl: string | null
 }
 
+export interface TrustedBySection {
+  type: 'trusted_by'
+  order: number
+}
+
 export interface StatsSection {
   type: 'stats'
   order: number
@@ -301,6 +306,7 @@ export type PageSection = WithVisibility<
   | InnovationSection
   | FlexibleServicesSection
   | MissionStatementSection
+  | TrustedBySection
   | StatsSection
   | TestimonialsRefSection
   | CTABannerSection

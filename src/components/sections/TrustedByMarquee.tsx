@@ -21,7 +21,7 @@ export default function TrustedByMarquee({ logos }: Props) {
   if (resolved.length === 0) return null
 
   return (
-    <section className="py-14 bg-warm-50 overflow-hidden">
+    <section className="py-14 bg-white overflow-hidden">
       <div className="container-padding mb-10 text-center">
         <div className="w-12 h-1 bg-accent-500 rounded-full mx-auto mb-5" />
         <h2 className="text-2xl md:text-3xl font-bold text-secondary-800 font-display">
