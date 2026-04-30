@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState, useCallback, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState, useCallback, useMemo, ReactNode } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
@@ -10,6 +10,7 @@ import { extractUrls } from '@/lib/utils/extract-urls'
 import { PageDocument } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
+import HubBanner from '@/components/knowledge-hub/HubBanner'
 import {
   EditingProvider,
   setAtPath,
@@ -19,11 +20,90 @@ import EditorToolbar from '@/components/admin/cms/EditorToolbar'
 import SectionSettingsDrawer from '@/components/admin/cms/SectionSettingsDrawer'
 import { InternalRoutesDatalist } from '@/components/admin/cms/EditableLink'
 import { computeLocaleStats } from '@/components/admin/cms/localeStats'
+import { getPublishedTeamMembers } from '@/lib/firestore/team'
+import { getPublishedPartners } from '@/lib/firestore/partners'
+import { getPublishedTestimonials } from '@/lib/firestore/testimonials'
+import { getVisibleCustomerLogos } from '@/lib/firestore/customer-logos'
+import type { Testimonial } from '@/lib/types/testimonial'
+import type { TeamMember } from '@/lib/types/team'
+import type { Partner } from '@/lib/types/partner'
 
-export default function HomeVisualEditor() {
+interface PageAuxData {
+  testimonials?: Testimonial[]
+  teamMembers?: TeamMember[]
+  partners?: Partner[]
+  customerLogos?: Array<{ url: string; name: string }>
+}
+
+interface PageConfig {
+  title: string
+  previewPath: string
+  fetchAux?: () => Promise<PageAuxData>
+  /** Section types to hide in the editor (mirrors any filter the public route
+   *  applies — e.g. About hides hero_simple/mission). */
+  hideTypes?: ReadonlyArray<string>
+  /** Optional chrome rendered above the sections (e.g. HubBanner on About). */
+  topChrome?: () => ReactNode
+}
+
+async function fetchHomeAux(): Promise<PageAuxData> {
+  const [testimonials, customerLogos] = await Promise.all([
+    getPublishedTestimonials(),
+    getVisibleCustomerLogos(),
+  ])
+  return {
+    testimonials,
+    customerLogos: customerLogos.map((l) => ({ url: l.imageUrl, name: l.name })),
+  }
+}
+
+async function fetchAboutAux(): Promise<PageAuxData> {
+  const [teamMembers, partners, customerLogos] = await Promise.all([
+    getPublishedTeamMembers(),
+    getPublishedPartners(),
+    getVisibleCustomerLogos(),
+  ])
+  return {
+    teamMembers,
+    partners,
+    customerLogos: customerLogos.map((l) => ({ url: l.imageUrl, name: l.name })),
+  }
+}
+
+const ABOUT_QUICK_LINKS = [
+  { label: 'Our Values', href: '#values' },
+  { label: 'Our Experts', href: '#teams' },
+  { label: 'Our Partners', href: '#partners' },
+  { label: 'Our Customers', href: '#customers' },
+  { label: 'Our Locations', href: '#locations' },
+  { label: 'Our History', href: '#history' },
+]
+
+const PAGE_CONFIG: Record<string, PageConfig> = {
+  home: { title: 'Home page', previewPath: '/', fetchAux: fetchHomeAux },
+  about: {
+    title: 'About page',
+    previewPath: '/about',
+    fetchAux: fetchAboutAux,
+    hideTypes: ['hero_simple'],
+    topChrome: () => <HubBanner title="About COIN" quickLinks={ABOUT_QUICK_LINKS} />,
+  },
+  locations: { title: 'Locations page', previewPath: '/locations' },
+  contact: { title: 'Contact page', previewPath: '/contact' },
+  'legal-notice': { title: 'Legal Notice', previewPath: '/legal-notice' },
+  'privacy-policy': { title: 'Privacy Policy', previewPath: '/privacy-policy' },
+  'cookies-policy': { title: 'Cookies Policy', previewPath: '/cookies-policy' },
+}
+
+export default function PageVisualEditor() {
+  const params = useParams()
   const router = useRouter()
+  const pageSlug = params.pageSlug as string
+  const config = PAGE_CONFIG[pageSlug]
+
   const [original, setOriginal] = useState<PageDocument | null>(null)
   const [draft, setDraft] = useState<PageDocument | null>(null)
+  const [aux, setAux] = useState<PageAuxData>({})
   const [activeLocale, setActiveLocale] = useState<Locale>('en')
   const [selectedSectionIndex, setSelectedSectionIndex] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
@@ -31,20 +111,29 @@ export default function HomeVisualEditor() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    if (!config) {
+      setError(`Unknown page slug: ${pageSlug}`)
+      setLoading(false)
+      return
+    }
     let alive = true
     ;(async () => {
       try {
-        const snap = await getDoc(doc(db, 'pages', 'home'))
+        const [snap, auxData] = await Promise.all([
+          getDoc(doc(db, 'pages', pageSlug)),
+          config.fetchAux ? config.fetchAux() : Promise.resolve({} as PageAuxData),
+        ])
         if (!alive) return
         if (!snap.exists()) {
-          setError('Home page not found in Firestore')
+          setError(`Page "${pageSlug}" not found in Firestore`)
           return
         }
         const data = { slug: snap.id, ...snap.data() } as PageDocument
         setOriginal(data)
         setDraft(data)
+        setAux(auxData)
       } catch (err) {
-        console.error('Failed to load home page:', err)
+        console.error('Failed to load page:', err)
         if (alive) setError('Failed to load page')
       } finally {
         if (alive) setLoading(false)
@@ -53,7 +142,7 @@ export default function HomeVisualEditor() {
     return () => {
       alive = false
     }
-  }, [])
+  }, [pageSlug, config])
 
   const isDirty = useMemo(() => {
     if (!original || !draft) return false
@@ -74,8 +163,6 @@ export default function HomeVisualEditor() {
     })
   }, [draft])
 
-  // Sorted index lookup: sortedIndices[sortedPosition] = originalIndex.
-  // Used by the drawer to compute isFirst / isLast and to swap orders on move.
   const sortedIndices = useMemo(() => {
     if (!draft) return []
     return draft.sections
@@ -131,7 +218,6 @@ export default function HomeVisualEditor() {
     setSelectedSectionIndex(null)
   }, [])
 
-  // Warn before leaving with unsaved changes
   useEffect(() => {
     if (!isDirty) return
     const handler = (e: BeforeUnloadEvent) => {
@@ -143,10 +229,10 @@ export default function HomeVisualEditor() {
   }, [isDirty])
 
   const handleSave = useCallback(async () => {
-    if (!draft) return
+    if (!draft || !config) return
     setSaving(true)
     try {
-      await updateDoc(doc(db, 'pages', 'home'), {
+      await updateDoc(doc(db, 'pages', pageSlug), {
         title: draft.title,
         sections: draft.sections,
         seo: draft.seo,
@@ -154,12 +240,10 @@ export default function HomeVisualEditor() {
         updatedAt: Timestamp.now(),
       })
       try {
-        await triggerRevalidate('/')
+        await triggerRevalidate(config.previewPath)
       } catch {
         /* best-effort */
       }
-      // Cleanup: delete URLs that were in original but no longer in draft
-      // (i.e. images that were replaced or removed during this editing session)
       if (original) {
         const before = extractUrls(original)
         const after = extractUrls(draft)
@@ -173,11 +257,10 @@ export default function HomeVisualEditor() {
     } finally {
       setSaving(false)
     }
-  }, [draft, original])
+  }, [draft, original, pageSlug, config])
 
   const handleBack = useCallback(async () => {
     if (isDirty && !confirm('You have unsaved changes. Leave anyway?')) return
-    // Cleanup: delete URLs uploaded in this session that won't be persisted
     if (isDirty && original && draft) {
       const before = extractUrls(original)
       const after = extractUrls(draft)
@@ -195,7 +278,7 @@ export default function HomeVisualEditor() {
     )
   }
 
-  if (error || !draft) {
+  if (error || !draft || !config) {
     return (
       <div className="text-center py-12">
         <p className="text-gray-500">{error || 'Page unavailable'}</p>
@@ -209,7 +292,6 @@ export default function HomeVisualEditor() {
     )
   }
 
-  // Drawer state
   const selectedSection =
     selectedSectionIndex !== null ? draft.sections[selectedSectionIndex] : null
   const sortedPos =
@@ -221,7 +303,7 @@ export default function HomeVisualEditor() {
     <div className="-m-6 bg-gray-100 min-h-[calc(100vh-64px)]">
       <InternalRoutesDatalist />
       <EditorToolbar
-        title="Home page"
+        title={config.title}
         activeLocale={activeLocale}
         setActiveLocale={setActiveLocale}
         localeStats={localeStats}
@@ -229,15 +311,15 @@ export default function HomeVisualEditor() {
         saving={saving}
         onSave={handleSave}
         onBack={handleBack}
-        previewHref="/"
-        formEditorHref="/admin/pages/home"
+        previewHref={config.previewPath}
+        formEditorHref={`/admin/pages/${pageSlug}`}
       />
 
       <EditingProvider
         activeLocale={activeLocale}
         setActiveLocale={setActiveLocale}
         onUpdate={onUpdate}
-        storageBasePath="pages/home"
+        storageBasePath={`pages/${pageSlug}`}
         selectedSectionIndex={selectedSectionIndex}
         openSectionSettings={openSectionSettings}
         closeSectionSettings={closeSectionSettings}
@@ -245,9 +327,15 @@ export default function HomeVisualEditor() {
         deleteSection={deleteSection}
       >
         <div className="bg-white">
+          {config.topChrome?.()}
           <PageSectionRenderer
             sections={draft.sections}
             locale={activeLocale}
+            testimonials={aux.testimonials}
+            teamMembers={aux.teamMembers}
+            partners={aux.partners}
+            customerLogos={aux.customerLogos}
+            hideTypes={config.hideTypes}
             withSectionOverlay
           />
         </div>

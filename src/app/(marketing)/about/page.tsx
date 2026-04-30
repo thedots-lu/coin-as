@@ -31,10 +31,9 @@ export default async function AboutPage() {
     )
   }
 
-  // Filter out hero_simple (HubBanner handles it) and mission (moved to Services page)
-  const sections = pageData.sections.filter(
-    (s) => s.type !== 'hero_simple' && s.type !== 'mission',
-  )
+  // hero_simple is handled by HubBanner; the mission section keeps its
+  // heading/body but its lifecycle diagram has been moved to the Services page.
+  const sections = pageData.sections.filter((s) => s.type !== 'hero_simple')
 
   const quickLinks = [
     { label: 'Our Values', href: '#values' },

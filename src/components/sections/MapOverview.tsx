@@ -2,13 +2,14 @@
 
 import Image from 'next/image'
 import { Phone } from 'lucide-react'
-import { getLocalizedField } from '@/lib/locale'
 import { MapOverviewSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
+import EditableText from '@/components/admin/cms/EditableText'
 
 interface MapOverviewProps {
   section: MapOverviewSection
   locale: Locale
+  basePath: string
 }
 
 const SITES = [
@@ -46,9 +47,7 @@ const SITES = [
   },
 ]
 
-export default function MapOverview({ section, locale }: MapOverviewProps) {
-  const body = getLocalizedField(section.body, locale)
-
+export default function MapOverview({ section, basePath }: MapOverviewProps) {
   return (
     <section id="locations" className="py-16 md:py-20 bg-warm-50 scroll-mt-24">
       <div className="container-padding max-w-6xl mx-auto">
@@ -58,11 +57,14 @@ export default function MapOverview({ section, locale }: MapOverviewProps) {
           <h2 className="text-3xl md:text-4xl font-bold text-black font-display tracking-tight mb-4">
             Our Locations
           </h2>
-          {body && (
-            <p className="text-secondary-600 text-base md:text-lg leading-relaxed max-w-3xl">
-              {body}
-            </p>
-          )}
+          <p className="text-secondary-600 text-base md:text-lg leading-relaxed max-w-3xl">
+            <EditableText
+              path={`${basePath}.body`}
+              value={section.body}
+              as="span"
+              multiline
+            />
+          </p>
         </div>
 
         {/* Map + sites grid */}

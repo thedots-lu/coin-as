@@ -11,9 +11,9 @@ const expectedPages = [
   { slug: 'about', label: 'About', route: '/about' },
   { slug: 'locations', label: 'Locations', route: '/locations' },
   { slug: 'contact', label: 'Contact', route: '/contact' },
-  { slug: 'legal', label: 'Legal Notice', route: '/legal-notice' },
-  { slug: 'privacy', label: 'Privacy Policy', route: '/privacy-policy' },
-  { slug: 'cookies', label: 'Cookies Policy', route: '/cookies-policy' },
+  { slug: 'legal-notice', label: 'Legal Notice', route: '/legal-notice' },
+  { slug: 'privacy-policy', label: 'Privacy Policy', route: '/privacy-policy' },
+  { slug: 'cookies-policy', label: 'Cookies Policy', route: '/cookies-policy' },
 ]
 
 export default function AdminPagesPage() {
@@ -83,14 +83,12 @@ export default function AdminPagesPage() {
                   <td className="px-4 py-3 text-right">
                     {page ? (
                       <div className="flex items-center justify-end gap-3">
-                        {ep.slug === 'home' && (
-                          <Link
-                            href={`/admin/pages/${ep.slug}/visual`}
-                            className="text-sm font-medium text-accent-600 hover:text-accent-700"
-                          >
-                            Visual editor
-                          </Link>
-                        )}
+                        <Link
+                          href={`/admin/pages/${ep.slug}/visual`}
+                          className="text-sm font-medium text-accent-600 hover:text-accent-700"
+                        >
+                          Visual editor
+                        </Link>
                         <Link
                           href={`/admin/pages/${ep.slug}`}
                           className="text-sm text-primary-600 hover:text-primary-700"

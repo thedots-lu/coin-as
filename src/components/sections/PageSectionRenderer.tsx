@@ -40,6 +40,9 @@ interface PageSectionRendererProps {
   customerLogos?: Array<{ url: string; name: string }>
   /** When true, each section is wrapped in a CMS edit overlay (admin only). */
   withSectionOverlay?: boolean
+  /** Section types to skip rendering. originalIndex is preserved for the
+   *  remaining sections so edit paths still address the correct Firestore slot. */
+  hideTypes?: ReadonlyArray<string>
 }
 
 export default function PageSectionRenderer({
@@ -50,6 +53,7 @@ export default function PageSectionRenderer({
   partners = [],
   customerLogos,
   withSectionOverlay = false,
+  hideTypes,
 }: PageSectionRendererProps) {
   // Sort while preserving each section's index in the original Firestore array,
   // so CMS edit paths address the actual stored slot regardless of render order.
@@ -68,7 +72,7 @@ export default function PageSectionRenderer({
       case 'stats':
         return <StatsCounter section={section} locale={locale} basePath={basePath} />
       case 'timeline':
-        return <Timeline section={section} locale={locale} />
+        return <Timeline section={section} locale={locale} basePath={basePath} />
       case 'cta_banner':
         return <CTABanner section={section} locale={locale} basePath={basePath} />
       case 'contact_form':
@@ -98,17 +102,17 @@ export default function PageSectionRenderer({
       //   }
       //   return null
       case 'teams':
-        return <TeamGrid section={section} locale={locale} teamMembers={teamMembers} />
+        return <TeamGrid section={section} locale={locale} teamMembers={teamMembers} basePath={basePath} />
       case 'partners_preview':
-        return <PartnersPreview section={section} locale={locale} partners={partners} />
+        return <PartnersPreview section={section} locale={locale} partners={partners} basePath={basePath} />
       case 'customers':
-        return <CustomersSection section={section} locale={locale} customerLogos={customerLogos} />
+        return <CustomersSection section={section} locale={locale} basePath={basePath} customerLogos={customerLogos} />
       case 'values':
-        return <ValuesGrid section={section} locale={locale} />
+        return <ValuesGrid section={section} locale={locale} basePath={basePath} />
       case 'mission':
-        return <MissionDiagram section={section} locale={locale} />
+        return <MissionDiagram section={section} locale={locale} basePath={basePath} />
       case 'map_overview':
-        return <MapOverview section={section} locale={locale} />
+        return <MapOverview section={section} locale={locale} basePath={basePath} />
       case 'innovation':
         return <InnovationBlock section={section} locale={locale} basePath={basePath} />
       case 'flexible_services':
@@ -136,6 +140,10 @@ export default function PageSectionRenderer({
         const visible = isSectionVisible(section)
         // Public site: skip hidden sections entirely.
         if (!withSectionOverlay && !visible) return null
+        // Per-page filter: skip section types the host page explicitly hides
+        // (e.g. About hides hero_simple/mission, replaced by HubBanner / moved
+        // to Services). originalIndex is already computed, so paths stay valid.
+        if (hideTypes && hideTypes.includes(section.type)) return null
         const node = renderSection(section, originalIndex)
         if (node === null) return null
         if (!withSectionOverlay) return <Fragment key={key}>{node}</Fragment>
