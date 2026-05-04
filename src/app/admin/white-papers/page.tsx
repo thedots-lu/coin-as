@@ -15,6 +15,7 @@ import {
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { uploadFile, deleteFile } from '@/lib/firebase/upload'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
+import { logAudit } from '@/lib/firebase/audit-log'
 import { WhitePaper } from '@/lib/types/article'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'
@@ -153,6 +154,7 @@ export default function AdminWhitePapersPage() {
         updatedAt: now,
       }
 
+      const label = title.en || title.fr || title.nl || '(untitled)'
       if (editing) {
         await updateDoc(doc(db, 'white_papers', editing.id), data)
         // If files were replaced, drop old objects from R2
@@ -162,8 +164,10 @@ export default function AdminWhitePapersPage() {
         if (editing.thumbnailUrl && editing.thumbnailUrl !== thumbnailUrl) {
           await deleteFile(editing.thumbnailUrl)
         }
+        await logAudit({ action: 'update', resource: 'white_papers', resourceId: editing.id, label })
       } else {
-        await addDoc(collection(db, 'white_papers'), { ...data, downloadCount: 0, createdAt: now })
+        const created = await addDoc(collection(db, 'white_papers'), { ...data, downloadCount: 0, createdAt: now })
+        await logAudit({ action: 'create', resource: 'white_papers', resourceId: created.id, label })
       }
 
       await revalidate('/resources')
@@ -180,9 +184,11 @@ export default function AdminWhitePapersPage() {
   const handleDelete = async (item: WhitePaper) => {
     if (!confirm('Delete this white paper? This cannot be undone.')) return
     try {
+      const label = item.title?.en || item.title?.fr || item.title?.nl || '(untitled)'
       await deleteDoc(doc(db, 'white_papers', item.id))
       if (item.fileUrl) await deleteFile(item.fileUrl)
       if (item.thumbnailUrl) await deleteFile(item.thumbnailUrl)
+      await logAudit({ action: 'delete', resource: 'white_papers', resourceId: item.id, label })
       await revalidate('/resources')
       await fetchItems()
     } catch (err) {
@@ -192,9 +198,17 @@ export default function AdminWhitePapersPage() {
 
   const handleTogglePublished = async (item: WhitePaper) => {
     try {
+      const nextPublished = !item.published
       await updateDoc(doc(db, 'white_papers', item.id), {
-        published: !item.published,
+        published: nextPublished,
         updatedAt: Timestamp.now(),
+      })
+      await logAudit({
+        action: 'visibility_toggle',
+        resource: 'white_papers',
+        resourceId: item.id,
+        label: item.title?.en || item.title?.fr || item.title?.nl || '(untitled)',
+        details: { published: nextPublished },
       })
       await revalidate('/resources')
       await fetchItems()

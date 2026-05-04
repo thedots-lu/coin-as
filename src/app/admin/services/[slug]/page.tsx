@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
+import { logAudit } from '@/lib/firebase/audit-log'
 import { ServiceDocument } from '@/lib/types/service'
 import { PageSection } from '@/lib/types/page'
 import { LocaleString, createEmptyLocaleString } from '@/lib/types/locale'
@@ -82,6 +83,13 @@ export default function AdminServiceDetailPage() {
         sections: editSections,
         seo: editSeo,
         updatedAt: Timestamp.now(),
+      })
+      await logAudit({
+        action: 'update',
+        resource: 'services',
+        resourceId: service.id,
+        label: editTitle.en || editTitle.fr || editTitle.nl || service.slug,
+        details: { sectionCount: editSections.length },
       })
       await revalidate('/services')
       await revalidate(`/services/${service.slug}`)

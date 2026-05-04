@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { collection, doc, getDoc, getDocs, updateDoc, Timestamp } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
+import { logAudit } from '@/lib/firebase/audit-log'
 import { PageDocument, PageSection } from '@/lib/types/page'
 import { LocaleString, createEmptyLocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'
@@ -78,6 +79,13 @@ export default function AdminPageEditor() {
         updateData.body = editedBody
       }
       await updateDoc(doc(db, 'pages', pageSlug), updateData)
+      await logAudit({
+        action: 'update',
+        resource: 'pages',
+        resourceId: pageSlug,
+        label: editedTitle.en || editedTitle.fr || editedTitle.nl || pageSlug,
+        details: { sectionCount: editedSections.length, source: 'form-editor' },
+      })
       await revalidate('/' + (pageSlug === 'home' ? '' : pageSlug))
       alert('Page saved successfully.')
     } catch (err) {

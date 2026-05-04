@@ -6,6 +6,7 @@ import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { deleteFile } from '@/lib/firebase/upload'
+import { logAudit } from '@/lib/firebase/audit-log'
 import { extractUrls } from '@/lib/utils/extract-urls'
 import { PageDocument } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
@@ -248,6 +249,13 @@ export default function PageVisualEditor() {
         seo: draft.seo,
         ...(draft.body !== undefined ? { body: draft.body } : {}),
         updatedAt: Timestamp.now(),
+      })
+      await logAudit({
+        action: 'update',
+        resource: 'pages',
+        resourceId: pageSlug,
+        label: config.title,
+        details: { sectionCount: draft.sections.length },
       })
       try {
         await triggerRevalidate(config.previewPath)

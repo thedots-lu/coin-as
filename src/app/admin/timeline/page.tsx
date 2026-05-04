@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo, useCallback } from 'react'
 import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
+import { logAudit } from '@/lib/firebase/audit-log'
 import { ArrowDown, ArrowUp, Loader2, Plus, Save, Trash2 } from 'lucide-react'
 import { Locale, LocaleString, createEmptyLocaleString } from '@/lib/types/locale'
 import { TimelineSection } from '@/lib/types/page'
@@ -149,6 +150,13 @@ export default function TimelineAdminPage() {
         events: draft.events,
       }
       await updateDoc(ref, { sections: newSections, updatedAt: Timestamp.now() })
+      await logAudit({
+        action: 'update',
+        resource: 'pages',
+        resourceId: 'about',
+        label: 'Timeline (about page)',
+        details: { eventCount: draft.events.length },
+      })
       try {
         await triggerRevalidate('/about')
       } catch {

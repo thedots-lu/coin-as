@@ -15,6 +15,7 @@ import {
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { deleteFile } from '@/lib/firebase/upload'
+import { logAudit } from '@/lib/firebase/audit-log'
 import { Partner } from '@/lib/types/partner'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'
@@ -115,8 +116,10 @@ export default function AdminPartnersPage() {
         if (editing.logoUrl && editing.logoUrl !== logoUrl) {
           await deleteFile(editing.logoUrl)
         }
+        await logAudit({ action: 'update', resource: 'partners', resourceId: editing.id, label: name })
       } else {
-        await addDoc(collection(db, 'partners'), { ...data, createdAt: now })
+        const created = await addDoc(collection(db, 'partners'), { ...data, createdAt: now })
+        await logAudit({ action: 'create', resource: 'partners', resourceId: created.id, label: name })
       }
       await revalidate('/partners')
       await fetchPartners()
@@ -135,6 +138,12 @@ export default function AdminPartnersPage() {
     try {
       await deleteDoc(doc(db, 'partners', id))
       if (item?.logoUrl) await deleteFile(item.logoUrl)
+      await logAudit({
+        action: 'delete',
+        resource: 'partners',
+        resourceId: id,
+        label: item?.name ?? '(unknown)',
+      })
       await revalidate('/partners')
       await fetchPartners()
     } catch (err) {

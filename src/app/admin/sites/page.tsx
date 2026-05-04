@@ -14,6 +14,7 @@ import {
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { uploadFile, deleteFile } from '@/lib/firebase/upload'
+import { logAudit } from '@/lib/firebase/audit-log'
 import { Site } from '@/lib/types/site'
 import { Locale, LocaleString, createEmptyLocaleString } from '@/lib/types/locale'
 import RichTextEditor from '@/components/admin/RichTextEditor'
@@ -230,6 +231,7 @@ export default function AdminSitesPage() {
         updatedAt: now,
       }
 
+      const labelForLog = form.name.en || form.name.fr || form.name.nl || '(unnamed)'
       if (editing) {
         await updateDoc(doc(db, 'sites', editing.id), payload)
         if (editing.imageUrl && editing.imageUrl !== imageUrl) {
@@ -238,11 +240,23 @@ export default function AdminSitesPage() {
         if (editing.officeImageUrl && editing.officeImageUrl !== officeImageUrl) {
           await deleteFile(editing.officeImageUrl)
         }
+        await logAudit({
+          action: 'update',
+          resource: 'sites',
+          resourceId: editing.id,
+          label: labelForLog,
+        })
       } else {
-        await addDoc(collection(db, 'sites'), {
+        const created = await addDoc(collection(db, 'sites'), {
           ...payload,
           order: items.length,
           createdAt: now,
+        })
+        await logAudit({
+          action: 'create',
+          resource: 'sites',
+          resourceId: created.id,
+          label: labelForLog,
         })
       }
 
@@ -264,6 +278,7 @@ export default function AdminSitesPage() {
       await deleteDoc(doc(db, 'sites', item.id))
       if (item.imageUrl) await deleteFile(item.imageUrl)
       if (item.officeImageUrl) await deleteFile(item.officeImageUrl)
+      await logAudit({ action: 'delete', resource: 'sites', resourceId: item.id, label })
       await revalidateAffectedPages()
       await fetchItems()
     } catch (err) {
@@ -274,9 +289,17 @@ export default function AdminSitesPage() {
 
   const handleToggleVisible = async (item: Site) => {
     try {
+      const nextVisible = !(item.visible !== false)
       await updateDoc(doc(db, 'sites', item.id), {
-        visible: !(item.visible !== false),
+        visible: nextVisible,
         updatedAt: Timestamp.now(),
+      })
+      await logAudit({
+        action: 'visibility_toggle',
+        resource: 'sites',
+        resourceId: item.id,
+        label: item.name?.en || item.name?.fr || item.name?.nl || '(unnamed)',
+        details: { visible: nextVisible },
       })
       await revalidateAffectedPages()
       await fetchItems()
@@ -303,6 +326,13 @@ export default function AdminSitesPage() {
         }
       })
       await batch.commit()
+      await logAudit({
+        action: 'reorder',
+        resource: 'sites',
+        details: {
+          order: reordered.map((s) => s.name?.en || s.id),
+        },
+      })
       await revalidateAffectedPages()
     } catch (err) {
       console.error('Reorder persist failed:', err)

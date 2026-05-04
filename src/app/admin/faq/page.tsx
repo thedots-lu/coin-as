@@ -11,6 +11,7 @@ import {
   Timestamp,
 } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
+import { logAudit } from '@/lib/firebase/audit-log'
 import { FaqItem } from '@/lib/types/faq'
 import { LocaleString, createEmptyLocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'
@@ -94,14 +95,17 @@ export default function AdminFaqPage() {
         order: Number(form.order) || 0,
         published: form.published,
       }
+      const label = form.question.en || form.question.fr || form.question.nl || '(untitled)'
       if (editingId) {
         await updateDoc(doc(db, 'faq_items', editingId), { ...payload, updatedAt: now })
+        await logAudit({ action: 'update', resource: 'faq_items', resourceId: editingId, label })
       } else {
-        await addDoc(collection(db, 'faq_items'), {
+        const created = await addDoc(collection(db, 'faq_items'), {
           ...payload,
           createdAt: now,
           updatedAt: now,
         })
+        await logAudit({ action: 'create', resource: 'faq_items', resourceId: created.id, label })
       }
       await fetchItems()
       cancelForm()
@@ -116,7 +120,10 @@ export default function AdminFaqPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this FAQ item? This cannot be undone.')) return
     try {
+      const target = items.find((i) => i.id === id)
+      const label = target?.question?.en || target?.question?.fr || target?.question?.nl || '(untitled)'
       await deleteDoc(doc(db, 'faq_items', id))
+      await logAudit({ action: 'delete', resource: 'faq_items', resourceId: id, label })
       await fetchItems()
     } catch (err) {
       console.error('Error deleting FAQ item:', err)
@@ -125,9 +132,17 @@ export default function AdminFaqPage() {
 
   const handleTogglePublished = async (item: FaqItem) => {
     try {
+      const nextPublished = !item.published
       await updateDoc(doc(db, 'faq_items', item.id), {
-        published: !item.published,
+        published: nextPublished,
         updatedAt: Timestamp.now(),
+      })
+      await logAudit({
+        action: 'visibility_toggle',
+        resource: 'faq_items',
+        resourceId: item.id,
+        label: item.question?.en || item.question?.fr || item.question?.nl || '(untitled)',
+        details: { published: nextPublished },
       })
       await fetchItems()
     } catch (err) {

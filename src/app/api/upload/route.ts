@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import path from 'node:path'
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
-import { getAdminAuth } from '@/lib/firebase/admin'
-import { roleFromClaims } from '@/lib/firebase/roles'
+import { Timestamp } from 'firebase-admin/firestore'
+import { getAdminAuth, getAdminDb } from '@/lib/firebase/admin'
+import { AdminRole, roleFromClaims } from '@/lib/firebase/roles'
+import { writeAuditLog } from '@/lib/server/audit-log'
+import type { AuditAction } from '@/lib/types/audit-log'
 
 export const runtime = 'nodejs'
 
@@ -48,9 +51,15 @@ function safeStoragePath(raw: string): string | null {
   return parts.join('/')
 }
 
+interface AuthedActor {
+  uid: string
+  email: string | null
+  role: AdminRole
+}
+
 async function requireAdmin(
   request: NextRequest,
-): Promise<{ ok: true } | { ok: false; response: NextResponse }> {
+): Promise<{ ok: true; actor: AuthedActor } | { ok: false; response: NextResponse }> {
   const authHeader = request.headers.get('authorization') ?? ''
   const match = authHeader.match(/^Bearer\s+(.+)$/i)
   if (!match) {
@@ -64,11 +73,20 @@ async function requireAdmin(
   }
   try {
     const decoded = await getAdminAuth().verifyIdToken(match[1])
-    if (!roleFromClaims(decoded)) {
+    const role = roleFromClaims(decoded)
+    if (!role) {
       return {
         ok: false,
         response: NextResponse.json({ error: 'Forbidden — admin role required' }, { status: 403 }),
       }
+    }
+    return {
+      ok: true,
+      actor: {
+        uid: decoded.uid,
+        email: typeof decoded.email === 'string' ? decoded.email : null,
+        role,
+      },
     }
   } catch (err) {
     console.error('[api/upload] verifyIdToken failed', err)
@@ -77,7 +95,31 @@ async function requireAdmin(
       response: NextResponse.json({ error: 'Invalid token' }, { status: 401 }),
     }
   }
-  return { ok: true }
+}
+
+async function logFileAction(
+  actor: AuthedActor,
+  action: AuditAction,
+  key: string,
+  details?: Record<string, unknown>,
+): Promise<void> {
+  try {
+    await writeAuditLog(getAdminDb(), {
+      uid: actor.uid,
+      email: actor.email,
+      role: actor.role,
+      now: Timestamp.now(),
+      input: {
+        action,
+        resource: 'r2',
+        resourceId: key,
+        label: key.split('/').pop() ?? key,
+        ...(details ? { details } : {}),
+      },
+    })
+  } catch (err) {
+    console.warn('[api/upload] audit log failed', err)
+  }
 }
 
 function getStorageEnv(): { bucket: string; publicUrlBase: string } | null {
@@ -166,6 +208,11 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  await logFileAction(auth.actor, 'upload', key, {
+    contentType: file.type,
+    size: file.size,
+  })
+
   return NextResponse.json({ url: `${env.publicUrlBase}/${key}` })
 }
 
@@ -223,6 +270,8 @@ export async function DELETE(request: NextRequest) {
       { status: 502 },
     )
   }
+
+  await logFileAction(auth.actor, 'remove_file', key)
 
   return NextResponse.json({ deleted: true, key })
 }

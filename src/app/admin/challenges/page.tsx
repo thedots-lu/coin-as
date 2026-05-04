@@ -13,6 +13,7 @@ import {
   Timestamp,
 } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
+import { logAudit } from '@/lib/firebase/audit-log'
 import { Challenge } from '@/lib/types/challenge'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'
@@ -162,21 +163,25 @@ export default function AdminChallengesPage() {
         relatedServices,
       }
 
+      const labelForLog = form.title.en || form.title.fr || form.title.nl || slug
       if (editing) {
         await updateDoc(doc(db, 'challenges', editing.id), {
           ...payload,
           updatedAt: now,
         })
+        await logAudit({ action: 'update', resource: 'challenges', resourceId: editing.id, label: labelForLog })
       } else {
         // Check if a doc with that slug as id already exists
         const existing = await getDoc(doc(db, 'challenges', slug))
+        let createdId: string
         if (existing.exists()) {
           // Fall back to addDoc with auto id
-          await addDoc(collection(db, 'challenges'), {
+          const created = await addDoc(collection(db, 'challenges'), {
             ...payload,
             createdAt: now,
             updatedAt: now,
           })
+          createdId = created.id
         } else {
           // Prefer slug as document id
           await setDoc(doc(db, 'challenges', slug), {
@@ -184,7 +189,9 @@ export default function AdminChallengesPage() {
             createdAt: now,
             updatedAt: now,
           })
+          createdId = slug
         }
+        await logAudit({ action: 'create', resource: 'challenges', resourceId: createdId, label: labelForLog })
       }
       await fetchChallenges()
       cancel()
@@ -199,7 +206,10 @@ export default function AdminChallengesPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this challenge? This cannot be undone.')) return
     try {
+      const target = items.find((i) => i.id === id)
+      const label = target?.title?.en || target?.title?.fr || target?.title?.nl || target?.slug || id
       await deleteDoc(doc(db, 'challenges', id))
+      await logAudit({ action: 'delete', resource: 'challenges', resourceId: id, label })
       await fetchChallenges()
     } catch (err) {
       console.error('Error deleting challenge:', err)
@@ -208,9 +218,17 @@ export default function AdminChallengesPage() {
 
   const handleTogglePublished = async (item: Challenge) => {
     try {
+      const nextPublished = !item.published
       await updateDoc(doc(db, 'challenges', item.id), {
-        published: !item.published,
+        published: nextPublished,
         updatedAt: Timestamp.now(),
+      })
+      await logAudit({
+        action: 'visibility_toggle',
+        resource: 'challenges',
+        resourceId: item.id,
+        label: item.title?.en || item.title?.fr || item.title?.nl || item.slug,
+        details: { published: nextPublished },
       })
       await fetchChallenges()
     } catch (err) {

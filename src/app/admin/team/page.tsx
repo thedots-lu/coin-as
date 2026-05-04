@@ -15,6 +15,7 @@ import {
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { deleteFile } from '@/lib/firebase/upload'
+import { logAudit } from '@/lib/firebase/audit-log'
 import { TEAM_COLLECTION } from '@/lib/firestore/team'
 import { TeamMember, normalizeTeamMemberName } from '@/lib/types/team'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
@@ -100,13 +101,16 @@ export default function AdminTeamPage() {
         published,
         updatedAt: now,
       }
+      const label = name.en || name.fr || name.nl || '(unnamed)'
       if (editing) {
         await updateDoc(doc(db, TEAM_COLLECTION, editing.id), data)
         if (editing.photoUrl && editing.photoUrl !== photoUrl) {
           await deleteFile(editing.photoUrl)
         }
+        await logAudit({ action: 'update', resource: TEAM_COLLECTION, resourceId: editing.id, label })
       } else {
-        await addDoc(collection(db, TEAM_COLLECTION), { ...data, createdAt: now })
+        const created = await addDoc(collection(db, TEAM_COLLECTION), { ...data, createdAt: now })
+        await logAudit({ action: 'create', resource: TEAM_COLLECTION, resourceId: created.id, label })
       }
       await revalidate('/about')
       await fetchTeam()
@@ -125,6 +129,12 @@ export default function AdminTeamPage() {
     try {
       await deleteDoc(doc(db, TEAM_COLLECTION, id))
       if (item?.photoUrl) await deleteFile(item.photoUrl)
+      await logAudit({
+        action: 'delete',
+        resource: TEAM_COLLECTION,
+        resourceId: id,
+        label: item?.name.en || item?.name.fr || item?.name.nl || '(unnamed)',
+      })
       await revalidate('/about')
       await fetchTeam()
     } catch (err) {

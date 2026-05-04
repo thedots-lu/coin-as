@@ -14,6 +14,7 @@ import {
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { uploadFile, deleteFile } from '@/lib/firebase/upload'
+import { logAudit } from '@/lib/firebase/audit-log'
 import { CustomerLogo } from '@/lib/types/customer-logo'
 import {
   Eye,
@@ -155,14 +156,26 @@ export default function AdminCustomerLogosPage() {
         if (editing.imageUrl && editing.imageUrl !== imageUrl) {
           await deleteFile(editing.imageUrl)
         }
+        await logAudit({
+          action: 'update',
+          resource: 'customer_logos',
+          resourceId: editing.id,
+          label: name.trim(),
+        })
       } else {
-        await addDoc(collection(db, 'customer_logos'), {
+        const created = await addDoc(collection(db, 'customer_logos'), {
           name: name.trim(),
           imageUrl,
           order: items.length, // append at end; user can DnD to reorder
           visible,
           createdAt: now,
           updatedAt: now,
+        })
+        await logAudit({
+          action: 'create',
+          resource: 'customer_logos',
+          resourceId: created.id,
+          label: name.trim(),
         })
       }
 
@@ -182,6 +195,12 @@ export default function AdminCustomerLogosPage() {
     try {
       await deleteDoc(doc(db, 'customer_logos', item.id))
       if (item.imageUrl) await deleteFile(item.imageUrl)
+      await logAudit({
+        action: 'delete',
+        resource: 'customer_logos',
+        resourceId: item.id,
+        label: item.name,
+      })
       await revalidateHome()
       await fetchItems()
     } catch (err) {
@@ -192,9 +211,17 @@ export default function AdminCustomerLogosPage() {
 
   const handleToggleVisible = async (item: CustomerLogo) => {
     try {
+      const nextVisible = !(item.visible !== false)
       await updateDoc(doc(db, 'customer_logos', item.id), {
-        visible: !(item.visible !== false),
+        visible: nextVisible,
         updatedAt: Timestamp.now(),
+      })
+      await logAudit({
+        action: 'visibility_toggle',
+        resource: 'customer_logos',
+        resourceId: item.id,
+        label: item.name,
+        details: { visible: nextVisible },
       })
       await revalidateHome()
       await fetchItems()
@@ -225,6 +252,11 @@ export default function AdminCustomerLogosPage() {
         }
       })
       await batch.commit()
+      await logAudit({
+        action: 'reorder',
+        resource: 'customer_logos',
+        details: { order: reordered.map((i) => i.name) },
+      })
       await revalidateHome()
     } catch (err) {
       console.error('Reorder persist failed:', err)

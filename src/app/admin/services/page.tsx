@@ -14,6 +14,7 @@ import {
 import Link from 'next/link'
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
+import { logAudit } from '@/lib/firebase/audit-log'
 import { ServiceDocument } from '@/lib/types/service'
 
 export default function AdminServicesPage() {
@@ -38,6 +39,12 @@ export default function AdminServicesPage() {
     if (!confirm(`Delete service "${item.title.en}"? This cannot be undone.`)) return
     try {
       await deleteDoc(doc(db, 'services', item.id))
+      await logAudit({
+        action: 'delete',
+        resource: 'services',
+        resourceId: item.id,
+        label: item.title?.en || item.title?.fr || item.title?.nl || item.slug,
+      })
       await revalidate('/services')
       await fetchServices()
     } catch (err) {
@@ -47,9 +54,17 @@ export default function AdminServicesPage() {
 
   const handleTogglePublished = async (item: ServiceDocument) => {
     try {
+      const nextPublished = !item.published
       await updateDoc(doc(db, 'services', item.id), {
-        published: !item.published,
+        published: nextPublished,
         updatedAt: Timestamp.now(),
+      })
+      await logAudit({
+        action: 'visibility_toggle',
+        resource: 'services',
+        resourceId: item.id,
+        label: item.title?.en || item.title?.fr || item.title?.nl || item.slug,
+        details: { published: nextPublished },
       })
       await revalidate('/services')
       await fetchServices()

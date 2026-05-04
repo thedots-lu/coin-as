@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { doc, getDoc, setDoc, Timestamp } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
+import { logAudit } from '@/lib/firebase/audit-log'
 import { SiteConfig } from '@/lib/types/site-config'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'
@@ -71,6 +72,12 @@ export default function AdminSettingsPage() {
         footerDescription,
         copyright,
         updatedAt: Timestamp.now(),
+      })
+      await logAudit({
+        action: 'update',
+        resource: 'site_config',
+        resourceId: 'global',
+        label: 'Site settings',
       })
       await revalidate('/')
       alert('Settings saved successfully.')

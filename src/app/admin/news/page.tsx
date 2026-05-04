@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
+import { logAudit } from '@/lib/firebase/audit-log'
 import { NewsItem } from '@/lib/types/news'
 import NewsForm from '@/components/admin/NewsForm'
 
@@ -45,17 +46,20 @@ export default function AdminNewsPage() {
     setSaving(true)
     try {
       const now = Timestamp.now()
+      const label = data.title?.en || data.title?.fr || data.title?.nl || '(untitled)'
       if (editing) {
         await updateDoc(doc(db, 'news', editing.id), {
           ...data,
           updatedAt: now,
         })
+        await logAudit({ action: 'update', resource: 'news', resourceId: editing.id, label })
       } else {
-        await addDoc(collection(db, 'news'), {
+        const created = await addDoc(collection(db, 'news'), {
           ...data,
           createdAt: now,
           updatedAt: now,
         })
+        await logAudit({ action: 'create', resource: 'news', resourceId: created.id, label })
       }
       await revalidate('/news')
       await fetchNews()
@@ -72,7 +76,10 @@ export default function AdminNewsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this news item? This cannot be undone.')) return
     try {
+      const target = items.find((i) => i.id === id)
+      const label = target?.title?.en || target?.title?.fr || target?.title?.nl || '(untitled)'
       await deleteDoc(doc(db, 'news', id))
+      await logAudit({ action: 'delete', resource: 'news', resourceId: id, label })
       await revalidate('/news')
       await fetchNews()
     } catch (err) {
@@ -82,9 +89,17 @@ export default function AdminNewsPage() {
 
   const handleTogglePublished = async (item: NewsItem) => {
     try {
+      const nextPublished = !item.published
       await updateDoc(doc(db, 'news', item.id), {
-        published: !item.published,
+        published: nextPublished,
         updatedAt: Timestamp.now(),
+      })
+      await logAudit({
+        action: 'visibility_toggle',
+        resource: 'news',
+        resourceId: item.id,
+        label: item.title?.en || item.title?.fr || item.title?.nl || '(untitled)',
+        details: { published: nextPublished },
       })
       await revalidate('/news')
       await fetchNews()

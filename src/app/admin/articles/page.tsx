@@ -15,6 +15,7 @@ import {
 import { dbAdmin as db } from '@/lib/firebase/config'
 import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { deleteFile } from '@/lib/firebase/upload'
+import { logAudit } from '@/lib/firebase/audit-log'
 import { Article } from '@/lib/types/article'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
 import { generateSlug } from '@/lib/utils/slug'
@@ -126,13 +127,16 @@ export default function AdminArticlesPage() {
         tags: tags.split(',').map((t) => t.trim()).filter(Boolean),
         updatedAt: now,
       }
+      const label = title.en || title.fr || title.nl || '(untitled)'
       if (editing) {
         await updateDoc(doc(db, 'articles', editing.id), data)
         if (editing.imageUrl && editing.imageUrl !== imageUrl) {
           await deleteFile(editing.imageUrl)
         }
+        await logAudit({ action: 'update', resource: 'articles', resourceId: editing.id, label })
       } else {
-        await addDoc(collection(db, 'articles'), { ...data, createdAt: now })
+        const created = await addDoc(collection(db, 'articles'), { ...data, createdAt: now })
+        await logAudit({ action: 'create', resource: 'articles', resourceId: created.id, label })
       }
       await revalidate('/resources')
       await fetchArticles()
@@ -149,8 +153,10 @@ export default function AdminArticlesPage() {
     if (!confirm('Delete this article? This cannot be undone.')) return
     const item = items.find((a) => a.id === id)
     try {
+      const label = item?.title?.en || item?.title?.fr || item?.title?.nl || '(untitled)'
       await deleteDoc(doc(db, 'articles', id))
       if (item?.imageUrl) await deleteFile(item.imageUrl)
+      await logAudit({ action: 'delete', resource: 'articles', resourceId: id, label })
       await revalidate('/resources')
       await fetchArticles()
     } catch (err) {
@@ -160,9 +166,17 @@ export default function AdminArticlesPage() {
 
   const handleTogglePublished = async (item: Article) => {
     try {
+      const nextPublished = !item.published
       await updateDoc(doc(db, 'articles', item.id), {
-        published: !item.published,
+        published: nextPublished,
         updatedAt: Timestamp.now(),
+      })
+      await logAudit({
+        action: 'visibility_toggle',
+        resource: 'articles',
+        resourceId: item.id,
+        label: item.title?.en || item.title?.fr || item.title?.nl || '(untitled)',
+        details: { published: nextPublished },
       })
       await revalidate('/resources')
       await fetchArticles()

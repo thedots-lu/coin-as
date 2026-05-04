@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAdminAuth } from '@/lib/firebase/admin'
+import { Timestamp } from 'firebase-admin/firestore'
+import { getAdminAuth, getAdminDb } from '@/lib/firebase/admin'
 import { AdminRole, isAdminRole, roleFromClaims } from '@/lib/firebase/roles'
+import { writeAuditLog } from '@/lib/server/audit-log'
 
 export const runtime = 'nodejs'
 
@@ -13,9 +15,14 @@ interface AdminUser {
   createdAt: string | null
 }
 
+interface SuperadminActor {
+  uid: string
+  email: string | null
+}
+
 async function requireSuperadmin(
   request: NextRequest,
-): Promise<{ ok: true; uid: string } | { ok: false; response: NextResponse }> {
+): Promise<{ ok: true; actor: SuperadminActor } | { ok: false; response: NextResponse }> {
   const authHeader = request.headers.get('authorization') ?? ''
   const match = authHeader.match(/^Bearer\s+(.+)$/i)
   if (!match) {
@@ -38,13 +45,44 @@ async function requireSuperadmin(
         ),
       }
     }
-    return { ok: true, uid: decoded.uid }
+    return {
+      ok: true,
+      actor: {
+        uid: decoded.uid,
+        email: typeof decoded.email === 'string' ? decoded.email : null,
+      },
+    }
   } catch (err) {
     console.error('[api/admin-users] verifyIdToken failed', err)
     return {
       ok: false,
       response: NextResponse.json({ error: 'Invalid token' }, { status: 401 }),
     }
+  }
+}
+
+async function logRoleChange(
+  actor: SuperadminActor,
+  target: { uid: string; email: string | null },
+  before: AdminRole | null,
+  after: AdminRole | null,
+): Promise<void> {
+  try {
+    await writeAuditLog(getAdminDb(), {
+      uid: actor.uid,
+      email: actor.email,
+      role: 'superadmin',
+      now: Timestamp.now(),
+      input: {
+        action: 'update',
+        resource: 'admin_users',
+        resourceId: target.uid,
+        label: target.email ?? target.uid,
+        details: { previousRole: before, newRole: after },
+      },
+    })
+  } catch (err) {
+    console.warn('[api/admin-users] audit log failed', err)
   }
 }
 
@@ -93,7 +131,7 @@ export async function POST(request: NextRequest) {
   // Guard rail: a superadmin cannot demote themselves — they would lose
   // access to this endpoint, leaving the app potentially without any
   // superadmin. Use the CLI script (scripts/set-admin.ts) instead.
-  if (uid === auth.uid && role !== 'superadmin') {
+  if (uid === auth.actor.uid && role !== 'superadmin') {
     return NextResponse.json(
       { error: 'Cannot demote yourself. Use the CLI script if you need to.' },
       { status: 400 },
@@ -103,10 +141,12 @@ export async function POST(request: NextRequest) {
   try {
     const adminAuth = getAdminAuth()
     const user = await adminAuth.getUser(uid)
+    const previousRole = roleFromClaims(user.customClaims)
     const next = { ...(user.customClaims ?? {}) } as Record<string, unknown>
     next.role = role
     delete next.admin
     await adminAuth.setCustomUserClaims(uid, next)
+    await logRoleChange(auth.actor, { uid, email: user.email ?? null }, previousRole, role)
     return NextResponse.json({ uid, role })
   } catch (err) {
     console.error('[api/admin-users] setCustomUserClaims failed', err)
@@ -129,7 +169,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'Missing "uid"' }, { status: 400 })
   }
 
-  if (uid === auth.uid) {
+  if (uid === auth.actor.uid) {
     return NextResponse.json(
       { error: 'Cannot revoke your own role. Use the CLI script if you need to.' },
       { status: 400 },
@@ -139,10 +179,12 @@ export async function DELETE(request: NextRequest) {
   try {
     const adminAuth = getAdminAuth()
     const user = await adminAuth.getUser(uid)
+    const previousRole = roleFromClaims(user.customClaims)
     const next = { ...(user.customClaims ?? {}) } as Record<string, unknown>
     delete next.role
     delete next.admin
     await adminAuth.setCustomUserClaims(uid, next)
+    await logRoleChange(auth.actor, { uid, email: user.email ?? null }, previousRole, null)
     return NextResponse.json({ uid, role: null })
   } catch (err) {
     console.error('[api/admin-users] revoke failed', err)
