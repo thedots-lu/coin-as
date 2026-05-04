@@ -201,7 +201,7 @@ export default function AdminSitesPage() {
         const ext = imageFile.name.split('.').pop() || 'jpg'
         imageUrl = await uploadFile(
           imageFile,
-          `sites/${docIdForUpload}/building.${ext}`,
+          `sites/${docIdForUpload}/building-${Date.now()}.${ext}`,
           setProgress,
         )
       }
@@ -210,7 +210,7 @@ export default function AdminSitesPage() {
         const ext = officeImageFile.name.split('.').pop() || 'jpg'
         officeImageUrl = await uploadFile(
           officeImageFile,
-          `sites/${docIdForUpload}/office.${ext}`,
+          `sites/${docIdForUpload}/office-${Date.now()}.${ext}`,
           setProgress,
         )
       }

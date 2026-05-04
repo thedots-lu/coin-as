@@ -126,7 +126,7 @@ export default function AdminWhitePapersPage() {
       if (pdfFile) {
         fileUrl = await uploadFile(
           pdfFile,
-          `white_papers/${docId}/document.pdf`,
+          `white_papers/${docId}/document-${Date.now()}.pdf`,
           setPdfProgress
         )
       }
@@ -135,7 +135,7 @@ export default function AdminWhitePapersPage() {
       if (thumbnailFile) {
         thumbnailUrl = await uploadFile(
           thumbnailFile,
-          `white_papers/${docId}/thumbnail.${thumbnailFile.name.split('.').pop()}`,
+          `white_papers/${docId}/thumbnail-${Date.now()}.${thumbnailFile.name.split('.').pop()}`,
           setThumbProgress
         )
       }
