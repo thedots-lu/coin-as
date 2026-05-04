@@ -1,6 +1,7 @@
 import { revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 import { getAdminAuth } from '@/lib/firebase/admin'
+import { roleFromClaims } from '@/lib/firebase/roles'
 
 export async function POST(request: NextRequest) {
   // Extract bearer token
@@ -11,15 +12,15 @@ export async function POST(request: NextRequest) {
   }
   const token = match[1]
 
-  // Verify Firebase ID token and require admin custom claim
+  // Verify Firebase ID token and require any admin role
   let decoded
   try {
     decoded = await getAdminAuth().verifyIdToken(token)
   } catch {
     return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
   }
-  if (decoded.admin !== true) {
-    return NextResponse.json({ error: 'Forbidden — admin claim required' }, { status: 403 })
+  if (!roleFromClaims(decoded)) {
+    return NextResponse.json({ error: 'Forbidden — admin role required' }, { status: 403 })
   }
 
   // Parse body

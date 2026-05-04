@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import path from 'node:path'
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 import { getAdminAuth } from '@/lib/firebase/admin'
+import { roleFromClaims } from '@/lib/firebase/roles'
 
 export const runtime = 'nodejs'
 
@@ -63,10 +64,10 @@ async function requireAdmin(
   }
   try {
     const decoded = await getAdminAuth().verifyIdToken(match[1])
-    if (decoded.admin !== true) {
+    if (!roleFromClaims(decoded)) {
       return {
         ok: false,
-        response: NextResponse.json({ error: 'Forbidden — admin claim required' }, { status: 403 }),
+        response: NextResponse.json({ error: 'Forbidden — admin role required' }, { status: 403 }),
       }
     }
   } catch (err) {

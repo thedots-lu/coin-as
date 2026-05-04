@@ -2,20 +2,31 @@
 
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { signOut } from 'firebase/auth'
+import { auth } from '@/lib/firebase/config'
 import { useFirebaseAuth } from '@/hooks/useFirebaseAuth'
 import AdminSidebar from '@/components/admin/AdminSidebar'
 import AdminHeader from '@/components/admin/AdminHeader'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useFirebaseAuth()
+  const { user, role, loading, isSuperadmin } = useFirebaseAuth()
   const router = useRouter()
   const pathname = usePathname()
 
+  const isLoginPage = pathname === '/admin/login'
+  const authorized = !!user && !!role
+
   useEffect(() => {
-    if (!loading && !user && pathname !== '/admin/login') {
+    if (loading || isLoginPage) return
+    if (!user) {
       router.push('/admin/login')
+      return
     }
-  }, [user, loading, router, pathname])
+    if (!role) {
+      // Authenticated but no admin role — sign out and bounce to login.
+      signOut(auth).finally(() => router.push('/admin/login'))
+    }
+  }, [user, role, loading, router, isLoginPage])
 
   if (loading) {
     return (
@@ -25,16 +36,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     )
   }
 
-  // Login page - no sidebar/header
-  if (!user && pathname === '/admin/login') {
-    return <>{children}</>
-  }
+  if (isLoginPage) return <>{children}</>
 
-  if (!user) return null
+  if (!authorized) return null
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AdminSidebar />
+      <AdminSidebar isSuperadmin={isSuperadmin} />
       <div className="ml-64">
         <AdminHeader user={user} />
         <main className="p-6">{children}</main>
