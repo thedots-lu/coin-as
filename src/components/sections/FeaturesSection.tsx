@@ -46,14 +46,14 @@ export default function FeaturesSection({ section, basePath = '' }: FeaturesSect
                     <div className="w-10 h-10 rounded-lg bg-accent-50 flex items-center justify-center shrink-0 mb-4">
                       <Icon className="w-5 h-5 text-accent-600" strokeWidth={2.5} />
                     </div>
-                    <h3 className="text-base md:text-lg text-primary-900 font-display leading-snug mb-2">
+                    <p className="text-base md:text-lg text-primary-900 font-normal leading-snug mb-2">
                       <EditableText
                         path={`${basePath}.features.${index}.title`}
                         value={feature.title}
                         as="span"
                         multiline
                       />
-                    </h3>
+                    </p>
                     <RichInlineText
                       path={`${basePath}.features.${index}.description`}
                       value={feature.description}
