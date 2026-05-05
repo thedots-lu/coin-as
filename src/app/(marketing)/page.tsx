@@ -2,9 +2,7 @@ import { Metadata } from 'next'
 import { getPage } from '@/lib/firestore/pages'
 import { getPublishedTestimonials } from '@/lib/firestore/testimonials'
 import { getVisibleCustomerLogos } from '@/lib/firestore/customer-logos'
-import { getSiteConfig } from '@/lib/firestore/site-config'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
-import NewsletterPopup from '@/components/NewsletterPopup'
 
 export const revalidate = 300
 
@@ -21,11 +19,10 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const [pageData, testimonials, logosFromDb, siteConfig] = await Promise.all([
+  const [pageData, testimonials, logosFromDb] = await Promise.all([
     getPage('home'),
     getPublishedTestimonials(),
     getVisibleCustomerLogos(),
-    getSiteConfig(),
   ])
 
   if (!pageData) {
@@ -40,13 +37,10 @@ export default async function HomePage() {
   const customerLogos = logosFromDb.map((l) => ({ url: l.imageUrl, name: l.name }))
 
   return (
-    <>
-      <PageSectionRenderer
-        sections={visibleSections}
-        testimonials={testimonials}
-        customerLogos={customerLogos}
-      />
-      <NewsletterPopup newsletterUrl={siteConfig?.newsletterUrl ?? ''} />
-    </>
+    <PageSectionRenderer
+      sections={visibleSections}
+      testimonials={testimonials}
+      customerLogos={customerLogos}
+    />
   )
 }

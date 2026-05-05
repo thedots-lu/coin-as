@@ -1,12 +1,17 @@
 'use client'
 
-import { Check, type LucideIcon } from 'lucide-react'
+import Link from 'next/link'
+import { ArrowRight, Check, FileText, type LucideIcon } from 'lucide-react'
 import { resolveFeatureIcon } from '@/lib/icons'
 import { FeaturesListSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
+import { getLocalizedField } from '@/lib/locale'
+import { isExternalUrl } from '@/lib/utils/links'
 import AnimatedSection from '@/components/ui/AnimatedSection'
 import EditableText from '@/components/admin/cms/EditableText'
 import RichInlineText from '@/components/admin/cms/RichInlineText'
+import EditableLink from '@/components/admin/cms/EditableLink'
+import { useEditing } from '@/components/admin/cms/EditingContext'
 
 interface FeaturesSectionProps {
   section: FeaturesListSection
@@ -19,7 +24,29 @@ function resolveIcon(name?: string | null): LucideIcon {
   return resolveFeatureIcon(name) ?? Check
 }
 
-export default function FeaturesSection({ section, basePath = '' }: FeaturesSectionProps) {
+function ArticleLink({ href }: { href: string }) {
+  const className =
+    'inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 hover:text-primary-800 transition-colors group/article'
+  const content = (
+    <>
+      <FileText className="w-3.5 h-3.5" />
+      <span>Read our article</span>
+      <ArrowRight className="w-3.5 h-3.5 group-hover/article:translate-x-0.5 transition-transform" />
+    </>
+  )
+  return isExternalUrl(href) ? (
+    <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+      {content}
+    </a>
+  ) : (
+    <Link href={href} className={className}>
+      {content}
+    </Link>
+  )
+}
+
+export default function FeaturesSection({ section, locale, basePath = '' }: FeaturesSectionProps) {
+  const isEditing = !!useEditing()
   return (
     <section className="py-16 md:py-20 bg-warm-50">
       <div className="container-padding">
@@ -36,9 +63,21 @@ export default function FeaturesSection({ section, basePath = '' }: FeaturesSect
             </h2>
           </AnimatedSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <div
+            className={`grid grid-cols-1 md:grid-cols-2 ${
+              section.features.length === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4'
+            } gap-6 md:gap-8`}
+          >
             {section.features.map((feature, index) => {
               const Icon = resolveIcon(feature.icon)
+              // When the feature has a real description, the title is a short
+              // label and should stand out (bold). When the description is
+              // empty (Overview "Advisory Services" cards), the title carries
+              // the whole content and reads better at body weight.
+              const hasDescription = !!getLocalizedField(feature.description, locale).trim()
+              const titleClass = hasDescription
+                ? 'text-base md:text-lg text-primary-900 font-semibold leading-snug mb-3'
+                : 'text-base md:text-lg text-primary-900 font-normal leading-snug mb-2'
 
               return (
                 <AnimatedSection key={index} animation="slideUp" delay={index * 0.08}>
@@ -46,7 +85,7 @@ export default function FeaturesSection({ section, basePath = '' }: FeaturesSect
                     <div className="w-10 h-10 rounded-lg bg-accent-50 flex items-center justify-center shrink-0 mb-4">
                       <Icon className="w-5 h-5 text-accent-600" strokeWidth={2.5} />
                     </div>
-                    <p className="text-base md:text-lg text-primary-900 font-normal leading-snug mb-2">
+                    <p className={titleClass}>
                       <EditableText
                         path={`${basePath}.features.${index}.title`}
                         value={feature.title}
@@ -57,8 +96,28 @@ export default function FeaturesSection({ section, basePath = '' }: FeaturesSect
                     <RichInlineText
                       path={`${basePath}.features.${index}.description`}
                       value={feature.description}
-                      className="text-secondary-600 leading-relaxed text-sm md:text-base prose prose-sm max-w-none [&_p]:my-1 [&_ul]:my-1 [&_li]:my-0.5"
+                      className="prose prose-sm max-w-none text-secondary-700 prose-strong:text-secondary-800 prose-li:marker:text-accent-500 [&_ul]:my-0 [&_li>p]:my-0 [&_li]:my-1 [&_p]:my-2 [&_p]:leading-relaxed"
                     />
+                    {(feature.articleHref1 || feature.articleHref2 || isEditing) && (
+                      <div className="mt-4 flex flex-col gap-2">
+                        {feature.articleHref1 && <ArticleLink href={feature.articleHref1} />}
+                        {feature.articleHref2 && <ArticleLink href={feature.articleHref2} />}
+                        {isEditing && (
+                          <div className="flex flex-col gap-1.5 mt-1">
+                            <EditableLink
+                              path={`${basePath}.features.${index}.articleHref1`}
+                              value={feature.articleHref1}
+                              label="Article link 1"
+                            />
+                            <EditableLink
+                              path={`${basePath}.features.${index}.articleHref2`}
+                              value={feature.articleHref2}
+                              label="Article link 2"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </AnimatedSection>
               )

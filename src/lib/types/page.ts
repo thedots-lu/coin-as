@@ -245,6 +245,10 @@ export interface FeaturesListSection {
     description: LocaleString
     // Optional lucide icon name (e.g. "ShieldCheck"). Defaults to "Check".
     icon?: string | null
+    // Up to two related article links per feature. Each "Read our article"
+    // link is rendered only when its href is set.
+    articleHref1?: string
+    articleHref2?: string
   }>
 }
 

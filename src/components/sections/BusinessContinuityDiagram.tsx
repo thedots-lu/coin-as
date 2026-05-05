@@ -59,7 +59,7 @@ export default function BusinessContinuityDiagram({
                 <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
               </marker>
             </defs>
-            {steps.slice(0, -1).map((_, i) => {
+            {steps.map((_, i) => {
               const orbit = 132
               const gap = 24
               const a1 = ((i * 360) / total - 90 + gap) * (Math.PI / 180)
