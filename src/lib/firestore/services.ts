@@ -29,15 +29,16 @@ export async function getServiceBySlug(slug: string): Promise<ServiceDocument | 
         return serializeFirestoreData<ServiceDocument>({ id: docSnap.id, ...data })
       }
     }
-    // Fallback: query by slug field
+    // Fallback: query by slug field, still respecting published flag
     const q = query(
       collection(db, 'services'),
-      where('slug', '==', slug)
+      where('slug', '==', slug),
+      where('published', '==', true)
     )
     const snapshot = await getDocs(q)
     if (snapshot.empty) return null
     const d = snapshot.docs[0]
-    return { id: d.id, ...d.data() } as ServiceDocument
+    return serializeFirestoreData<ServiceDocument>({ id: d.id, ...d.data() })
   } catch (error) {
     console.error('Error fetching service by slug:', error)
     return null

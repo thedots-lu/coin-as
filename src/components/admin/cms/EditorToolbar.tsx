@@ -1,7 +1,7 @@
 'use client'
 
 import { Locale } from '@/lib/types/locale'
-import { ArrowLeft, ExternalLink, Save, Settings } from 'lucide-react'
+import { ArrowLeft, ExternalLink, Save, Settings, SlidersHorizontal } from 'lucide-react'
 
 interface LocaleStat {
   locale: Locale
@@ -20,6 +20,7 @@ interface Props {
   onBack: () => void
   previewHref: string
   formEditorHref?: string
+  onOpenPageSettings?: () => void
 }
 
 const LOCALE_LABELS: Record<Locale, string> = { en: 'EN', fr: 'FR', nl: 'NL' }
@@ -35,6 +36,7 @@ export default function EditorToolbar({
   onBack,
   previewHref,
   formEditorHref,
+  onOpenPageSettings,
 }: Props) {
   return (
     <div className="sticky top-0 z-40 bg-primary-950 text-white shadow-lg">
@@ -87,6 +89,17 @@ export default function EditorToolbar({
 
         {/* Right: actions */}
         <div className="flex items-center gap-2">
+          {onOpenPageSettings && (
+            <button
+              type="button"
+              onClick={onOpenPageSettings}
+              className="hidden md:inline-flex items-center gap-1.5 text-xs text-white/80 hover:text-white px-2 py-1.5 rounded hover:bg-white/10 transition-colors"
+              title="Edit page-level settings"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              Page settings
+            </button>
+          )}
           {formEditorHref && (
             <a
               href={formEditorHref}

@@ -8,6 +8,7 @@ export interface SiteConfig {
   phoneNL: string
   phoneLU: string
   linkedinUrl: string
+  newsletterUrl: string
   companyLegal: {
     name: string
     kvk: string

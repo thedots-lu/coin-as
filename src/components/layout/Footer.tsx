@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Linkedin, Phone, Mail, ArrowUpRight } from 'lucide-react'
+import { Linkedin, Phone, Mail, ArrowUpRight, Mailbox } from 'lucide-react'
 import { getLocalizedField } from '@/lib/locale'
 import type { FooterNavigation } from '@/lib/types/navigation'
 import type { SiteConfig } from '@/lib/types/site-config'
@@ -131,6 +131,18 @@ export default function Footer({ footerNav, siteConfig }: FooterProps) {
                 >
                   <Linkedin className="h-3.5 w-3.5 text-secondary-400 shrink-0" />
                   <span>LinkedIn</span>
+                  <ArrowUpRight className="h-3 w-3 text-secondary-500" />
+                </a>
+              )}
+              {siteConfig?.newsletterUrl && (
+                <a
+                  href={siteConfig.newsletterUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-secondary-200 text-[14px] transition-colors duration-300 hover:text-accent-400"
+                >
+                  <Mailbox className="h-3.5 w-3.5 text-secondary-400 shrink-0" />
+                  <span>Newsletter</span>
                   <ArrowUpRight className="h-3 w-3 text-secondary-500" />
                 </a>
               )}

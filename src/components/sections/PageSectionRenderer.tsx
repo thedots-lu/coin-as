@@ -5,6 +5,7 @@ import { Locale } from '@/lib/types/locale'
 import { TeamMember } from '@/lib/types/team'
 import { Partner } from '@/lib/types/partner'
 import { Site } from '@/lib/types/site'
+import { ServiceDocument } from '@/lib/types/service'
 import HeroSection from '@/components/sections/HeroSection'
 import HeroSimple from '@/components/sections/HeroSimple'
 import ServicePillars from '@/components/sections/ServicePillars'
@@ -30,6 +31,9 @@ import ValuesGrid from '@/components/sections/ValuesGrid'
 import BenefitsSection from '@/components/sections/BenefitsSection'
 import BusinessCase from '@/components/sections/BusinessCase'
 import TrustedByMarquee from '@/components/sections/TrustedByMarquee'
+import LifecycleDiagram from '@/components/sections/LifecycleDiagram'
+import ServicesGrid from '@/components/sections/ServicesGrid'
+import IconCardGrid from '@/components/sections/IconCardGrid'
 import SectionEditOverlay from '@/components/admin/cms/SectionEditOverlay'
 
 interface PageSectionRendererProps {
@@ -40,6 +44,7 @@ interface PageSectionRendererProps {
   partners?: Partner[]
   customerLogos?: Array<{ url: string; name: string }>
   sites?: Site[]
+  services?: ServiceDocument[]
   /** When true, each section is wrapped in a CMS edit overlay (admin only). */
   withSectionOverlay?: boolean
   /** Section types to skip rendering. originalIndex is preserved for the
@@ -55,6 +60,7 @@ export default function PageSectionRenderer({
   partners = [],
   customerLogos,
   sites,
+  services,
   withSectionOverlay = false,
   hideTypes,
 }: PageSectionRendererProps) {
@@ -85,7 +91,7 @@ export default function PageSectionRenderer({
       case 'rich_text':
         return <RichTextBlock section={section} locale={locale} />
       case 'features_list':
-        return <FeaturesSection section={section} locale={locale} />
+        return <FeaturesSection section={section} locale={locale} basePath={basePath} />
       case 'process_pipeline':
         return <ProcessPipeline section={section} locale={locale} />
       case 'room_types':
@@ -128,6 +134,12 @@ export default function PageSectionRenderer({
         return <BenefitsSection section={section} locale={locale} />
       case 'business_case':
         return <BusinessCase section={section} locale={locale} />
+      case 'lifecycle_diagram':
+        return <LifecycleDiagram section={section} locale={locale} basePath={basePath} />
+      case 'services_grid':
+        return <ServicesGrid section={section} locale={locale} basePath={basePath} services={services} />
+      case 'icon_card_grid':
+        return <IconCardGrid section={section} locale={locale} basePath={basePath} />
       // Hidden for now — hero carousel replaces this
       // case 'featured_carousel':
       //   return <FeaturedCarousel section={section} locale={locale} />

@@ -19,6 +19,7 @@ export default function AdminSettingsPage() {
   const [phoneNL, setPhoneNL] = useState('')
   const [phoneLU, setPhoneLU] = useState('')
   const [linkedinUrl, setLinkedinUrl] = useState('')
+  const [newsletterUrl, setNewsletterUrl] = useState('')
   const [companyName, setCompanyName] = useState('')
   const [companyKvk, setCompanyKvk] = useState('')
   const [companyAddress, setCompanyAddress] = useState('')
@@ -38,6 +39,7 @@ export default function AdminSettingsPage() {
           setPhoneNL(data.phoneNL || '')
           setPhoneLU(data.phoneLU || '')
           setLinkedinUrl(data.linkedinUrl || '')
+          setNewsletterUrl(data.newsletterUrl || '')
           setCompanyName(data.companyLegal?.name || '')
           setCompanyKvk(data.companyLegal?.kvk || '')
           setCompanyAddress(data.companyLegal?.address || '')
@@ -64,6 +66,7 @@ export default function AdminSettingsPage() {
         phoneNL,
         phoneLU,
         linkedinUrl,
+        newsletterUrl,
         companyLegal: {
           name: companyName,
           kvk: companyKvk,
@@ -167,6 +170,19 @@ export default function AdminSettingsPage() {
                 onChange={(e) => setPhoneLU(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
               />
+            </div>
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Newsletter URL</label>
+              <input
+                type="text"
+                value={newsletterUrl}
+                onChange={(e) => setNewsletterUrl(e.target.value)}
+                placeholder="https://…"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Used in the footer, the top event banner and the newsletter popup.
+              </p>
             </div>
           </div>
         </div>

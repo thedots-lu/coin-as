@@ -1,19 +1,23 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
 import { X } from 'lucide-react'
 
 const DISMISS_KEY = 'newsletter-popup-dismissed'
 
-export default function NewsletterPopup() {
+interface Props {
+  newsletterUrl: string
+}
+
+export default function NewsletterPopup({ newsletterUrl }: Props) {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
+    if (!newsletterUrl) return
     if (sessionStorage.getItem(DISMISS_KEY)) return
     const timer = setTimeout(() => setOpen(true), 5000)
     return () => clearTimeout(timer)
-  }, [])
+  }, [newsletterUrl])
 
   useEffect(() => {
     if (!open) return
@@ -69,9 +73,14 @@ export default function NewsletterPopup() {
           Get insights on business continuity, cyber resilience and regulatory requirements.
         </p>
 
-        <Link href="#" className="btn-primary inline-flex items-center justify-center w-full text-center">
+        <a
+          href={newsletterUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-primary inline-flex items-center justify-center w-full text-center"
+        >
           Subscribe to our newsletter
-        </Link>
+        </a>
       </div>
     </div>
   )

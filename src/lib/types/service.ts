@@ -2,6 +2,19 @@ import { LocaleString } from './locale'
 import { PageSection, SeoMeta } from './page'
 import { Timestamp } from 'firebase/firestore/lite'
 
+export type ServiceCardAccent = 'primary' | 'accent' | 'red' | 'primary-dark'
+
+export interface ServiceCard {
+  // Optional override of the service.title shown on the card / banner /
+  // carousel. When empty, falls back to ServiceDocument.title.
+  title?: LocaleString
+  // Stored as HTML (TipTap output). The renderer sanitizes with
+  // sanitizeRichHtml before injecting.
+  body: LocaleString
+  icon: string
+  accent?: ServiceCardAccent
+}
+
 export interface ServiceDocument {
   id: string
   slug: string
@@ -15,6 +28,10 @@ export interface ServiceDocument {
   overview: LocaleString
   sections: PageSection[]
   published: boolean
+  // Card content shown on the /services overview grid. Title/link are
+  // derived (`title` and `/services/{slug}`); only body, icon and accent
+  // are editable here.
+  card?: ServiceCard
   updatedAt: Timestamp | Date
   createdAt: Timestamp | Date
 }

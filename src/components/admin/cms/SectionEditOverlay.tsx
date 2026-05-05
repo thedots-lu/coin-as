@@ -35,6 +35,10 @@ const INLINE_EDITABLE_TYPES: ReadonlySet<string> = new Set([
   'timeline',
   'room_types',
   'site_gallery',
+  'features_list',
+  'lifecycle_diagram',
+  'services_grid',
+  'icon_card_grid',
 ])
 
 const TYPE_LABELS: Record<string, string> = {

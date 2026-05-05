@@ -7,8 +7,6 @@ import {
   updateDoc,
   deleteDoc,
   doc,
-  orderBy,
-  query,
   Timestamp,
 } from 'firebase/firestore'
 import Link from 'next/link'
@@ -17,15 +15,46 @@ import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { logAudit } from '@/lib/firebase/audit-log'
 import { ServiceDocument } from '@/lib/types/service'
 
+// Dev-curated list of service pages exposed in the admin. Devs add a
+// new entry here AND create the matching Firestore doc when shipping a
+// new service page; the admin can then enable / disable / delete it
+// without touching code. Order here drives the order in the Services
+// submenu (the Firestore `order` field still wins for sorting, but
+// this list documents the canonical set).
+const KNOWN_SERVICES = [
+  { slug: 'overview', label: 'Overview', route: '/services' },
+  { slug: 'recovery-workplaces', label: 'Recovery Workplaces' },
+  { slug: 'consultancy-and-training', label: 'Consultancy and Training' },
+  { slug: 'it-housing', label: 'IT Housing' },
+  { slug: 'cyberresilience', label: 'Cyber Resilience' },
+  { slug: 'crisis-management', label: 'Crisis Management' },
+] as const
+
+type Row = {
+  slug: string
+  label: string
+  route: string
+  service: ServiceDocument | null
+}
+
 export default function AdminServicesPage() {
-  const [items, setItems] = useState<ServiceDocument[]>([])
+  const [rows, setRows] = useState<Row[]>([])
   const [loading, setLoading] = useState(true)
 
   const fetchServices = useCallback(async () => {
     try {
-      const q = query(collection(db, 'services'), orderBy('order', 'asc'))
-      const snapshot = await getDocs(q)
-      setItems(snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as ServiceDocument)))
+      const snapshot = await getDocs(collection(db, 'services'))
+      const byId = new Map(
+        snapshot.docs.map((d) => [d.id, { id: d.id, ...d.data() } as ServiceDocument]),
+      )
+      setRows(
+        KNOWN_SERVICES.map((entry) => ({
+          slug: entry.slug,
+          label: entry.label,
+          route: 'route' in entry && entry.route ? entry.route : `/services/${entry.slug}`,
+          service: byId.get(entry.slug) ?? null,
+        })),
+      )
     } catch (err) {
       console.error('Error fetching services:', err)
     } finally {
@@ -33,43 +62,60 @@ export default function AdminServicesPage() {
     }
   }, [])
 
-  useEffect(() => { fetchServices() }, [fetchServices])
+  useEffect(() => {
+    fetchServices()
+  }, [fetchServices])
 
-  const handleDelete = async (item: ServiceDocument) => {
-    if (!confirm(`Delete service "${item.title.en}"? This cannot be undone.`)) return
+  const handleTogglePublished = async (row: Row) => {
+    if (!row.service) return
     try {
-      await deleteDoc(doc(db, 'services', item.id))
-      await logAudit({
-        action: 'delete',
-        resource: 'services',
-        resourceId: item.id,
-        label: item.title?.en || item.title?.fr || item.title?.nl || item.slug,
-      })
-      await revalidate('/services')
-      await fetchServices()
-    } catch (err) {
-      console.error('Error deleting service:', err)
-    }
-  }
-
-  const handleTogglePublished = async (item: ServiceDocument) => {
-    try {
-      const nextPublished = !item.published
-      await updateDoc(doc(db, 'services', item.id), {
+      const nextPublished = !row.service.published
+      await updateDoc(doc(db, 'services', row.service.id), {
         published: nextPublished,
         updatedAt: Timestamp.now(),
       })
       await logAudit({
         action: 'visibility_toggle',
         resource: 'services',
-        resourceId: item.id,
-        label: item.title?.en || item.title?.fr || item.title?.nl || item.slug,
+        resourceId: row.service.id,
+        label: row.label,
         details: { published: nextPublished },
       })
       await revalidate('/services')
+      if (row.slug !== 'overview') await revalidate(`/services/${row.slug}`)
       await fetchServices()
     } catch (err) {
       console.error('Error toggling published:', err)
+      alert('Could not update status. Check console.')
+    }
+  }
+
+  const handleDelete = async (row: Row) => {
+    if (!row.service) return
+    if (row.slug === 'overview') {
+      alert('The Overview page cannot be deleted from the UI.')
+      return
+    }
+    if (
+      !confirm(
+        `Delete service "${row.label}"? This removes the Firestore doc and its menu entry. The page will 404 until a dev recreates the doc. This cannot be undone.`,
+      )
+    )
+      return
+    try {
+      await deleteDoc(doc(db, 'services', row.service.id))
+      await logAudit({
+        action: 'delete',
+        resource: 'services',
+        resourceId: row.service.id,
+        label: row.label,
+      })
+      await revalidate('/services')
+      await revalidate(`/services/${row.slug}`)
+      await fetchServices()
+    } catch (err) {
+      console.error('Error deleting service:', err)
+      alert('Could not delete. Check console.')
     }
   }
 
@@ -87,57 +133,82 @@ export default function AdminServicesPage() {
         <h1 className="text-2xl font-bold text-gray-900">Services</h1>
       </div>
 
-      {items.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
-          <p className="text-gray-500">No services found.</p>
-        </div>
-      ) : (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Order</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Title</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Category</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Slug</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Sections</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th className="text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {items.map((item) => (
-                <tr key={item.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm text-gray-600">{item.order}</td>
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900">{item.title.en || item.title.fr}</td>
-                  <td className="px-4 py-3 text-sm text-gray-600 capitalize">{item.category}</td>
-                  <td className="px-4 py-3 text-sm text-gray-500 font-mono">{item.slug}</td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{item.sections?.length || 0}</td>
+      <div className="bg-blue-50 border border-blue-200 text-blue-800 text-sm rounded-md px-4 py-3 mb-4">
+        Service pages are shipped by developers. Use the controls below to
+        publish, unpublish, or remove them. Publishing a service adds it to the
+        Services menu automatically.
+      </div>
+
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <table className="w-full">
+          <thead className="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Service</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Route</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Sections</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
+              <th className="text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {rows.map((row) => {
+              const isOverview = row.slug === 'overview'
+              const status = !row.service
+                ? { label: 'Not in DB', tone: 'bg-gray-100 text-gray-500' }
+                : row.service.published
+                  ? { label: 'Published', tone: 'bg-green-100 text-green-700' }
+                  : { label: 'Draft', tone: 'bg-yellow-100 text-yellow-700' }
+
+              return (
+                <tr key={row.slug} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900">{row.label}</td>
+                  <td className="px-4 py-3 text-sm text-gray-500 font-mono">{row.route}</td>
+                  <td className="px-4 py-3 text-sm text-gray-600">
+                    {row.service ? `${row.service.sections?.length || 0} sections` : '-'}
+                  </td>
                   <td className="px-4 py-3">
-                    <button
-                      onClick={() => handleTogglePublished(item)}
-                      className={`text-xs px-2 py-1 rounded font-medium ${
-                        item.published ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                      }`}
-                    >
-                      {item.published ? 'Published' : 'Draft'}
-                    </button>
+                    <span className={`text-xs px-2 py-1 rounded font-medium ${status.tone}`}>{status.label}</span>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <Link
-                      href={`/admin/services/${item.slug}`}
-                      className="text-sm text-primary-600 hover:text-primary-700 mr-3"
-                    >
-                      Edit
-                    </Link>
-                    <button onClick={() => handleDelete(item)} className="text-sm text-red-600 hover:text-red-700">Delete</button>
+                    {row.service ? (
+                      <div className="flex items-center justify-end gap-3">
+                        <Link
+                          href={`/admin/services/${row.slug}/visual`}
+                          className="text-sm font-medium text-accent-600 hover:text-accent-700"
+                        >
+                          Visual editor
+                        </Link>
+                        <Link
+                          href={`/admin/services/${row.slug}`}
+                          className="text-sm text-primary-600 hover:text-primary-700"
+                        >
+                          Edit
+                        </Link>
+                        <button
+                          onClick={() => handleTogglePublished(row)}
+                          className="text-sm text-gray-600 hover:text-gray-800"
+                        >
+                          {row.service.published ? 'Unpublish' : 'Publish'}
+                        </button>
+                        {!isOverview && (
+                          <button
+                            onClick={() => handleDelete(row)}
+                            className="text-sm text-red-600 hover:text-red-700"
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-sm text-gray-400">Awaiting dev</span>
+                    )}
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
@@ -145,5 +216,7 @@ export default function AdminServicesPage() {
 async function revalidate(path: string) {
   try {
     await triggerRevalidate(path)
-  } catch { /* best-effort */ }
+  } catch {
+    /* best-effort */
+  }
 }

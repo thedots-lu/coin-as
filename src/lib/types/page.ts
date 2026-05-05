@@ -100,6 +100,8 @@ export interface CTABannerSection {
   heading: LocaleString
   buttonText: LocaleString
   buttonLink: string
+  body?: LocaleString
+  theme?: 'light' | 'dark'
 }
 
 export interface HeroSimpleSection {
@@ -241,6 +243,39 @@ export interface FeaturesListSection {
   features: Array<{
     title: LocaleString
     description: LocaleString
+    // Optional lucide icon name (e.g. "ShieldCheck"). Defaults to "Check".
+    icon?: string | null
+  }>
+}
+
+export interface LifecycleDiagramSection {
+  type: 'lifecycle_diagram'
+  order: number
+  heading: LocaleString
+  body: LocaleString
+  steps: Array<{
+    title: LocaleString
+    tagline: LocaleString
+    description: LocaleString
+  }>
+}
+
+export interface ServicesGridSection {
+  type: 'services_grid'
+  order: number
+  heading: LocaleString
+}
+
+export interface IconCardGridSection {
+  type: 'icon_card_grid'
+  order: number
+  heading: LocaleString
+  intro: LocaleString
+  cards: Array<{
+    title: LocaleString
+    body: LocaleString // HTML (TipTap output)
+    icon: string
+    accent?: 'primary' | 'accent' | 'red' | 'primary-dark'
   }>
 }
 
@@ -328,6 +363,9 @@ export type PageSection = WithVisibility<
   | BusinessCaseSection
   | RichTextSection
   | FeaturedCarouselSection
+  | LifecycleDiagramSection
+  | ServicesGridSection
+  | IconCardGridSection
 >
 
 export function isSectionVisible(section: { visible?: boolean }): boolean {
