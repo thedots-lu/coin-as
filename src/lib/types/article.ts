@@ -1,6 +1,12 @@
 import { LocaleString } from './locale'
 import { Timestamp } from 'firebase/firestore/lite'
 
+export type ArticleAccentColor = 'green' | 'red' | 'navy' | 'slate'
+
+export const ARTICLE_ACCENT_COLORS: ArticleAccentColor[] = ['green', 'red', 'navy', 'slate']
+
+export const DEFAULT_ARTICLE_ACCENT_COLOR: ArticleAccentColor = 'green'
+
 export interface Article {
   id: string
   title: LocaleString
@@ -10,6 +16,9 @@ export interface Article {
   imageUrl: string | null
   videoUrl?: string | null
   category: 'resource' | 'case_study'
+  // Optional accent colour shown as a strip on case_study cards. Ignored
+  // on resource articles (which use their imageUrl or a logo fallback).
+  accentColor?: ArticleAccentColor
   published: boolean
   publishedAt: Timestamp | Date | null
   author: string

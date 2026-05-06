@@ -4,11 +4,19 @@ import { ArrowRight } from 'lucide-react'
 import { getLocalizedField } from '@/lib/locale'
 import { formatDate } from '@/lib/utils/date'
 import Badge from '@/components/ui/Badge'
-import type { Article } from '@/lib/types/article'
+import type { Article, ArticleAccentColor } from '@/lib/types/article'
+import { DEFAULT_ARTICLE_ACCENT_COLOR } from '@/lib/types/article'
 
 interface ArticleCardProps {
   article: Article
   variant?: 'resource' | 'case_study'
+}
+
+const ACCENT_STRIP_BG: Record<ArticleAccentColor, string> = {
+  green: 'bg-accent-500',
+  red: 'bg-coin-red-500',
+  navy: 'bg-primary-500',
+  slate: 'bg-secondary-500',
 }
 
 export default function ArticleCard({ article, variant = 'resource' }: ArticleCardProps) {
@@ -16,13 +24,16 @@ export default function ArticleCard({ article, variant = 'resource' }: ArticleCa
   const excerpt = getLocalizedField(article.excerpt)
   const slug = getLocalizedField(article.slug)
   const label = variant === 'case_study' ? 'Case Study' : 'Article'
+  const accent = ACCENT_STRIP_BG[article.accentColor ?? DEFAULT_ARTICLE_ACCENT_COLOR]
 
   return (
     <Link
       href={`/resources/${slug}`}
       className="group flex flex-col bg-white rounded-2xl border border-secondary-100 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
     >
-      {article.imageUrl ? (
+      {variant === 'case_study' ? (
+        <div className={`h-1.5 ${accent}`} aria-hidden />
+      ) : article.imageUrl ? (
         <div className="relative aspect-[16/10] overflow-hidden bg-secondary-100">
           <Image
             src={article.imageUrl}
@@ -33,7 +44,15 @@ export default function ArticleCard({ article, variant = 'resource' }: ArticleCa
           />
         </div>
       ) : (
-        <div className="aspect-[16/10] bg-gradient-to-br from-primary-100 to-primary-200" />
+        <div className="relative aspect-[16/10] bg-warm-50 flex items-center justify-center">
+          <Image
+            src="/images/coin/coin-logo-header.png"
+            alt="COIN"
+            width={160}
+            height={48}
+            className="opacity-80 max-w-[60%] h-auto object-contain"
+          />
+        </div>
       )}
 
       <div className="p-6 flex flex-col flex-1">
