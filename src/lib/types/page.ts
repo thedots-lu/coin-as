@@ -236,10 +236,15 @@ export interface ContactFormSection {
   confirmationMessage: LocaleString
 }
 
+export type CardsPerRow = 2 | 3 | 4
+
 export interface FeaturesListSection {
   type: 'features_list'
   order: number
   heading: LocaleString
+  // Optional override of the number of cards per row on desktop.
+  // Defaults to a value derived from the card count when undefined.
+  columnsPerRow?: CardsPerRow
   features: Array<{
     title: LocaleString
     description: LocaleString
@@ -275,6 +280,9 @@ export interface IconCardGridSection {
   order: number
   heading: LocaleString
   intro: LocaleString
+  // Optional override of the number of cards per row on desktop.
+  // Defaults to a value derived from the card count when undefined.
+  columnsPerRow?: CardsPerRow
   cards: Array<{
     title: LocaleString
     body: LocaleString // HTML (TipTap output)

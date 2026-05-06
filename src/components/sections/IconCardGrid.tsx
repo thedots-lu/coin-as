@@ -30,12 +30,13 @@ export default function IconCardGrid({ section, locale, basePath }: Props) {
   const intro = getLocalizedField(section.intro, locale)
   const cards = section.cards ?? []
 
-  const gridCols =
-    cards.length <= 2
-      ? 'grid-cols-1 md:grid-cols-2'
-      : cards.length === 3
-        ? 'grid-cols-1 md:grid-cols-3'
-        : 'grid-cols-1 md:grid-cols-2'
+  const COLUMNS_CLASS = {
+    2: 'grid-cols-1 md:grid-cols-2',
+    3: 'grid-cols-1 md:grid-cols-3',
+    4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
+  } as const
+  const autoColumns: 2 | 3 = cards.length === 3 ? 3 : 2
+  const gridCols = COLUMNS_CLASS[section.columnsPerRow ?? autoColumns]
 
   return (
     <section className="py-16 md:py-20 bg-warm-50">

@@ -45,8 +45,16 @@ function ArticleLink({ href }: { href: string }) {
   )
 }
 
+const FEATURES_COLUMNS_CLASS = {
+  2: 'grid-cols-1 md:grid-cols-2',
+  3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+  4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
+} as const
+
 export default function FeaturesSection({ section, locale, basePath = '' }: FeaturesSectionProps) {
   const isEditing = !!useEditing()
+  const autoColumns: 3 | 4 = section.features.length === 3 ? 3 : 4
+  const gridCols = FEATURES_COLUMNS_CLASS[section.columnsPerRow ?? autoColumns]
   return (
     <section className="py-16 md:py-20 bg-warm-50">
       <div className="container-padding">
@@ -63,11 +71,7 @@ export default function FeaturesSection({ section, locale, basePath = '' }: Feat
             </h2>
           </AnimatedSection>
 
-          <div
-            className={`grid grid-cols-1 md:grid-cols-2 ${
-              section.features.length === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4'
-            } gap-6 md:gap-8`}
-          >
+          <div className={`grid ${gridCols} gap-6 md:gap-8`}>
             {section.features.map((feature, index) => {
               const Icon = resolveIcon(feature.icon)
               // When the feature has a real description, the title is a short

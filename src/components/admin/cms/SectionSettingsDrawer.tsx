@@ -11,7 +11,11 @@ import {
   CTABannerSection,
   StatsSection,
   HeroSlide,
+  FeaturesListSection,
+  IconCardGridSection,
+  CardsPerRow,
 } from '@/lib/types/page'
+import { createEmptyLocaleString } from '@/lib/types/locale'
 import { getLocalizedField } from '@/lib/locale'
 import { HERO_DEFAULT_SLIDES, makeEmptyHeroSlide } from '@/components/sections/HeroSection'
 
@@ -43,6 +47,7 @@ const TYPE_LABELS: Record<string, string> = {
   room_types: 'Room Types',
   site_gallery: 'Site Gallery',
   featured_carousel: 'Featured Carousel',
+  icon_card_grid: 'Icon Card Grid',
 }
 
 interface Props {
@@ -178,6 +183,10 @@ function SectionFields({ section, basePath }: { section: PageSection; basePath: 
       return <CTABannerFields section={section} basePath={basePath} />
     case 'stats':
       return <StatsFields section={section} basePath={basePath} />
+    case 'features_list':
+      return <FeaturesListFields section={section} basePath={basePath} />
+    case 'icon_card_grid':
+      return <IconCardGridFields section={section} basePath={basePath} />
     default:
       return (
         <p className="text-sm text-gray-500">
@@ -453,6 +462,207 @@ function AvailablePresets({
         the eye icon to reveal it.
       </p>
     </div>
+  )
+}
+
+// ---------------- Cards / columns helpers ----------------
+
+const COLUMNS_OPTIONS: CardsPerRow[] = [2, 3, 4]
+
+function ColumnsPerRowField({
+  path,
+  value,
+  hint,
+}: {
+  path: string
+  value: CardsPerRow | undefined
+  hint?: string
+}) {
+  const ctx = useEditing()!
+  return (
+    <Field label="Cards per row" hint={hint}>
+      <select
+        value={value ?? ''}
+        onChange={(e) => {
+          const raw = e.target.value
+          ctx.updateAt(path, raw === '' ? undefined : (parseInt(raw, 10) as CardsPerRow))
+        }}
+        className={inputClass}
+      >
+        <option value="">Auto (based on card count)</option>
+        {COLUMNS_OPTIONS.map((n) => (
+          <option key={n} value={n}>
+            {n} cards
+          </option>
+        ))}
+      </select>
+    </Field>
+  )
+}
+
+function CardListManager<T>({
+  items,
+  path,
+  getTitle,
+  makeEmpty,
+  itemNoun = 'card',
+}: {
+  items: T[]
+  path: string
+  getTitle: (item: T) => string
+  makeEmpty: () => T
+  itemNoun?: string
+}) {
+  const ctx = useEditing()!
+
+  const update = (next: T[]) => ctx.updateAt(path, next)
+
+  const handleAdd = () => update([...items, makeEmpty()])
+  const handleRemove = (i: number) => {
+    if (!confirm(`Remove this ${itemNoun}?`)) return
+    update(items.filter((_, idx) => idx !== i))
+  }
+  const handleMove = (i: number, dir: 'up' | 'down') => {
+    const target = dir === 'up' ? i - 1 : i + 1
+    if (target < 0 || target >= items.length) return
+    const next = [...items]
+    ;[next[i], next[target]] = [next[target], next[i]]
+    update(next)
+  }
+
+  return (
+    <>
+      <p className="text-[11px] text-gray-500 mb-3">
+        Edit each {itemNoun}&apos;s text and icon directly on the page. Use this panel to add,
+        reorder, or remove {itemNoun}s.
+      </p>
+      <div className="space-y-2">
+        {items.map((item, i) => {
+          const title = getTitle(item)
+          return (
+            <div
+              key={i}
+              className="flex items-stretch gap-2 border border-gray-200 rounded-md overflow-hidden bg-white"
+            >
+              <div className="flex-1 py-2 px-2.5 min-w-0">
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">
+                  #{i + 1}
+                </div>
+                <div className="text-[12px] font-medium text-gray-800 truncate">
+                  {title || <span className="italic text-gray-400">Untitled</span>}
+                </div>
+              </div>
+              <div className="flex items-center gap-0.5 pr-1.5">
+                <button
+                  type="button"
+                  onClick={() => handleMove(i, 'up')}
+                  disabled={i === 0}
+                  className="text-gray-400 hover:text-gray-700 disabled:opacity-30 p-1"
+                  aria-label="Move up"
+                >
+                  <ArrowUp className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleMove(i, 'down')}
+                  disabled={i === items.length - 1}
+                  className="text-gray-400 hover:text-gray-700 disabled:opacity-30 p-1"
+                  aria-label="Move down"
+                >
+                  <ArrowDown className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleRemove(i)}
+                  className="text-red-500 hover:text-red-700 p-1"
+                  aria-label="Remove"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      <button
+        type="button"
+        onClick={handleAdd}
+        className="mt-4 w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-primary-700 bg-primary-50 border border-primary-200 rounded-md hover:bg-primary-100 transition-colors"
+      >
+        <Plus className="w-3.5 h-3.5" /> Add {itemNoun}
+      </button>
+    </>
+  )
+}
+
+function FeaturesListFields({
+  section,
+  basePath,
+}: {
+  section: FeaturesListSection
+  basePath: string
+}) {
+  const ctx = useEditing()!
+  const ctxLocale = ctx.activeLocale
+  return (
+    <>
+      <ColumnsPerRowField
+        path={`${basePath}.columnsPerRow`}
+        value={section.columnsPerRow}
+        hint="Auto picks 3 columns when there are 3 cards, 4 otherwise."
+      />
+      <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="text-[10px] font-semibold text-gray-700 uppercase tracking-wider mb-2">
+          Cards ({section.features.length})
+        </div>
+        <CardListManager
+          items={section.features}
+          path={`${basePath}.features`}
+          getTitle={(f) => getLocalizedField(f.title, ctxLocale)}
+          makeEmpty={() => ({
+            title: createEmptyLocaleString(),
+            description: createEmptyLocaleString(),
+            icon: null,
+          })}
+        />
+      </div>
+    </>
+  )
+}
+
+function IconCardGridFields({
+  section,
+  basePath,
+}: {
+  section: IconCardGridSection
+  basePath: string
+}) {
+  const ctx = useEditing()!
+  const ctxLocale = ctx.activeLocale
+  return (
+    <>
+      <ColumnsPerRowField
+        path={`${basePath}.columnsPerRow`}
+        value={section.columnsPerRow}
+        hint="Auto picks 3 columns when there are 3 cards, 2 otherwise."
+      />
+      <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="text-[10px] font-semibold text-gray-700 uppercase tracking-wider mb-2">
+          Cards ({section.cards.length})
+        </div>
+        <CardListManager
+          items={section.cards}
+          path={`${basePath}.cards`}
+          getTitle={(c) => getLocalizedField(c.title, ctxLocale)}
+          makeEmpty={() => ({
+            title: createEmptyLocaleString(),
+            body: createEmptyLocaleString(),
+            icon: '',
+            accent: 'accent' as const,
+          })}
+        />
+      </div>
+    </>
   )
 }
 
