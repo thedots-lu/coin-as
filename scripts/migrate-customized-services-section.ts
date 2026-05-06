@@ -58,11 +58,19 @@ const newSection: Omit<FeaturesListSection, 'order'> = {
   ],
 }
 
-async function migrate() {
-  const ref = db.collection('services').doc('it-housing')
+const TARGET_SLUGS = [
+  'it-housing',
+  'consultancy-and-training',
+  'crisis-management',
+  'cyberresilience',
+]
+
+async function applyToService(slug: string) {
+  const ref = db.collection('services').doc(slug)
   const snap = await ref.get()
   if (!snap.exists) {
-    throw new Error('services/it-housing not found')
+    console.warn(`  services/${slug} not found — skipping.`)
+    return
   }
 
   const data = snap.data() as { sections?: PageSection[] }
@@ -77,18 +85,25 @@ async function migrate() {
   if (existingIdx >= 0) {
     const order = existing[existingIdx].order
     sections = existing.map((s, i) => (i === existingIdx ? { ...newSection, order } : s))
-    action = `Updated "${SECTION_HEADING}" in place (order ${order})`
+    action = `updated in place (order ${order})`
   } else {
     const nextOrder = existing.reduce((max, s) => Math.max(max, s.order ?? 0), -1) + 1
     sections = [...existing, { ...newSection, order: nextOrder }]
-    action = `Appended "${SECTION_HEADING}" (order ${nextOrder})`
+    action = `appended at order ${nextOrder}`
   }
 
   await ref.update({
     sections,
     updatedAt: Timestamp.now(),
   })
-  console.log(`${action} — ${sections.length} sections total.`)
+  console.log(`  ${slug}: ${action} — ${sections.length} sections total.`)
+}
+
+async function migrate() {
+  console.log(`Applying "${SECTION_HEADING}" to ${TARGET_SLUGS.length} services:`)
+  for (const slug of TARGET_SLUGS) {
+    await applyToService(slug)
+  }
 }
 
 migrate().catch((err) => {
