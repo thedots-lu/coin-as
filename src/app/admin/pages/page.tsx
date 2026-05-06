@@ -11,6 +11,7 @@ const expectedPages = [
   { slug: 'about', label: 'About', route: '/about' },
   { slug: 'locations', label: 'Locations', route: '/locations' },
   { slug: 'contact', label: 'Contact', route: '/contact' },
+  { slug: 'case-studies', label: 'Case Studies', route: '/resources/case-studies' },
   { slug: 'legal-notice', label: 'Legal Notice', route: '/legal-notice' },
   { slug: 'privacy-policy', label: 'Privacy Policy', route: '/privacy-policy' },
   { slug: 'cookies-policy', label: 'Cookies Policy', route: '/cookies-policy' },

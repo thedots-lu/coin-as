@@ -39,6 +39,7 @@ const INLINE_EDITABLE_TYPES: ReadonlySet<string> = new Set([
   'lifecycle_diagram',
   'services_grid',
   'icon_card_grid',
+  'page_intro',
 ])
 
 const TYPE_LABELS: Record<string, string> = {
@@ -69,6 +70,7 @@ const TYPE_LABELS: Record<string, string> = {
   room_types: 'Room Types',
   site_gallery: 'Site Gallery',
   featured_carousel: 'Featured Carousel',
+  page_intro: 'Page Intro',
 }
 
 export default function SectionEditOverlay({

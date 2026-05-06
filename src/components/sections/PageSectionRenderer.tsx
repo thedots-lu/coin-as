@@ -34,6 +34,7 @@ import TrustedByMarquee from '@/components/sections/TrustedByMarquee'
 import LifecycleDiagram from '@/components/sections/LifecycleDiagram'
 import ServicesGrid from '@/components/sections/ServicesGrid'
 import IconCardGrid from '@/components/sections/IconCardGrid'
+import PageIntro from '@/components/sections/PageIntro'
 import SectionEditOverlay from '@/components/admin/cms/SectionEditOverlay'
 
 interface PageSectionRendererProps {
@@ -140,6 +141,8 @@ export default function PageSectionRenderer({
         return <ServicesGrid section={section} locale={locale} basePath={basePath} services={services} />
       case 'icon_card_grid':
         return <IconCardGrid section={section} locale={locale} basePath={basePath} />
+      case 'page_intro':
+        return <PageIntro section={section} locale={locale} basePath={basePath} />
       // Hidden for now — hero carousel replaces this
       // case 'featured_carousel':
       //   return <FeaturedCarousel section={section} locale={locale} />

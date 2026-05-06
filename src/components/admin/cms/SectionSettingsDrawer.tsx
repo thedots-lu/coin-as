@@ -48,6 +48,7 @@ const TYPE_LABELS: Record<string, string> = {
   site_gallery: 'Site Gallery',
   featured_carousel: 'Featured Carousel',
   icon_card_grid: 'Icon Card Grid',
+  page_intro: 'Page Intro',
 }
 
 interface Props {

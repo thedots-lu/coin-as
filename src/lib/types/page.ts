@@ -325,6 +325,14 @@ export interface RichTextSection {
   body: LocaleString
 }
 
+export interface PageIntroSection {
+  type: 'page_intro'
+  order: number
+  heading: LocaleString
+  // Stored as HTML (TipTap output). Renderer sanitizes before injecting.
+  body: LocaleString
+}
+
 export interface FeaturedCarouselSection {
   type: 'featured_carousel'
   order: number
@@ -378,6 +386,7 @@ export type PageSection = WithVisibility<
   | LifecycleDiagramSection
   | ServicesGridSection
   | IconCardGridSection
+  | PageIntroSection
 >
 
 export function isSectionVisible(section: { visible?: boolean }): boolean {

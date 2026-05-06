@@ -101,6 +101,11 @@ const PAGE_CONFIG: Record<string, PageConfig> = {
   },
   locations: { title: 'Locations page', previewPath: '/locations', fetchAux: fetchLocationsAux },
   contact: { title: 'Contact page', previewPath: '/contact' },
+  'case-studies': {
+    title: 'Case Studies',
+    previewPath: '/resources/case-studies',
+    topChrome: () => <HubBanner title="Case Studies" backToHub />,
+  },
   'legal-notice': { title: 'Legal Notice', previewPath: '/legal-notice' },
   'privacy-policy': { title: 'Privacy Policy', previewPath: '/privacy-policy' },
   'cookies-policy': { title: 'Cookies Policy', previewPath: '/cookies-policy' },
