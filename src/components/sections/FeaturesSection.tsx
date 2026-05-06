@@ -4,13 +4,18 @@ import Link from 'next/link'
 import { ArrowRight, Check, FileText, type LucideIcon } from 'lucide-react'
 import { resolveFeatureIcon } from '@/lib/icons'
 import { FeaturesListSection } from '@/lib/types/page'
-import { Locale } from '@/lib/types/locale'
+import { Locale, LocaleString } from '@/lib/types/locale'
 import { getLocalizedField } from '@/lib/locale'
 import { isExternalUrl } from '@/lib/utils/links'
+import {
+  type CtaKindChoice,
+  resolveCtaLabel,
+} from '@/lib/utils/cta-labels'
 import AnimatedSection from '@/components/ui/AnimatedSection'
 import EditableText from '@/components/admin/cms/EditableText'
 import RichInlineText from '@/components/admin/cms/RichInlineText'
 import EditableLink from '@/components/admin/cms/EditableLink'
+import CtaKindEditor from '@/components/admin/cms/CtaKindEditor'
 import { useEditing } from '@/components/admin/cms/EditingContext'
 
 interface FeaturesSectionProps {
@@ -24,13 +29,24 @@ function resolveIcon(name?: string | null): LucideIcon {
   return resolveFeatureIcon(name) ?? Check
 }
 
-function ArticleLink({ href }: { href: string }) {
+function ArticleLink({
+  href,
+  kind,
+  customLabel,
+  locale,
+}: {
+  href: string
+  kind?: CtaKindChoice
+  customLabel?: LocaleString
+  locale: Locale
+}) {
   const className =
     'inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 hover:text-primary-800 transition-colors group/article'
+  const label = resolveCtaLabel(kind, href, locale, customLabel)
   const content = (
     <>
       <FileText className="w-3.5 h-3.5" />
-      <span>Read our article</span>
+      <span>{label}</span>
       <ArrowRight className="w-3.5 h-3.5 group-hover/article:translate-x-0.5 transition-transform" />
     </>
   )
@@ -104,20 +120,50 @@ export default function FeaturesSection({ section, locale, basePath = '' }: Feat
                     />
                     {(feature.articleHref1 || feature.articleHref2 || isEditing) && (
                       <div className="mt-4 flex flex-col gap-2">
-                        {feature.articleHref1 && <ArticleLink href={feature.articleHref1} />}
-                        {feature.articleHref2 && <ArticleLink href={feature.articleHref2} />}
+                        {feature.articleHref1 && (
+                          <ArticleLink
+                            href={feature.articleHref1}
+                            kind={feature.articleKind1}
+                            customLabel={feature.articleLabel1}
+                            locale={locale}
+                          />
+                        )}
+                        {feature.articleHref2 && (
+                          <ArticleLink
+                            href={feature.articleHref2}
+                            kind={feature.articleKind2}
+                            customLabel={feature.articleLabel2}
+                            locale={locale}
+                          />
+                        )}
                         {isEditing && (
-                          <div className="flex flex-col gap-1.5 mt-1">
-                            <EditableLink
-                              path={`${basePath}.features.${index}.articleHref1`}
-                              value={feature.articleHref1}
-                              label="Article link 1"
-                            />
-                            <EditableLink
-                              path={`${basePath}.features.${index}.articleHref2`}
-                              value={feature.articleHref2}
-                              label="Article link 2"
-                            />
+                          <div className="flex flex-col gap-2 mt-1">
+                            <div className="flex items-center flex-wrap gap-1.5">
+                              <EditableLink
+                                path={`${basePath}.features.${index}.articleHref1`}
+                                value={feature.articleHref1}
+                                label="Article link 1"
+                              />
+                              <CtaKindEditor
+                                kindPath={`${basePath}.features.${index}.articleKind1`}
+                                kind={feature.articleKind1}
+                                labelPath={`${basePath}.features.${index}.articleLabel1`}
+                                customLabel={feature.articleLabel1}
+                              />
+                            </div>
+                            <div className="flex items-center flex-wrap gap-1.5">
+                              <EditableLink
+                                path={`${basePath}.features.${index}.articleHref2`}
+                                value={feature.articleHref2}
+                                label="Article link 2"
+                              />
+                              <CtaKindEditor
+                                kindPath={`${basePath}.features.${index}.articleKind2`}
+                                kind={feature.articleKind2}
+                                labelPath={`${basePath}.features.${index}.articleLabel2`}
+                                customLabel={feature.articleLabel2}
+                              />
+                            </div>
                           </div>
                         )}
                       </div>

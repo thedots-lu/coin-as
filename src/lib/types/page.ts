@@ -1,5 +1,6 @@
 import { LocaleString } from './locale'
 import { Timestamp } from 'firebase/firestore/lite'
+import type { CtaKindChoice } from '@/lib/utils/cta-labels'
 
 // Section types for pages
 
@@ -250,10 +251,15 @@ export interface FeaturesListSection {
     description: LocaleString
     // Optional lucide icon name (e.g. "ShieldCheck"). Defaults to "Check".
     icon?: string | null
-    // Up to two related article links per feature. Each "Read our article"
-    // link is rendered only when its href is set.
+    // Up to two related article links per feature. The CTA label is derived
+    // from the URL (auto) or from the matching `articleKind*` override.
+    // When kind === 'custom', `articleLabel*` provides the localized text.
     articleHref1?: string
     articleHref2?: string
+    articleKind1?: CtaKindChoice
+    articleKind2?: CtaKindChoice
+    articleLabel1?: LocaleString
+    articleLabel2?: LocaleString
   }>
 }
 
