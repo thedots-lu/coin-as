@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { X } from 'lucide-react'
 import { useEditing } from './EditingContext'
+import LinkPickerControls, { InternalRoutesDatalist } from './LinkPickerControls'
 import { ServiceCard, ServiceCardAccent } from '@/lib/types/service'
 import { LocaleString } from '@/lib/types/locale'
 import { FEATURE_ICON_NAMES, resolveFeatureIcon } from '@/lib/icons'
@@ -10,6 +11,7 @@ import RichTextEditor from '@/components/admin/RichTextEditor'
 
 interface Props {
   card: ServiceCard | undefined
+  articleHref: string | null | undefined
   onClose: () => void
 }
 
@@ -22,7 +24,7 @@ const ACCENT_OPTIONS: Array<{ value: ServiceCardAccent; label: string; swatch: s
 
 const EMPTY_LOCALE: LocaleString = { en: '', fr: '', nl: '' }
 
-export default function ServicePageSettingsDrawer({ card, onClose }: Props) {
+export default function ServicePageSettingsDrawer({ card, articleHref, onClose }: Props) {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -70,6 +72,11 @@ export default function ServicePageSettingsDrawer({ card, onClose }: Props) {
   const onAccentChange = (value: ServiceCardAccent) => {
     ensureCard()
     ctx.updateAt('card.accent', value)
+  }
+
+  const onArticleHrefChange = (value: string) => {
+    const trimmed = value.trim()
+    ctx.updateAt('articleHref', trimmed === '' ? null : trimmed)
   }
 
   return (
@@ -179,6 +186,22 @@ export default function ServicePageSettingsDrawer({ card, onClose }: Props) {
                     )
                   })}
                 </div>
+              </div>
+
+              <div className="pt-4 border-t border-gray-100">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Related article / case study
+                </label>
+                <p className="text-xs text-gray-500 mb-2">
+                  Optional. When set, a &ldquo;Read our article&rdquo; (or &ldquo;Read our
+                  case study&rdquo;) CTA appears above the related services carousel.
+                  Leave empty to hide it.
+                </p>
+                <LinkPickerControls
+                  value={articleHref ?? ''}
+                  onChange={onArticleHrefChange}
+                />
+                <InternalRoutesDatalist />
               </div>
             </div>
           </section>

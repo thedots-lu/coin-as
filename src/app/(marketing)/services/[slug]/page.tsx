@@ -65,18 +65,8 @@ export default async function ServicePage({
         <PageSectionRenderer sections={service.sections} />
       )}
 
-      {/* Related article CTA - to be activated when articles are linked to services */}
-      {/*
-      <section className="py-8">
-        <div className="container-padding max-w-4xl mx-auto">
-          <Link href="/resources" className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-800 font-semibold transition-colors">
-            <FileText className="h-4 w-4" />
-            Learn more - Read our article
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </section>
-      */}
+      {/* The per-service "Read our article" CTA is rendered on the
+          /services overview cards (see ServicesGrid), not here. */}
 
       {/* Photo gallery placeholder - to be populated when Sam sends photos */}
       {/*

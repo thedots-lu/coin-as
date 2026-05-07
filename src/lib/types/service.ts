@@ -32,6 +32,10 @@ export interface ServiceDocument {
   // derived (`title` and `/services/{slug}`); only body, icon and accent
   // are editable here.
   card?: ServiceCard
+  // Optional CTA link to a related article or case study, rendered on
+  // the public service page above the related-services carousel. The
+  // label is auto-derived from the URL pattern (article vs case study).
+  articleHref?: string | null
   updatedAt: Timestamp | Date
   createdAt: Timestamp | Date
 }

@@ -100,7 +100,8 @@ export default function ServiceVisualEditor() {
       JSON.stringify(original.sections) !== JSON.stringify(draft.sections) ||
       JSON.stringify(original.title) !== JSON.stringify(draft.title) ||
       JSON.stringify(original.seo) !== JSON.stringify(draft.seo) ||
-      JSON.stringify(original.card) !== JSON.stringify(draft.card)
+      JSON.stringify(original.card) !== JSON.stringify(draft.card) ||
+      (original.articleHref ?? null) !== (draft.articleHref ?? null)
     )
   }, [original, draft])
 
@@ -187,6 +188,7 @@ export default function ServiceVisualEditor() {
         sections: draft.sections,
         seo: draft.seo,
         card: draft.card ?? null,
+        articleHref: draft.articleHref ?? null,
         updatedAt: Timestamp.now(),
       })
       await logAudit({
@@ -337,6 +339,7 @@ export default function ServiceVisualEditor() {
         {pageSettingsOpen && !isOverview && (
           <ServicePageSettingsDrawer
             card={draft.card}
+            articleHref={draft.articleHref}
             onClose={() => setPageSettingsOpen(false)}
           />
         )}

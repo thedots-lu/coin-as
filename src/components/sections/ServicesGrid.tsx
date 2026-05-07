@@ -7,6 +7,8 @@ import { ServiceCardAccent, ServiceDocument } from '@/lib/types/service'
 import { Locale } from '@/lib/types/locale'
 import { getLocalizedField } from '@/lib/locale'
 import { resolveFeatureIcon } from '@/lib/icons'
+import { isExternalUrl } from '@/lib/utils/links'
+import { resolveCtaLabel } from '@/lib/utils/cta-labels'
 import { sanitizeRichHtml } from '@/lib/utils/html'
 import EditableText from '@/components/admin/cms/EditableText'
 import { useEditing } from '@/components/admin/cms/EditingContext'
@@ -69,13 +71,24 @@ export default function ServicesGrid({ section, locale, basePath, services }: Se
                 const cardTitle = getLocalizedField(card.title, locale)
                 const title = cardTitle || getLocalizedField(service.title, locale)
                 const body = getLocalizedField(card.body, locale)
+                const articleHref = service.articleHref?.trim() || ''
+                const articleLabel = articleHref
+                  ? resolveCtaLabel(undefined, articleHref, locale)
+                  : ''
+                const articleExternal = articleHref ? isExternalUrl(articleHref) : false
 
                 return (
-                  <Link
+                  <div
                     key={slug}
-                    href={`/services/${slug}`}
                     className="group relative bg-white rounded-2xl p-8 shadow-sm border border-secondary-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
                   >
+                    {/* Stretched link: covers the whole card so clicks
+                        outside the article CTA navigate to the service. */}
+                    <Link
+                      href={`/services/${slug}`}
+                      aria-label={title}
+                      className="absolute inset-0 z-10 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+                    />
                     <div className={`absolute top-0 left-8 right-8 h-1 ${accent.bar} rounded-b-full`} />
                     <div className="flex items-start gap-4 mb-4 pt-2">
                       <div
@@ -95,11 +108,34 @@ export default function ServicesGrid({ section, locale, basePath, services }: Se
                         dangerouslySetInnerHTML={{ __html: sanitizeRichHtml(body) }}
                       />
                     )}
-                    <div className="flex items-center gap-2 text-sm font-semibold text-primary-600 group-hover:text-primary-800 transition-colors ml-16 mt-auto">
-                      <span>Learn more</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <div className="ml-16 mt-auto flex flex-col items-start gap-2">
+                      <div className="flex items-center gap-2 text-sm font-semibold text-primary-600 group-hover:text-primary-800 transition-colors">
+                        <span>Learn more</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                      {articleHref && (
+                        articleExternal ? (
+                          <a
+                            href={articleHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="relative z-20 inline-flex items-center gap-2 text-sm font-semibold text-primary-600 hover:text-primary-800 transition-colors"
+                          >
+                            <span>{articleLabel}</span>
+                            <ArrowRight className="w-4 h-4" />
+                          </a>
+                        ) : (
+                          <Link
+                            href={articleHref}
+                            className="relative z-20 inline-flex items-center gap-2 text-sm font-semibold text-primary-600 hover:text-primary-800 transition-colors"
+                          >
+                            <span>{articleLabel}</span>
+                            <ArrowRight className="w-4 h-4" />
+                          </Link>
+                        )
+                      )}
                     </div>
-                  </Link>
+                  </div>
                 )
               })}
             </div>
