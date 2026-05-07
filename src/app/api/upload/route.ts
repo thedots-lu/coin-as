@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import path from 'node:path'
+import sharp from 'sharp'
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 import { Timestamp } from 'firebase-admin/firestore'
 import { getAdminAuth, getAdminDb } from '@/lib/firebase/admin'
@@ -11,6 +12,7 @@ export const runtime = 'nodejs'
 
 const MAX_BYTES = 25 * 1024 * 1024 // 25 MB
 const ALLOWED_MIME_PREFIXES = ['image/', 'application/pdf']
+const TRIMMABLE_MIME_PREFIXES = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp']
 
 let s3: S3Client | null = null
 function getS3(): S3Client {
@@ -182,13 +184,25 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Storage not configured' }, { status: 500 })
   }
 
+  // Optional auto-trim of empty (transparent / uniform background) borders.
+  // Used by Customer Logos so editors don't have to recrop padded PNGs.
+  const trim =
+    form.get('trim') === '1' || form.get('trim') === 'true'
+
   try {
-    const buf = Buffer.from(await file.arrayBuffer())
+    let body: Uint8Array = new Uint8Array(await file.arrayBuffer())
+    if (trim && TRIMMABLE_MIME_PREFIXES.some((p) => file.type.startsWith(p))) {
+      try {
+        body = await sharp(body).trim({ threshold: 10 }).toBuffer()
+      } catch (err) {
+        console.warn('[api/upload] sharp trim failed; uploading original', err)
+      }
+    }
     await getS3().send(
       new PutObjectCommand({
         Bucket: env.bucket,
         Key: key,
-        Body: buf,
+        Body: body,
         ContentType: file.type,
         CacheControl: 'public, max-age=31536000, immutable',
       }),

@@ -34,11 +34,16 @@ export async function deleteFile(url: string | null | undefined): Promise<void> 
  * Upload `file` via the /api/upload route (backed by Cloudflare R2).
  * `storagePath` is the full object key (caller controls naming).
  * Authenticates with the current admin's Firebase ID token.
+ *
+ * Pass `options.trim` to ask the server to crop empty (transparent /
+ * uniform background) borders before saving — used for customer logos
+ * so padded source files render at a consistent size in the marquee.
  */
 export async function uploadFile(
   file: File,
   storagePath: string,
   onProgress?: UploadProgress,
+  options?: { trim?: boolean },
 ): Promise<string> {
   const user = auth.currentUser
   if (!user) throw new Error('Not authenticated')
@@ -47,6 +52,7 @@ export async function uploadFile(
   const form = new FormData()
   form.append('file', file)
   form.append('key', storagePath)
+  if (options?.trim) form.append('trim', '1')
 
   return new Promise<string>((resolve, reject) => {
     const xhr = new XMLHttpRequest()

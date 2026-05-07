@@ -142,7 +142,12 @@ export default function AdminCustomerLogosPage() {
       if (imageFile) {
         const docId = editing?.id ?? `logo_${Date.now()}`
         const ext = imageFile.name.split('.').pop() || 'png'
-        imageUrl = await uploadFile(imageFile, `customer_logos/${docId}/logo-${Date.now()}.${ext}`, setProgress)
+        imageUrl = await uploadFile(
+          imageFile,
+          `customer_logos/${docId}/logo-${Date.now()}.${ext}`,
+          setProgress,
+          { trim: true },
+        )
       }
 
       if (editing) {

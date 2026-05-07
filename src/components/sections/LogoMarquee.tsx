@@ -165,14 +165,18 @@ export default function LogoMarquee({ logos }: Props) {
               key={i}
               className="flex-shrink-0 flex items-center justify-center w-[260px] h-[150px] bg-white rounded-2xl shadow-sm px-7 pointer-events-none"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={logo.url}
-                alt={logo.name || ''}
-                className="max-h-[100px] max-w-full object-contain"
-                loading="lazy"
-                draggable={false}
-              />
+              {/* Inner box gives every logo the same render area; object-contain
+                  preserves aspect ratio and scales small logos up too. */}
+              <div className="w-full h-[80px] flex items-center justify-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={logo.url}
+                  alt={logo.name || ''}
+                  className="w-full h-full object-contain"
+                  loading="lazy"
+                  draggable={false}
+                />
+              </div>
             </div>
           ))}
         </div>
