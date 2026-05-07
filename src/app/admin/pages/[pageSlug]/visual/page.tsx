@@ -27,10 +27,12 @@ import { getPublishedPartners } from '@/lib/firestore/partners'
 import { getPublishedTestimonials } from '@/lib/firestore/testimonials'
 import { getVisibleCustomerLogos } from '@/lib/firestore/customer-logos'
 import { getPublishedSites } from '@/lib/firestore/sites'
+import { getSiteConfig } from '@/lib/firestore/site-config'
 import type { Testimonial } from '@/lib/types/testimonial'
 import type { TeamMember } from '@/lib/types/team'
 import type { Partner } from '@/lib/types/partner'
 import type { Site } from '@/lib/types/site'
+import type { SiteConfig } from '@/lib/types/site-config'
 
 interface PageAuxData {
   testimonials?: Testimonial[]
@@ -38,6 +40,7 @@ interface PageAuxData {
   partners?: Partner[]
   customerLogos?: Array<{ url: string; name: string }>
   sites?: Site[]
+  siteConfig?: SiteConfig | null
 }
 
 interface PageConfig {
@@ -105,7 +108,11 @@ const PAGE_CONFIG: Record<string, PageConfig> = {
     topChrome: () => <HubBanner title="About COIN" quickLinks={ABOUT_QUICK_LINKS} />,
   },
   locations: { title: 'Locations page', previewPath: '/locations', fetchAux: fetchLocationsAux },
-  contact: { title: 'Contact page', previewPath: '/contact' },
+  contact: {
+    title: 'Contact page',
+    previewPath: '/contact',
+    fetchAux: async () => ({ siteConfig: await getSiteConfig() }),
+  },
   'case-studies': {
     title: 'Case Studies',
     previewPath: '/resources/case-studies',
@@ -400,6 +407,7 @@ export default function PageVisualEditor() {
               partners={aux.partners}
               customerLogos={aux.customerLogos}
               sites={aux.sites}
+              siteConfig={aux.siteConfig}
               hideTypes={config.hideTypes}
               withSectionOverlay
             />

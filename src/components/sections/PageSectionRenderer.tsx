@@ -6,6 +6,7 @@ import { TeamMember } from '@/lib/types/team'
 import { Partner } from '@/lib/types/partner'
 import { Site } from '@/lib/types/site'
 import { ServiceDocument } from '@/lib/types/service'
+import { SiteConfig } from '@/lib/types/site-config'
 import HeroSection from '@/components/sections/HeroSection'
 import HeroSimple from '@/components/sections/HeroSimple'
 import ServicePillars from '@/components/sections/ServicePillars'
@@ -46,6 +47,8 @@ interface PageSectionRendererProps {
   customerLogos?: Array<{ url: string; name: string }>
   sites?: Site[]
   services?: ServiceDocument[]
+  /** Used by ContactForm to render phone numbers and email from settings. */
+  siteConfig?: SiteConfig | null
   /** When true, each section is wrapped in a CMS edit overlay (admin only). */
   withSectionOverlay?: boolean
   /** Section types to skip rendering. originalIndex is preserved for the
@@ -62,6 +65,7 @@ export default function PageSectionRenderer({
   customerLogos,
   sites,
   services,
+  siteConfig,
   withSectionOverlay = false,
   hideTypes,
 }: PageSectionRendererProps) {
@@ -86,7 +90,7 @@ export default function PageSectionRenderer({
       case 'cta_banner':
         return <CTABanner section={section} locale={locale} basePath={basePath} />
       case 'contact_form':
-        return <ContactForm section={section} locale={locale} />
+        return <ContactForm section={section} locale={locale} siteConfig={siteConfig} />
       case 'contact_info':
         return <ContactInfo section={section} locale={locale} />
       case 'rich_text':

@@ -6,10 +6,12 @@ import { Send, CheckCircle, Mail, MapPin, ArrowRight } from 'lucide-react'
 import { getLocalizedField } from '@/lib/locale'
 import { ContactFormSection } from '@/lib/types/page'
 import { Locale } from '@/lib/types/locale'
+import { SiteConfig } from '@/lib/types/site-config'
 
 interface ContactFormProps {
   section: ContactFormSection
   locale: Locale
+  siteConfig?: SiteConfig | null
 }
 
 interface FormData {
@@ -28,7 +30,12 @@ const inputClass =
 
 const labelClass = 'block text-sm font-semibold text-secondary-700 mb-2'
 
-export default function ContactForm({ section, locale }: ContactFormProps) {
+export default function ContactForm({ section, locale, siteConfig }: ContactFormProps) {
+  const phoneNL = siteConfig?.phoneNL?.trim()
+  const phoneLU = siteConfig?.phoneLU?.trim()
+  const contactEmail = siteConfig?.contactEmail?.trim()
+  const phoneNLHref = phoneNL ? phoneNL.replace(/\s/g, '') : ''
+  const phoneLUHref = phoneLU ? phoneLU.replace(/\s/g, '') : ''
   const [formData, setFormData] = useState<FormData>({
     subject: '',
     company: '',
@@ -333,26 +340,41 @@ export default function ContactForm({ section, locale }: ContactFormProps) {
                 <p className="text-primary-300 text-sm mb-6">Call us directly at any of our offices.</p>
 
                 <div className="space-y-4">
-                  <a href="tel:+31882646000" className="flex items-center gap-3 text-white hover:text-accent-400 transition-colors">
-                    <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">NL</span>
-                    <span className="font-semibold">+31 88 26 46 000</span>
-                  </a>
-                  <a href="tel:+35235705030" className="flex items-center gap-3 text-white hover:text-accent-400 transition-colors">
-                    <span className="flex items-center gap-1">
-                      <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">FR</span>
-                      <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">DE</span>
-                      <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">EN</span>
-                    </span>
-                    <span className="font-semibold">+352 357 05 30</span>
-                  </a>
+                  {phoneNL && (
+                    <a
+                      href={`tel:${phoneNLHref}`}
+                      className="flex items-center gap-3 text-white hover:text-accent-400 transition-colors"
+                    >
+                      <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">NL</span>
+                      <span className="font-semibold">{phoneNL}</span>
+                    </a>
+                  )}
+                  {phoneLU && (
+                    <a
+                      href={`tel:${phoneLUHref}`}
+                      className="flex items-center gap-3 text-white hover:text-accent-400 transition-colors"
+                    >
+                      <span className="flex items-center gap-1">
+                        <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">FR</span>
+                        <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">DE</span>
+                        <span className="text-xs font-bold bg-white/10 rounded px-2 py-1">EN</span>
+                      </span>
+                      <span className="font-semibold">{phoneLU}</span>
+                    </a>
+                  )}
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-white/10">
-                  <a href="mailto:info@coin-bc.com" className="inline-flex items-center gap-2 text-accent-400 hover:text-accent-300 font-semibold transition-colors">
-                    <Mail className="w-4 h-4" />
-                    info@coin-bc.com
-                  </a>
-                </div>
+                {contactEmail && (
+                  <div className="mt-6 pt-6 border-t border-white/10">
+                    <a
+                      href={`mailto:${contactEmail}`}
+                      className="inline-flex items-center gap-2 text-accent-400 hover:text-accent-300 font-semibold transition-colors"
+                    >
+                      <Mail className="w-4 h-4" />
+                      {contactEmail}
+                    </a>
+                  </div>
+                )}
               </div>
 
             </div>
