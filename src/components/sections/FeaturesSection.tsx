@@ -15,7 +15,6 @@ import AnimatedSection from '@/components/ui/AnimatedSection'
 import EditableText from '@/components/admin/cms/EditableText'
 import RichInlineText from '@/components/admin/cms/RichInlineText'
 import EditableLink from '@/components/admin/cms/EditableLink'
-import CtaKindEditor from '@/components/admin/cms/CtaKindEditor'
 import { useEditing } from '@/components/admin/cms/EditingContext'
 
 interface FeaturesSectionProps {
@@ -138,32 +137,24 @@ export default function FeaturesSection({ section, locale, basePath = '' }: Feat
                         )}
                         {isEditing && (
                           <div className="flex flex-col gap-2 mt-1">
-                            <div className="flex items-center flex-wrap gap-1.5">
-                              <EditableLink
-                                path={`${basePath}.features.${index}.articleHref1`}
-                                value={feature.articleHref1}
-                                label="Article link 1"
-                              />
-                              <CtaKindEditor
-                                kindPath={`${basePath}.features.${index}.articleKind1`}
-                                kind={feature.articleKind1}
-                                labelPath={`${basePath}.features.${index}.articleLabel1`}
-                                customLabel={feature.articleLabel1}
-                              />
-                            </div>
-                            <div className="flex items-center flex-wrap gap-1.5">
-                              <EditableLink
-                                path={`${basePath}.features.${index}.articleHref2`}
-                                value={feature.articleHref2}
-                                label="Article link 2"
-                              />
-                              <CtaKindEditor
-                                kindPath={`${basePath}.features.${index}.articleKind2`}
-                                kind={feature.articleKind2}
-                                labelPath={`${basePath}.features.${index}.articleLabel2`}
-                                customLabel={feature.articleLabel2}
-                              />
-                            </div>
+                            <EditableLink
+                              path={`${basePath}.features.${index}.articleHref1`}
+                              value={feature.articleHref1}
+                              label="Article link 1"
+                              ctaKindPath={`${basePath}.features.${index}.articleKind1`}
+                              ctaKind={feature.articleKind1}
+                              ctaLabelPath={`${basePath}.features.${index}.articleLabel1`}
+                              ctaCustomLabel={feature.articleLabel1}
+                            />
+                            <EditableLink
+                              path={`${basePath}.features.${index}.articleHref2`}
+                              value={feature.articleHref2}
+                              label="Article link 2"
+                              ctaKindPath={`${basePath}.features.${index}.articleKind2`}
+                              ctaKind={feature.articleKind2}
+                              ctaLabelPath={`${basePath}.features.${index}.articleLabel2`}
+                              ctaCustomLabel={feature.articleLabel2}
+                            />
                           </div>
                         )}
                       </div>

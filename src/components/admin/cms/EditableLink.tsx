@@ -5,42 +5,82 @@ import { createPortal } from 'react-dom'
 import { Link2, X } from 'lucide-react'
 import { useEditing } from './EditingContext'
 import LinkPickerControls, { InternalRoutesDatalist } from './LinkPickerControls'
+import {
+  CTA_KIND_CHOICES,
+  CTA_KIND_LABELS,
+  type CtaKindChoice,
+} from '@/lib/utils/cta-labels'
+import { LocaleString, createEmptyLocaleString } from '@/lib/types/locale'
 
 interface Props {
   path: string
   value: string | null | undefined
   /** Optional small label shown next to the trigger (e.g. "Primary CTA"). */
   label?: string
+  /**
+   * Optional CTA-label-kind controls. When all four props are provided,
+   * the popover also exposes a "Label" picker (auto / typed kinds /
+   * custom). Selecting `custom` reveals a single-locale text input bound
+   * to the active editing locale. URL, kind and custom label are
+   * committed atomically on Save.
+   */
+  ctaKindPath?: string
+  ctaKind?: CtaKindChoice
+  ctaLabelPath?: string
+  ctaCustomLabel?: LocaleString
 }
 
 const POPOVER_WIDTH = 384 // w-96
 const POPOVER_MARGIN = 16
-const POPOVER_HEIGHT_ESTIMATE = 320 // upper bound; only used to flip above when no room below
+const POPOVER_HEIGHT_ESTIMATE = 380
 
 /**
  * Edit-mode-only inline link picker. Renders nothing on the public site.
  * In edit mode renders a small trigger ("🔗 Edit link") that opens an
- * inline popover wrapping LinkPickerControls plus Save / Cancel.
+ * inline popover wrapping LinkPickerControls plus optional CTA-label
+ * controls and Save / Cancel.
  *
  * The popover is rendered via a portal to document.body so it escapes any
  * `overflow: hidden` ancestor (e.g. the hero carousel).
  */
-export default function EditableLink({ path, value, label }: Props) {
+export default function EditableLink({
+  path,
+  value,
+  label,
+  ctaKindPath,
+  ctaKind,
+  ctaLabelPath,
+  ctaCustomLabel,
+}: Props) {
   const ctx = useEditing()
+  const activeLocale = ctx?.activeLocale ?? 'en'
+  const ctaEnabled = !!ctaKindPath && !!ctaLabelPath
+
   const [open, setOpen] = useState(false)
-  const [draft, setDraft] = useState(value ?? '')
+  const [draftUrl, setDraftUrl] = useState(value ?? '')
+  const [draftKind, setDraftKind] = useState<CtaKindChoice>(ctaKind ?? 'auto')
+  const [draftCustomLabel, setDraftCustomLabel] = useState<string>(
+    ctaCustomLabel?.[activeLocale] ?? '',
+  )
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Re-sync the draft when the canonical value changes externally
-  // (e.g., when the parent updates after a discard or remote refresh).
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDraft(value ?? '')
+    setDraftUrl(value ?? '')
   }, [value])
 
-  // Reposition popover on scroll/resize while open, so it tracks the trigger.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDraftKind(ctaKind ?? 'auto')
+  }, [ctaKind])
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDraftCustomLabel(ctaCustomLabel?.[activeLocale] ?? '')
+  }, [ctaCustomLabel, activeLocale])
+
   useEffect(() => {
     if (!open) return
     const reposition = () => {
@@ -75,15 +115,30 @@ export default function EditableLink({ path, value, label }: Props) {
   }
 
   const save = () => {
-    const trimmed = draft.trim()
-    if (trimmed !== (value ?? '')) {
-      ctx.updateAt(path, trimmed)
+    const trimmedUrl = draftUrl.trim()
+    if (trimmedUrl !== (value ?? '')) {
+      ctx.updateAt(path, trimmedUrl)
+    }
+    if (ctaEnabled) {
+      const currentKind = ctaKind ?? 'auto'
+      if (draftKind !== currentKind) {
+        ctx.updateAt(ctaKindPath!, draftKind === 'auto' ? undefined : draftKind)
+      }
+      if (draftKind === 'custom') {
+        const base = ctaCustomLabel ?? createEmptyLocaleString()
+        const currentLabel = base[activeLocale] ?? ''
+        if (draftCustomLabel !== currentLabel) {
+          ctx.updateAt(ctaLabelPath!, { ...base, [activeLocale]: draftCustomLabel })
+        }
+      }
     }
     setOpen(false)
   }
 
   const cancel = () => {
-    setDraft(value ?? '')
+    setDraftUrl(value ?? '')
+    setDraftKind(ctaKind ?? 'auto')
+    setDraftCustomLabel(ctaCustomLabel?.[activeLocale] ?? '')
     setOpen(false)
   }
 
@@ -136,11 +191,39 @@ export default function EditableLink({ path, value, label }: Props) {
             </div>
 
             <LinkPickerControls
-              value={draft}
-              onChange={setDraft}
+              value={draftUrl}
+              onChange={setDraftUrl}
               autoFocus
               inputRef={inputRef}
             />
+
+            {ctaEnabled && (
+              <div className="mt-3 pt-3 border-t border-gray-100">
+                <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                  Label
+                </label>
+                <select
+                  value={draftKind}
+                  onChange={(e) => setDraftKind(e.target.value as CtaKindChoice)}
+                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                >
+                  {CTA_KIND_CHOICES.map((c) => (
+                    <option key={c} value={c}>
+                      {CTA_KIND_LABELS[c]}
+                    </option>
+                  ))}
+                </select>
+                {draftKind === 'custom' && (
+                  <input
+                    type="text"
+                    value={draftCustomLabel}
+                    onChange={(e) => setDraftCustomLabel(e.target.value)}
+                    placeholder={`Custom label (${activeLocale.toUpperCase()})`}
+                    className="mt-2 w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  />
+                )}
+              </div>
+            )}
 
             <div className="mt-3 flex items-center justify-end gap-2">
               <button
