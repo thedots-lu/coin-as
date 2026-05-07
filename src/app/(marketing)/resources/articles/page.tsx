@@ -1,14 +1,17 @@
 import { Metadata } from 'next'
 import { getPublishedArticles } from '@/lib/firestore/articles'
+import { getPage } from '@/lib/firestore/pages'
+import { generatePageMetadata } from '@/lib/utils/metadata'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
 import TagFilterGrid from '@/components/knowledge-hub/TagFilterGrid'
 
 export const revalidate = 300
 
-export const metadata: Metadata = {
-  title: 'Articles',
-  description: 'Articles and resources on business continuity, disaster recovery and cyber resilience.',
-  alternates: { canonical: 'https://coin-bc.com/resources/articles' },
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage('resources-articles')
+  return generatePageMetadata(page?.seo, page?.title, {
+    path: '/resources/articles',
+  })
 }
 
 export default async function ArticlesPage() {

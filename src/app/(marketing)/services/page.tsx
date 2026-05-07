@@ -1,5 +1,6 @@
 import { getPublishedServices, getServiceBySlug } from '@/lib/firestore/services'
 import { getLocalizedField } from '@/lib/locale'
+import { generatePageMetadata } from '@/lib/utils/metadata'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
@@ -7,17 +8,9 @@ import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
 
 export const revalidate = 300
 
-export const metadata: Metadata = {
-  title: 'Services',
-  description:
-    'COIN business continuity services: consultancy & training, recovery workplaces, crisis management, IT housing, cyber resilience.',
-  alternates: { canonical: 'https://coin-bc.com/services' },
-  openGraph: {
-    title: 'Our Services | COIN AS',
-    description:
-      'COIN business continuity services: consultancy & training, recovery workplaces, crisis management, IT housing, cyber resilience.',
-    url: 'https://coin-bc.com/services',
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const overview = await getServiceBySlug('overview')
+  return generatePageMetadata(overview?.seo, overview?.title, { path: '/services' })
 }
 
 export default async function ServicesPage() {

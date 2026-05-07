@@ -1,14 +1,15 @@
 import { Metadata } from 'next'
 import { getCoinYoutubeVideos } from '@/lib/youtube'
+import { getPage } from '@/lib/firestore/pages'
+import { generatePageMetadata } from '@/lib/utils/metadata'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
 import YoutubeVideos from '@/components/sections/YoutubeVideos'
 
 export const revalidate = 300
 
-export const metadata: Metadata = {
-  title: 'Videos',
-  description: 'All videos from the COIN Business Continuity YouTube channel, playable directly on the site.',
-  alternates: { canonical: 'https://coin-bc.com/resources/videos' },
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage('resources-videos')
+  return generatePageMetadata(page?.seo, page?.title, { path: '/resources/videos' })
 }
 
 export default async function VideosPage() {

@@ -13,7 +13,7 @@ export const revalidate = 300
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage('about')
   if (!page) return { title: 'About Us' }
-  return generatePageMetadata(page.seo, page.title)
+  return generatePageMetadata(page.seo, page.title, { path: '/about' })
 }
 
 export default async function AboutPage() {

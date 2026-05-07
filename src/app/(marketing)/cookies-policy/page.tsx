@@ -9,7 +9,7 @@ export const revalidate = 300
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage('cookies-policy')
   if (!page) return { title: 'Cookies Policy' }
-  return generatePageMetadata(page.seo, page.title)
+  return generatePageMetadata(page.seo, page.title, { path: '/cookies-policy' })
 }
 
 export default async function CookiesPolicyPage() {

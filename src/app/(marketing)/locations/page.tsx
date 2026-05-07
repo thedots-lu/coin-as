@@ -9,7 +9,7 @@ export const revalidate = 300
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage('locations')
   if (!page) return { title: 'Locations' }
-  return generatePageMetadata(page.seo, page.title)
+  return generatePageMetadata(page.seo, page.title, { path: '/locations' })
 }
 
 export default async function LocationsPage() {

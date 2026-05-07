@@ -1,5 +1,6 @@
 import { getServiceBySlug, getPublishedServices } from '@/lib/firestore/services'
 import { getLocalizedField } from '@/lib/locale'
+import { generatePageMetadata } from '@/lib/utils/metadata'
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
@@ -24,19 +25,9 @@ export async function generateMetadata({
   const { slug } = await params
   const service = await getServiceBySlug(slug)
   if (!service) return { title: 'Service Not Found' }
-
-  const title = getLocalizedField(service.seo?.metaTitle, 'en') || getLocalizedField(service.title, 'en')
-  const description = getLocalizedField(service.seo?.metaDescription, 'en') || getLocalizedField(service.overview, 'en')
-
-  return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description,
-      ...(service.seo?.ogImage ? { images: [{ url: service.seo.ogImage }] } : {}),
-    },
-  }
+  return generatePageMetadata(service.seo, service.title, {
+    path: `/services/${slug}`,
+  })
 }
 
 export default async function ServicePage({

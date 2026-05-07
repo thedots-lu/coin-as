@@ -4,9 +4,11 @@ import Image from 'next/image'
 import { ArrowRight, BookOpen, FileText, Video, Newspaper, HelpCircle } from 'lucide-react'
 import { getPublishedArticles } from '@/lib/firestore/articles'
 import { getPublishedNews } from '@/lib/firestore/news'
+import { getPage } from '@/lib/firestore/pages'
 import { getCoinYoutubeVideos } from '@/lib/youtube'
 import { getLocalizedField } from '@/lib/locale'
 import { formatDate } from '@/lib/utils/date'
+import { generatePageMetadata } from '@/lib/utils/metadata'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
 import ArticleCard from '@/components/knowledge-hub/ArticleCard'
 import type { NewsItem } from '@/lib/types/news'
@@ -14,15 +16,9 @@ import type { YoutubeVideo } from '@/lib/youtube'
 
 export const revalidate = 300
 
-export const metadata: Metadata = {
-  title: 'Resources',
-  description: 'Articles, case studies, videos and news on business continuity, disaster recovery and cyber resilience.',
-  alternates: { canonical: 'https://coin-bc.com/resources' },
-  openGraph: {
-    title: 'Resources | COIN AS',
-    description: 'Articles, case studies, videos and news on business continuity, disaster recovery and cyber resilience.',
-    url: 'https://coin-bc.com/resources',
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage('resources')
+  return generatePageMetadata(page?.seo, page?.title, { path: '/resources' })
 }
 
 export default async function KnowledgeHubOverview() {

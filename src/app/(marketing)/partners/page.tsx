@@ -3,7 +3,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Play } from 'lucide-react'
 import { getPublishedPartners } from '@/lib/firestore/partners'
+import { getPage } from '@/lib/firestore/pages'
 import { getLocalizedField } from '@/lib/locale'
+import { generatePageMetadata } from '@/lib/utils/metadata'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
 
 function getYoutubeId(url: string | null | undefined): string | null {
@@ -14,15 +16,9 @@ function getYoutubeId(url: string | null | undefined): string | null {
 
 export const revalidate = 300
 
-export const metadata: Metadata = {
-  title: 'Partners',
-  description: 'Discover our network of business and technology partners in the business continuity ecosystem.',
-  alternates: { canonical: 'https://coin-bc.com/partners' },
-  openGraph: {
-    title: 'Our Partners | COIN AS',
-    description: 'Discover our network of business and technology partners in the business continuity ecosystem.',
-    url: 'https://coin-bc.com/partners',
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage('partners')
+  return generatePageMetadata(page?.seo, page?.title, { path: '/partners' })
 }
 
 export default async function PartnersPage() {

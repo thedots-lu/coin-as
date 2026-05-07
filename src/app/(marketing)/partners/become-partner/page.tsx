@@ -1,11 +1,15 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { getPage } from '@/lib/firestore/pages'
+import { generatePageMetadata } from '@/lib/utils/metadata'
 
 export const revalidate = 300
 
-export const metadata: Metadata = {
-  title: 'Become a Partner',
-  description: 'Partner with COIN to deliver business continuity solutions across the BeNeLux region.',
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage('become-partner')
+  return generatePageMetadata(page?.seo, page?.title, {
+    path: '/partners/become-partner',
+  })
 }
 
 export default function BecomePartnerPage() {

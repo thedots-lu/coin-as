@@ -10,18 +10,9 @@ export const revalidate = 300
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage('case-studies')
-  const base: Metadata = {
-    alternates: { canonical: 'https://coin-bc.com/resources/case-studies' },
-  }
-  if (!page) {
-    return {
-      ...base,
-      title: 'Case Studies',
-      description:
-        'Real customer success stories on business continuity and disaster recovery solutions.',
-    }
-  }
-  return { ...generatePageMetadata(page.seo, page.title), ...base }
+  return generatePageMetadata(page?.seo, page?.title, {
+    path: '/resources/case-studies',
+  })
 }
 
 export default async function CaseStudiesPage() {

@@ -3,18 +3,12 @@ import Image from 'next/image'
 import { Metadata } from 'next'
 import { ArrowRight, Building2, Shield, Zap, Landmark, Briefcase } from 'lucide-react'
 import { getPublishedChallenges } from '@/lib/firestore/challenges'
+import { getPage } from '@/lib/firestore/pages'
+import { generatePageMetadata } from '@/lib/utils/metadata'
 
-export const metadata: Metadata = {
-  title: 'Business Continuity Challenges',
-  description:
-    'Every sector faces unique business continuity challenges. Discover how COIN AS helps Banking, Insurance, Utilities, and Government organizations stay resilient.',
-  alternates: { canonical: 'https://coin-bc.com/challenges' },
-  openGraph: {
-    title: 'Business Continuity Challenges by Sector | COIN AS',
-    description:
-      'Every sector faces unique business continuity challenges. Discover how COIN AS helps Banking, Insurance, Utilities, and Government organizations stay resilient.',
-    url: 'https://coin-bc.com/challenges',
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage('challenges')
+  return generatePageMetadata(page?.seo, page?.title, { path: '/challenges' })
 }
 
 const iconMap: Record<string, typeof Building2> = {

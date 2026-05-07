@@ -2,18 +2,14 @@ import { Metadata } from 'next'
 import FAQAccordion from '@/components/sections/FAQAccordion'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
 import { getPublishedFaqItems } from '@/lib/firestore/faq'
+import { getPage } from '@/lib/firestore/pages'
+import { generatePageMetadata } from '@/lib/utils/metadata'
 
 export const revalidate = 300
 
-export const metadata: Metadata = {
-  title: 'FAQ',
-  description: 'Frequently asked questions about business continuity, NIS2, DORA, and COIN services.',
-  alternates: { canonical: 'https://coin-bc.com/resources/faq' },
-  openGraph: {
-    title: 'FAQ - Business Continuity & COIN Services | COIN AS',
-    description: 'Frequently asked questions about business continuity, NIS2, DORA, and COIN services.',
-    url: 'https://coin-bc.com/resources/faq',
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage('resources-faq')
+  return generatePageMetadata(page?.seo, page?.title, { path: '/resources/faq' })
 }
 
 export default async function FAQPage() {

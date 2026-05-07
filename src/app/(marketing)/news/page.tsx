@@ -2,21 +2,17 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getPublishedNews } from '@/lib/firestore/news'
+import { getPage } from '@/lib/firestore/pages'
 import { getLocalizedField } from '@/lib/locale'
+import { generatePageMetadata } from '@/lib/utils/metadata'
 import { formatDate } from '@/lib/utils/date'
 import Badge from '@/components/ui/Badge'
 
 export const revalidate = 300
 
-export const metadata: Metadata = {
-  title: 'News',
-  description: 'Stay up to date with the latest news from COIN, your business continuity partner.',
-  alternates: { canonical: 'https://coin-bc.com/news' },
-  openGraph: {
-    title: 'News | COIN AS',
-    description: 'Stay up to date with the latest news from COIN, your business continuity partner.',
-    url: 'https://coin-bc.com/news',
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage('news')
+  return generatePageMetadata(page?.seo, page?.title, { path: '/news' })
 }
 
 export default async function NewsPage() {
