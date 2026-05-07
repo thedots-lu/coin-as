@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { getCoinYoutubeVideos } from '@/lib/youtube'
+import { getCuratedVideos } from '@/lib/firestore/youtube-videos'
 import { getPage } from '@/lib/firestore/pages'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function VideosPage() {
-  const videos = await getCoinYoutubeVideos()
+  const videos = await getCuratedVideos()
 
   return (
     <>

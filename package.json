@@ -12,6 +12,7 @@
     "seed-challenges": "npx tsx scripts/seed-challenges.ts",
     "seed-stub-pages": "npx tsx scripts/seed-stub-pages.ts",
     "retrim-customer-logos": "npx tsx scripts/retrim-customer-logos.ts",
+    "seed-youtube-videos": "npx tsx scripts/seed-youtube-videos.ts",
     "migrate-news": "npx tsx scripts/migrate-news.ts",
     "dump-firestore": "npx tsx scripts/dump-firestore.ts",
     "dump-storage": "npx tsx scripts/dump-storage.ts",
