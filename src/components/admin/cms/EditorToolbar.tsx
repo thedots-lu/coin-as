@@ -1,7 +1,7 @@
 'use client'
 
 import { Locale } from '@/lib/types/locale'
-import { ArrowLeft, ExternalLink, Save, Settings, SlidersHorizontal } from 'lucide-react'
+import { ArrowLeft, ExternalLink, Save, Search, Settings, SlidersHorizontal } from 'lucide-react'
 
 interface LocaleStat {
   locale: Locale
@@ -21,6 +21,7 @@ interface Props {
   previewHref: string
   formEditorHref?: string
   onOpenPageSettings?: () => void
+  onOpenSeoEditor?: () => void
 }
 
 const LOCALE_LABELS: Record<Locale, string> = { en: 'EN', fr: 'FR', nl: 'NL' }
@@ -37,6 +38,7 @@ export default function EditorToolbar({
   previewHref,
   formEditorHref,
   onOpenPageSettings,
+  onOpenSeoEditor,
 }: Props) {
   return (
     <div className="sticky top-0 z-40 bg-primary-950 text-white shadow-lg">
@@ -98,6 +100,17 @@ export default function EditorToolbar({
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
               Page settings
+            </button>
+          )}
+          {onOpenSeoEditor && (
+            <button
+              type="button"
+              onClick={onOpenSeoEditor}
+              className="inline-flex items-center gap-1.5 text-xs text-white/80 hover:text-white px-2 py-1.5 rounded hover:bg-white/10 transition-colors"
+              title="Edit SEO (title, description, OG image)"
+            >
+              <Search className="w-3.5 h-3.5" />
+              SEO
             </button>
           )}
           {formEditorHref && (

@@ -19,6 +19,7 @@ import {
 } from '@/components/admin/cms/EditingContext'
 import EditorToolbar from '@/components/admin/cms/EditorToolbar'
 import SectionSettingsDrawer from '@/components/admin/cms/SectionSettingsDrawer'
+import SeoSettingsDrawer from '@/components/admin/cms/SeoSettingsDrawer'
 import { InternalRoutesDatalist } from '@/components/admin/cms/EditableLink'
 import { computeLocaleStats } from '@/components/admin/cms/localeStats'
 import { getPublishedTeamMembers } from '@/lib/firestore/team'
@@ -48,6 +49,10 @@ interface PageConfig {
   hideTypes?: ReadonlyArray<string>
   /** Optional chrome rendered above the sections (e.g. HubBanner on About). */
   topChrome?: () => ReactNode
+  /** When true, the public page is rendered dynamically from another
+   *  collection (partners, news, etc.) so the visual editor only manages
+   *  SEO. Disables the empty-sections rendering path. */
+  seoOnly?: boolean
 }
 
 async function fetchHomeAux(): Promise<PageAuxData> {
@@ -109,6 +114,28 @@ const PAGE_CONFIG: Record<string, PageConfig> = {
   'legal-notice': { title: 'Legal Notice', previewPath: '/legal-notice' },
   'privacy-policy': { title: 'Privacy Policy', previewPath: '/privacy-policy' },
   'cookies-policy': { title: 'Cookies Policy', previewPath: '/cookies-policy' },
+  // SEO-only pages: public route is rendered from another collection,
+  // only meta is editable here.
+  partners: { title: 'Partners', previewPath: '/partners', seoOnly: true },
+  'become-partner': {
+    title: 'Become a Partner',
+    previewPath: '/partners/become-partner',
+    seoOnly: true,
+  },
+  news: { title: 'News', previewPath: '/news', seoOnly: true },
+  resources: { title: 'Resources hub', previewPath: '/resources', seoOnly: true },
+  'resources-articles': {
+    title: 'Articles',
+    previewPath: '/resources/articles',
+    seoOnly: true,
+  },
+  'resources-faq': { title: 'FAQ', previewPath: '/resources/faq', seoOnly: true },
+  'resources-videos': {
+    title: 'Videos',
+    previewPath: '/resources/videos',
+    seoOnly: true,
+  },
+  challenges: { title: 'Challenges', previewPath: '/challenges', seoOnly: true },
 }
 
 export default function PageVisualEditor() {
@@ -122,6 +149,7 @@ export default function PageVisualEditor() {
   const [aux, setAux] = useState<PageAuxData>({})
   const [activeLocale, setActiveLocale] = useState<Locale>('en')
   const [selectedSectionIndex, setSelectedSectionIndex] = useState<number | null>(null)
+  const [seoOpen, setSeoOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -336,6 +364,7 @@ export default function PageVisualEditor() {
         onBack={handleBack}
         previewHref={config.previewPath}
         formEditorHref={`/admin/pages/${pageSlug}`}
+        onOpenSeoEditor={() => setSeoOpen(true)}
       />
 
       <EditingProvider
@@ -351,17 +380,30 @@ export default function PageVisualEditor() {
       >
         <div className="bg-white">
           {config.topChrome?.()}
-          <PageSectionRenderer
-            sections={draft.sections}
-            locale={activeLocale}
-            testimonials={aux.testimonials}
-            teamMembers={aux.teamMembers}
-            partners={aux.partners}
-            customerLogos={aux.customerLogos}
-            sites={aux.sites}
-            hideTypes={config.hideTypes}
-            withSectionOverlay
-          />
+          {config.seoOnly ? (
+            <div className="container-padding max-w-4xl mx-auto py-16">
+              <div className="rounded-lg border border-blue-200 bg-blue-50 px-5 py-4 text-sm text-blue-900">
+                <p className="font-semibold mb-1">SEO-only page</p>
+                <p>
+                  The body of <code className="px-1 py-0.5 rounded bg-white">{config.previewPath}</code> is rendered
+                  dynamically from another collection (partners, news, articles…) and is not editable here.
+                  Use the <strong>SEO</strong> button in the toolbar to update title, description and OG image.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <PageSectionRenderer
+              sections={draft.sections}
+              locale={activeLocale}
+              testimonials={aux.testimonials}
+              teamMembers={aux.teamMembers}
+              partners={aux.partners}
+              customerLogos={aux.customerLogos}
+              sites={aux.sites}
+              hideTypes={config.hideTypes}
+              withSectionOverlay
+            />
+          )}
         </div>
 
         {selectedSection && selectedSectionIndex !== null && (
@@ -379,6 +421,14 @@ export default function PageVisualEditor() {
                 deleteSection(selectedSectionIndex)
               }
             }}
+          />
+        )}
+
+        {seoOpen && (
+          <SeoSettingsDrawer
+            seo={draft.seo}
+            publicPath={config.previewPath}
+            onClose={() => setSeoOpen(false)}
           />
         )}
       </EditingProvider>

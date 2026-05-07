@@ -14,6 +14,7 @@ import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
 import ServiceBreadcrumb from '@/components/layout/ServiceBreadcrumb'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
 import ServicePageSettingsDrawer from '@/components/admin/cms/ServicePageSettingsDrawer'
+import SeoSettingsDrawer from '@/components/admin/cms/SeoSettingsDrawer'
 import { getPublishedServices } from '@/lib/firestore/services'
 
 const EMPTY_LOCALE = { en: '', fr: '', nl: '' }
@@ -58,6 +59,7 @@ export default function ServiceVisualEditor() {
   const [activeLocale, setActiveLocale] = useState<Locale>('en')
   const [selectedSectionIndex, setSelectedSectionIndex] = useState<number | null>(null)
   const [pageSettingsOpen, setPageSettingsOpen] = useState(false)
+  const [seoOpen, setSeoOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -291,6 +293,7 @@ export default function ServiceVisualEditor() {
         previewHref={previewPath}
         formEditorHref={`/admin/services/${slug}`}
         onOpenPageSettings={isOverview ? undefined : () => setPageSettingsOpen(true)}
+        onOpenSeoEditor={() => setSeoOpen(true)}
       />
 
       <EditingProvider
@@ -341,6 +344,14 @@ export default function ServiceVisualEditor() {
             card={draft.card}
             articleHref={draft.articleHref}
             onClose={() => setPageSettingsOpen(false)}
+          />
+        )}
+
+        {seoOpen && (
+          <SeoSettingsDrawer
+            seo={draft.seo}
+            publicPath={previewPath}
+            onClose={() => setSeoOpen(false)}
           />
         )}
       </EditingProvider>
