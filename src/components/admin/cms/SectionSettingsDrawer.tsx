@@ -2,9 +2,11 @@
 
 import Image from 'next/image'
 import { useEffect, useState, ReactNode } from 'react'
-import { X, ArrowUp, ArrowDown, Trash2, Plus, Eye, EyeOff } from 'lucide-react'
+import { collection, getDocs } from 'firebase/firestore'
+import { X, ArrowUp, ArrowDown, Trash2, Plus, Eye, EyeOff, Copy, Loader2 } from 'lucide-react'
 import { useEditing } from './EditingContext'
 import LinkPickerControls from './LinkPickerControls'
+import { dbAdmin } from '@/lib/firebase/config'
 import {
   PageSection,
   HeroSection,
@@ -681,6 +683,7 @@ function ImageCarouselFields({
   const ctx = useEditing()!
   const ctxLocale = ctx.activeLocale
   const slides = section.slides ?? []
+  const [clonePickerOpen, setClonePickerOpen] = useState(false)
 
   const updateSlides = (next: ImageCarouselSection['slides']) => {
     ctx.updateAt(`${basePath}.slides`, next)
@@ -705,6 +708,19 @@ function ImageCarouselFields({
 
   const toggleVisible = (i: number) => {
     ctx.updateAt(`${basePath}.slides.${i}.visible`, !(slides[i].visible !== false))
+  }
+
+  const handleCloneApply = (
+    sourceSlides: ImageCarouselSection['slides'],
+    mode: 'replace' | 'append',
+  ) => {
+    const copy = sourceSlides.map((s) => ({
+      imageUrl: s.imageUrl ?? null,
+      caption: s.caption ?? createEmptyLocaleString(),
+      ...(s.visible === false ? { visible: false } : {}),
+    }))
+    updateSlides(mode === 'replace' ? copy : [...slides, ...copy])
+    setClonePickerOpen(false)
   }
 
   return (
@@ -799,6 +815,246 @@ function ImageCarouselFields({
       >
         <Plus className="w-3.5 h-3.5" /> Add slide
       </button>
+
+      <button
+        type="button"
+        onClick={() => setClonePickerOpen(true)}
+        className="mt-2 w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-secondary-700 bg-white border border-secondary-200 rounded-md hover:bg-secondary-50 transition-colors"
+      >
+        <Copy className="w-3.5 h-3.5" /> Copy slides from another carousel…
+      </button>
+
+      {clonePickerOpen && (
+        <CarouselClonePicker
+          currentBasePath={ctx.storageBasePath}
+          currentHasSlides={slides.length > 0}
+          onClose={() => setClonePickerOpen(false)}
+          onApply={handleCloneApply}
+        />
+      )}
+    </>
+  )
+}
+
+interface CarouselSource {
+  collection: 'pages' | 'services'
+  docId: string
+  docTitle: string
+  sectionIndex: number
+  sectionOrder: number
+  heading?: import('@/lib/types/locale').LocaleString
+  slides: ImageCarouselSection['slides']
+}
+
+function CarouselClonePicker({
+  currentBasePath,
+  currentHasSlides,
+  onClose,
+  onApply,
+}: {
+  /** e.g. "services/recovery-workplaces" or "pages/locations" — used to skip
+   *  the carousel currently being edited. */
+  currentBasePath: string
+  currentHasSlides: boolean
+  onClose: () => void
+  onApply: (slides: ImageCarouselSection['slides'], mode: 'replace' | 'append') => void
+}) {
+  const [loading, setLoading] = useState(true)
+  const [sources, setSources] = useState<CarouselSource[]>([])
+  const [error, setError] = useState<string | null>(null)
+  const [selected, setSelected] = useState<CarouselSource | null>(null)
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [onClose])
+
+  useEffect(() => {
+    let alive = true
+    ;(async () => {
+      try {
+        const [pagesSnap, servicesSnap] = await Promise.all([
+          getDocs(collection(dbAdmin, 'pages')),
+          getDocs(collection(dbAdmin, 'services')),
+        ])
+        if (!alive) return
+        const list: CarouselSource[] = []
+        const harvest = (coll: 'pages' | 'services', snap: typeof pagesSnap) => {
+          snap.forEach((d) => {
+            const data = d.data() as Record<string, unknown>
+            const sections = Array.isArray(data.sections) ? data.sections : []
+            const title = data.title as { en?: string } | undefined
+            const docTitle = title?.en || (d.id as string)
+            sections.forEach((s: Record<string, unknown>, idx: number) => {
+              if (s?.type !== 'image_carousel') return
+              const slides = Array.isArray(s.slides) ? (s.slides as ImageCarouselSection['slides']) : []
+              if (slides.length === 0) return
+              list.push({
+                collection: coll,
+                docId: d.id,
+                docTitle,
+                sectionIndex: idx,
+                sectionOrder: Number(s.order ?? 0),
+                heading: s.heading as CarouselSource['heading'],
+                slides,
+              })
+            })
+          })
+        }
+        harvest('pages', pagesSnap)
+        harvest('services', servicesSnap)
+        // Drop the carousel currently being edited
+        const filtered = list.filter(
+          (c) => `${c.collection}/${c.docId}` !== currentBasePath,
+        )
+        // Stable ordering for the picker
+        filtered.sort((a, b) => {
+          if (a.collection !== b.collection) return a.collection.localeCompare(b.collection)
+          if (a.docTitle !== b.docTitle) return a.docTitle.localeCompare(b.docTitle)
+          return a.sectionOrder - b.sectionOrder
+        })
+        setSources(filtered)
+      } catch (err) {
+        console.error('Failed to load carousels for clone picker:', err)
+        if (alive) setError('Failed to load carousels. Check the console.')
+      } finally {
+        if (alive) setLoading(false)
+      }
+    })()
+    return () => {
+      alive = false
+    }
+  }, [currentBasePath])
+
+  const apply = (mode: 'replace' | 'append') => {
+    if (!selected) return
+    onApply(selected.slides, mode)
+  }
+
+  return (
+    <>
+      <div
+        className="fixed inset-0 z-[70] bg-black/50 flex items-center justify-center p-4"
+        onClick={onClose}
+        aria-hidden
+      />
+      <div
+        className="fixed inset-0 z-[71] flex items-center justify-center p-4 pointer-events-none"
+        role="dialog"
+        aria-modal="true"
+      >
+        <div className="bg-white rounded-lg shadow-2xl w-full max-w-md max-h-[80vh] flex flex-col pointer-events-auto">
+          <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
+            <div>
+              <h3 className="text-base font-semibold text-gray-900">Copy slides</h3>
+              <p className="text-[11px] text-gray-500 mt-0.5">
+                Pick a carousel — its slides will be added to this section.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-700 p-1.5 rounded hover:bg-gray-100"
+              aria-label="Close"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto">
+            {loading && (
+              <div className="px-5 py-8 flex items-center justify-center text-gray-500">
+                <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                <span className="text-sm">Loading carousels…</span>
+              </div>
+            )}
+            {error && (
+              <div className="px-5 py-6 text-sm text-red-600">{error}</div>
+            )}
+            {!loading && !error && sources.length === 0 && (
+              <div className="px-5 py-8 text-center text-sm text-gray-500">
+                No other carousels found in pages or services.
+              </div>
+            )}
+            {!loading && !error && sources.length > 0 && (
+              <ul className="divide-y divide-gray-100">
+                {sources.map((source) => {
+                  const isSelected =
+                    selected?.collection === source.collection &&
+                    selected.docId === source.docId &&
+                    selected.sectionIndex === source.sectionIndex
+                  const firstWithImage = source.slides.find((s) => s.imageUrl)
+                  return (
+                    <li key={`${source.collection}-${source.docId}-${source.sectionIndex}`}>
+                      <button
+                        type="button"
+                        onClick={() => setSelected(source)}
+                        className={`w-full flex items-center gap-3 px-5 py-3 text-left transition-colors ${
+                          isSelected ? 'bg-primary-50' : 'hover:bg-gray-50'
+                        }`}
+                      >
+                        <div className="relative w-12 h-12 bg-gray-100 rounded shrink-0 overflow-hidden">
+                          {firstWithImage?.imageUrl ? (
+                            <Image
+                              src={firstWithImage.imageUrl}
+                              alt=""
+                              fill
+                              sizes="48px"
+                              className="object-cover"
+                            />
+                          ) : (
+                            <div className="absolute inset-0 flex items-center justify-center text-[9px] text-gray-400">
+                              No image
+                            </div>
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">
+                            {source.collection === 'services' ? 'Service' : 'Page'}
+                          </div>
+                          <div className="text-sm font-medium text-gray-900 truncate">
+                            {source.docTitle}
+                          </div>
+                          <div className="text-[11px] text-gray-500">
+                            {source.slides.length} slide{source.slides.length !== 1 ? 's' : ''}
+                          </div>
+                        </div>
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+          </div>
+
+          {selected && (
+            <div className="px-5 py-3 border-t border-gray-200 bg-gray-50 flex items-center justify-end gap-2 flex-shrink-0">
+              {currentHasSlides && (
+                <button
+                  type="button"
+                  onClick={() => apply('append')}
+                  className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
+                >
+                  Append ({selected.slides.length})
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  if (currentHasSlides && !confirm('Replace all current slides?')) return
+                  apply('replace')
+                }}
+                className="px-3 py-1.5 text-xs font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 transition-colors"
+              >
+                {currentHasSlides ? 'Replace all' : `Copy ${selected.slides.length} slides`}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
     </>
   )
 }
