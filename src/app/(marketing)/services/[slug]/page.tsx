@@ -4,8 +4,7 @@ import { generatePageMetadata } from '@/lib/utils/metadata'
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
-import ServiceBreadcrumb from '@/components/layout/ServiceBreadcrumb'
-import ServiceBanner from '@/components/sections/ServiceBanner'
+import ServiceHeader from '@/components/layout/ServiceHeader'
 import RelatedServicesCarousel from '@/components/sections/RelatedServicesCarousel'
 
 const RELATED_ORDER = [
@@ -51,10 +50,9 @@ export default async function ServicePage({
 
   return (
     <>
-      <ServiceBreadcrumb serviceTitle={getLocalizedField(service.title, 'en')} />
-      <ServiceBanner
+      <ServiceHeader
         imageUrl={service.heroImageUrl}
-        alt={getLocalizedField(service.title, 'en')}
+        serviceTitle={getLocalizedField(service.title, 'en')}
       />
       {/* Dynamic sections */}
       {service.sections && service.sections.length > 0 && (

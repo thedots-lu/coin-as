@@ -11,8 +11,7 @@ import { extractUrls } from '@/lib/utils/extract-urls'
 import { ServiceDocument } from '@/lib/types/service'
 import { Locale } from '@/lib/types/locale'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
-import ServiceBreadcrumb from '@/components/layout/ServiceBreadcrumb'
-import ServiceBanner from '@/components/sections/ServiceBanner'
+import ServiceHeader from '@/components/layout/ServiceHeader'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
 import ServicePageSettingsDrawer from '@/components/admin/cms/ServicePageSettingsDrawer'
 import SeoSettingsDrawer from '@/components/admin/cms/SeoSettingsDrawer'
@@ -314,10 +313,7 @@ export default function ServiceVisualEditor() {
           {isOverview ? (
             <HubBanner title={serviceTitle || 'Our Services'} quickLinks={overviewQuickLinks} />
           ) : (
-            <>
-              <ServiceBreadcrumb serviceTitle={serviceTitle} />
-              <ServiceBanner imageUrl={draft.heroImageUrl} alt={serviceTitle} />
-            </>
+            <ServiceHeader imageUrl={draft.heroImageUrl} serviceTitle={serviceTitle} />
           )}
           <PageSectionRenderer
             sections={draft.sections}

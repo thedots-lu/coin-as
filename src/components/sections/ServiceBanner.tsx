@@ -1,35 +1,78 @@
 'use client'
 
+import Link from 'next/link'
+import { ChevronRight } from 'lucide-react'
 import EditableImage from '@/components/admin/cms/EditableImage'
 import { useEditing } from '@/components/admin/cms/EditingContext'
 
 interface Props {
   imageUrl: string | null | undefined
-  alt?: string
+  serviceTitle: string
 }
 
 /**
- * Full-width banner image rendered at the top of an individual service page.
- * Hidden entirely when no image is set (the page just starts at the first
- * Firestore section). In the visual editor the placeholder stays visible so
- * the admin can upload one. Path is hard-coded to `heroImageUrl` because that
- * is the ServiceDocument field this banner reads from.
+ * Full-width banner at the top of an individual service page.
+ *
+ * - Public, no image: returns null. The classic <ServiceBreadcrumb> stays.
+ * - Public, with image: image + dark overlay + breadcrumb top-left + title
+ *   centered. The breadcrumb is rendered inside this component (not above it)
+ *   so the page header stays at one block when imagery is set.
+ * - Editor, no image: bare placeholder with the Upload button. The classic
+ *   <ServiceBreadcrumb> still renders above so the editor isn't disoriented.
+ * - Editor, with image: same as public, image is replaceable via EditableImage.
  */
-export default function ServiceBanner({ imageUrl, alt }: Props) {
+export default function ServiceBanner({ imageUrl, serviceTitle }: Props) {
   const isEditing = !!useEditing()
   if (!imageUrl && !isEditing) return null
+
+  const hasImage = !!imageUrl
 
   return (
     <section className="relative w-full h-48 md:h-64 lg:h-80 bg-gray-100 overflow-hidden">
       <EditableImage
         path="heroImageUrl"
         src={imageUrl ?? null}
-        alt={alt ?? ''}
+        alt={serviceTitle}
         fill
         priority
         sizes="100vw"
         className="object-cover"
       />
+
+      {hasImage && (
+        <>
+          {/* Dark overlay for legible text on any photo */}
+          <div className="absolute inset-0 bg-black/35 pointer-events-none" />
+
+          {/* Breadcrumb pinned top-left */}
+          <nav
+            aria-label="Breadcrumb"
+            className="absolute top-0 inset-x-0 container-padding py-3 z-10"
+          >
+            <ol className="flex items-center gap-1.5 text-sm">
+              <li>
+                <Link
+                  href="/services"
+                  className="text-white/85 hover:text-white font-medium transition-colors drop-shadow"
+                >
+                  Services
+                </Link>
+              </li>
+              <li>
+                <ChevronRight className="w-3.5 h-3.5 text-white/70" />
+              </li>
+              <li className="text-white font-semibold truncate drop-shadow">{serviceTitle}</li>
+            </ol>
+          </nav>
+
+          {/* Title centered horizontally + vertically */}
+          <div className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none">
+            <h1 className="text-white text-3xl md:text-5xl lg:text-6xl font-bold font-display text-center drop-shadow-lg">
+              {serviceTitle}
+            </h1>
+          </div>
+        </>
+      )}
     </section>
   )
 }
