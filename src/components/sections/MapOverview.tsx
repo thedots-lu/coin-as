@@ -15,7 +15,9 @@ import { useEditing } from '@/components/admin/cms/EditingContext'
 const DEFAULT_MAP_IMAGE = '/images/coin/Amsterdam.png'
 const DEFAULT_ISO_BADGE = '/images/coin/kiwa-iso-27001-logo.jpg'
 const DEFAULT_HEADING = 'Our Locations'
+const DEFAULT_CTA_LABEL = 'View all our locations'
 const DEFAULT_COLOR = 'var(--color-primary-500)'
+const EMPTY_LS: LocaleString = { en: '', fr: '', nl: '' }
 
 interface MapOverviewProps {
   section: MapOverviewSection
@@ -84,6 +86,8 @@ export default function MapOverview({ section, locale, basePath, sites }: MapOve
   const mapSrc = section.mapImageUrl || DEFAULT_MAP_IMAGE
   const isoSrc = section.isoBadgeUrl || DEFAULT_ISO_BADGE
   const displayedSites = sites && sites.length > 0 ? sites : FALLBACK_SITES
+  const ctaLabelValue = section.ctaLabel ?? EMPTY_LS
+  const ctaLabelDisplayed = getLocalizedField(ctaLabelValue, locale) || DEFAULT_CTA_LABEL
 
   return (
     <section id="locations" className="py-16 md:py-20 bg-warm-50 scroll-mt-24">
@@ -155,7 +159,16 @@ export default function MapOverview({ section, locale, basePath, sites }: MapOve
               href="/locations"
               className="w-full max-w-sm inline-flex items-center justify-between gap-2 px-5 py-3 rounded-xl bg-primary-600 text-white text-sm font-semibold shadow-sm hover:bg-primary-700 transition-colors"
             >
-              <span>View all our locations</span>
+              {isEditing ? (
+                <EditableText
+                  path={`${basePath}.ctaLabel`}
+                  value={ctaLabelValue}
+                  placeholder={DEFAULT_CTA_LABEL}
+                  as="span"
+                />
+              ) : (
+                <span>{ctaLabelDisplayed}</span>
+              )}
               <ArrowRight className="w-4 h-4 shrink-0" />
             </Link>
           </div>

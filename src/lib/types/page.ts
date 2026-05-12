@@ -179,6 +179,7 @@ export interface MapOverviewSection {
   mapImageUrl: string | null
   mapEmbedUrl?: string | null
   isoBadgeUrl: string | null
+  ctaLabel?: LocaleString
 }
 
 export interface RoomTypesSection {
