@@ -1,7 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { ChevronLeft, ChevronRight, ImageIcon } from 'lucide-react'
 import { getLocalizedField } from '@/lib/locale'
 import { ImageCarouselSection } from '@/lib/types/page'
@@ -23,40 +22,84 @@ export default function ImageCarousel({ section, locale, basePath }: Props) {
   const isEditing = !!useEditing()
   const slides = section.slides ?? []
 
-  // Editor sees every slide (including hidden ones, marked visually); public
-  // visitors only see slides that are both visible and have an imageUrl.
+  // Editor sees every slide; public visitors only see visible slides with an
+  // imageUrl (an empty placeholder slide is useless on the public site).
   const renderable = slides
     .map((slide, originalIdx) => ({ slide, originalIdx }))
     .filter(({ slide }) =>
       isEditing ? true : slide.visible !== false && !!slide.imageUrl,
     )
 
-  const [active, setActive] = useState(0)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const [activeIdx, setActiveIdx] = useState(0)
   const [hoverPaused, setHoverPaused] = useState(false)
   const total = renderable.length
 
-  const next = useCallback(
-    () => setActive((i) => (i + 1) % Math.max(1, total)),
-    [total],
-  )
-  const prev = useCallback(
-    () => setActive((i) => (i - 1 + Math.max(1, total)) % Math.max(1, total)),
-    [total],
+  const getSlideWidth = useCallback(() => {
+    const el = trackRef.current
+    if (!el) return 0
+    const firstCard = el.querySelector<HTMLElement>('[data-carousel-slide]')
+    if (!firstCard) return el.clientWidth
+    const style = window.getComputedStyle(el)
+    const gap = parseFloat(style.columnGap || style.gap || '0') || 0
+    return firstCard.offsetWidth + gap
+  }, [])
+
+  const goTo = useCallback(
+    (idx: number, behavior: ScrollBehavior = 'smooth') => {
+      const el = trackRef.current
+      if (!el) return
+      const w = getSlideWidth()
+      if (w === 0) return
+      el.scrollTo({ left: idx * w, behavior })
+    },
+    [getSlideWidth],
   )
 
+  const next = useCallback(() => {
+    if (total === 0) return
+    goTo((activeIdx + 1) % total)
+  }, [activeIdx, total, goTo])
+
+  const prev = useCallback(() => {
+    if (total === 0) return
+    goTo((activeIdx - 1 + total) % total)
+  }, [activeIdx, total, goTo])
+
+  // Auto-play. Skipped in editor mode and when paused or only one slide.
   useEffect(() => {
     if (hoverPaused || isEditing || total <= 1) return
     const timer = setInterval(next, INTERVAL)
     return () => clearInterval(timer)
   }, [hoverPaused, isEditing, total, next])
 
-  // Reset active index if slides change and current pointer is now out of bounds.
+  // Sync activeIdx with the user's manual scroll position so the dots stay
+  // accurate when scrolling/swiping by hand.
   useEffect(() => {
-    if (active >= total && total > 0) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setActive(0)
+    const el = trackRef.current
+    if (!el || total === 0) return
+    let timeoutId: ReturnType<typeof setTimeout> | null = null
+    const handleScroll = () => {
+      if (timeoutId) clearTimeout(timeoutId)
+      timeoutId = setTimeout(() => {
+        const w = getSlideWidth()
+        if (w === 0) return
+        const idx = Math.round(el.scrollLeft / w)
+        const clamped = Math.max(0, Math.min(idx, total - 1))
+        setActiveIdx((prev) => (prev === clamped ? prev : clamped))
+      }, 100)
     }
-  }, [active, total])
+    el.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      el.removeEventListener('scroll', handleScroll)
+      if (timeoutId) clearTimeout(timeoutId)
+    }
+  }, [total, getSlideWidth])
+
+  // Reset scroll position if slides shrink and the current index is now OOB.
+  useEffect(() => {
+    if (activeIdx >= total && total > 0) goTo(0, 'auto')
+  }, [activeIdx, total, goTo])
 
   const headingValue: LocaleString = section.heading ?? EMPTY_LS
   const headingDisplayed = getLocalizedField(headingValue, locale)
@@ -79,13 +122,6 @@ export default function ImageCarousel({ section, locale, basePath }: Props) {
     )
   }
 
-  const activeIdx = Math.min(active, total - 1)
-  const { slide: current, originalIdx } = renderable[activeIdx]
-  const slidePath = `${basePath}.slides.${originalIdx}`
-  const captionValue: LocaleString = current.caption ?? EMPTY_LS
-  const captionDisplayed = getLocalizedField(captionValue, locale)
-  const isHidden = current.visible === false
-
   return (
     <section className="py-16 bg-warm-50">
       <div className="container-padding max-w-6xl mx-auto">
@@ -101,79 +137,90 @@ export default function ImageCarousel({ section, locale, basePath }: Props) {
         )}
 
         <div
-          className="relative rounded-2xl overflow-hidden shadow-2xl bg-gray-100"
+          className="relative"
           onMouseEnter={() => setHoverPaused(true)}
           onMouseLeave={() => setHoverPaused(false)}
         >
-          <div className="relative w-full aspect-[16/9]">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`${originalIdx}-${activeIdx}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4, ease: 'easeInOut' }}
-                className="absolute inset-0"
-              >
-                {current.imageUrl ? (
-                  <EditableImage
-                    path={`${slidePath}.imageUrl`}
-                    src={current.imageUrl}
-                    alt={captionDisplayed || 'Carousel image'}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 1024px"
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-200 text-gray-500">
-                    <ImageIcon className="w-10 h-10 mb-2" />
-                    <p className="text-sm">No image — click to upload</p>
-                    <div className="absolute inset-0">
+          <div
+            ref={trackRef}
+            className="flex gap-4 md:gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 -mx-4 px-4 md:mx-0 md:px-0"
+            style={{ scrollbarWidth: 'none' }}
+          >
+            {renderable.map(({ slide, originalIdx }) => {
+              const captionValue: LocaleString = slide.caption ?? EMPTY_LS
+              const captionText = getLocalizedField(captionValue, locale)
+              const isHidden = slide.visible === false
+              const slidePath = `${basePath}.slides.${originalIdx}`
+
+              return (
+                <div
+                  key={originalIdx}
+                  data-carousel-slide
+                  className="snap-start shrink-0 basis-full md:basis-[calc((100%-1.25rem)/2)] lg:basis-[calc((100%-2.5rem)/3)]"
+                >
+                  <div className="relative aspect-[16/9] rounded-2xl overflow-hidden shadow-lg bg-gray-100">
+                    {slide.imageUrl ? (
                       <EditableImage
                         path={`${slidePath}.imageUrl`}
-                        src={null}
-                        alt="Carousel image"
+                        src={slide.imageUrl}
+                        alt={captionText || 'Carousel image'}
                         fill
-                        sizes="(max-width: 1024px) 100vw, 1024px"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         className="object-cover"
                       />
-                    </div>
-                  </div>
-                )}
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-200 text-gray-500">
+                        <ImageIcon className="w-8 h-8 mb-2" />
+                        <p className="text-xs">Click to upload</p>
+                        <div className="absolute inset-0">
+                          <EditableImage
+                            path={`${slidePath}.imageUrl`}
+                            src={null}
+                            alt="Carousel image"
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            className="object-cover"
+                          />
+                        </div>
+                      </div>
+                    )}
 
-                {/* Bottom-left caption on dark gradient overlay */}
-                {(captionDisplayed || isEditing) && (
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/40 to-transparent pt-16 pb-5 px-5 md:pt-20 md:pb-7 md:px-8 pointer-events-none">
-                    <div className="pointer-events-auto max-w-3xl">
-                      <EditableText
-                        path={`${slidePath}.caption`}
-                        value={captionValue}
-                        placeholder="Caption"
-                        as="span"
-                        className="text-white text-base md:text-lg font-medium leading-snug drop-shadow"
-                        multiline
-                      />
-                    </div>
-                  </div>
-                )}
+                    {/* Bottom-left caption on dark gradient overlay */}
+                    {(captionText || isEditing) && (
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-12 pb-4 px-4 md:pt-14 md:pb-5 md:px-5 pointer-events-none">
+                        <div className="pointer-events-auto">
+                          <EditableText
+                            path={`${slidePath}.caption`}
+                            value={captionValue}
+                            placeholder="Caption"
+                            as="span"
+                            className="text-white text-sm md:text-base font-medium leading-snug drop-shadow"
+                            multiline
+                          />
+                        </div>
+                      </div>
+                    )}
 
-                {isEditing && isHidden && (
-                  <div className="absolute top-3 left-3 bg-amber-100 border border-amber-300 text-amber-900 text-[11px] font-semibold uppercase tracking-wider px-2 py-1 rounded pointer-events-none">
-                    Hidden
+                    {isEditing && isHidden && (
+                      <div className="absolute top-3 left-3 bg-amber-100 border border-amber-300 text-amber-900 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded pointer-events-none z-10">
+                        Hidden
+                      </div>
+                    )}
                   </div>
-                )}
-              </motion.div>
-            </AnimatePresence>
+                </div>
+              )
+            })}
           </div>
 
-          {/* Arrows */}
+          {/* Arrows. Hidden when every slide fits on screen at once (single
+              slide, or fewer slides than the LG viewport shows). */}
           {total > 1 && (
             <>
               <button
                 type="button"
                 onClick={prev}
                 aria-label="Previous slide"
-                className="absolute top-1/2 -translate-y-1/2 left-3 md:left-4 w-10 h-10 rounded-full bg-white/85 hover:bg-white text-secondary-800 shadow flex items-center justify-center transition-colors"
+                className="absolute top-1/2 -translate-y-1/2 left-2 md:-left-4 w-10 h-10 rounded-full bg-white shadow-md border border-secondary-100 text-secondary-800 flex items-center justify-center hover:border-primary-500 hover:text-primary-600 transition-colors z-10"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
@@ -181,32 +228,32 @@ export default function ImageCarousel({ section, locale, basePath }: Props) {
                 type="button"
                 onClick={next}
                 aria-label="Next slide"
-                className="absolute top-1/2 -translate-y-1/2 right-3 md:right-4 w-10 h-10 rounded-full bg-white/85 hover:bg-white text-secondary-800 shadow flex items-center justify-center transition-colors"
+                className="absolute top-1/2 -translate-y-1/2 right-2 md:-right-4 w-10 h-10 rounded-full bg-white shadow-md border border-secondary-100 text-secondary-800 flex items-center justify-center hover:border-primary-500 hover:text-primary-600 transition-colors z-10"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
             </>
           )}
-
-          {/* Dots */}
-          {total > 1 && (
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10">
-              {renderable.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => setActive(i)}
-                  aria-label={`Go to slide ${i + 1}`}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    i === activeIdx
-                      ? 'bg-white w-6'
-                      : 'bg-white/60 hover:bg-white/80'
-                  }`}
-                />
-              ))}
-            </div>
-          )}
         </div>
+
+        {/* Dots */}
+        {total > 1 && (
+          <div className="mt-6 flex items-center justify-center gap-1.5">
+            {renderable.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => goTo(i)}
+                aria-label={`Go to slide ${i + 1}`}
+                className={`h-2 rounded-full transition-all ${
+                  i === activeIdx
+                    ? 'bg-primary-600 w-6'
+                    : 'bg-secondary-300 w-2 hover:bg-secondary-400'
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )
