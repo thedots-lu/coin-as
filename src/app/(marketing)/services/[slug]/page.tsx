@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
 import ServiceBreadcrumb from '@/components/layout/ServiceBreadcrumb'
+import ServiceBanner from '@/components/sections/ServiceBanner'
 import RelatedServicesCarousel from '@/components/sections/RelatedServicesCarousel'
 
 const RELATED_ORDER = [
@@ -51,6 +52,10 @@ export default async function ServicePage({
   return (
     <>
       <ServiceBreadcrumb serviceTitle={getLocalizedField(service.title, 'en')} />
+      <ServiceBanner
+        imageUrl={service.heroImageUrl}
+        alt={getLocalizedField(service.title, 'en')}
+      />
       {/* Dynamic sections */}
       {service.sections && service.sections.length > 0 && (
         <PageSectionRenderer sections={service.sections} />

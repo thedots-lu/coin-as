@@ -12,6 +12,7 @@ import { ServiceDocument } from '@/lib/types/service'
 import { Locale } from '@/lib/types/locale'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
 import ServiceBreadcrumb from '@/components/layout/ServiceBreadcrumb'
+import ServiceBanner from '@/components/sections/ServiceBanner'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
 import ServicePageSettingsDrawer from '@/components/admin/cms/ServicePageSettingsDrawer'
 import SeoSettingsDrawer from '@/components/admin/cms/SeoSettingsDrawer'
@@ -103,7 +104,8 @@ export default function ServiceVisualEditor() {
       JSON.stringify(original.title) !== JSON.stringify(draft.title) ||
       JSON.stringify(original.seo) !== JSON.stringify(draft.seo) ||
       JSON.stringify(original.card) !== JSON.stringify(draft.card) ||
-      (original.articleHref ?? null) !== (draft.articleHref ?? null)
+      (original.articleHref ?? null) !== (draft.articleHref ?? null) ||
+      (original.heroImageUrl ?? null) !== (draft.heroImageUrl ?? null)
     )
   }, [original, draft])
 
@@ -191,6 +193,7 @@ export default function ServiceVisualEditor() {
         seo: draft.seo,
         card: draft.card ?? null,
         articleHref: draft.articleHref ?? null,
+        heroImageUrl: draft.heroImageUrl ?? null,
         updatedAt: Timestamp.now(),
       })
       await logAudit({
@@ -311,7 +314,10 @@ export default function ServiceVisualEditor() {
           {isOverview ? (
             <HubBanner title={serviceTitle || 'Our Services'} quickLinks={overviewQuickLinks} />
           ) : (
-            <ServiceBreadcrumb serviceTitle={serviceTitle} />
+            <>
+              <ServiceBreadcrumb serviceTitle={serviceTitle} />
+              <ServiceBanner imageUrl={draft.heroImageUrl} alt={serviceTitle} />
+            </>
           )}
           <PageSectionRenderer
             sections={draft.sections}
