@@ -1,5 +1,6 @@
 import type { Timestamp } from 'firebase/firestore'
 import type { LocaleString } from './locale'
+import type { PageSection } from './page'
 
 /**
  * A COIN business continuity centre / location. Single source of truth used
@@ -39,6 +40,23 @@ export interface Site {
   order: number
   /** Hidden from the public site when `false`. Defaults to `true`. */
   visible?: boolean
+  /**
+   * URL slug for the per-site detail page at /locations/<slug>. Auto-derived
+   * from `name.en` when missing. Kept optional on the type for legacy docs.
+   */
+  slug?: string
+  /**
+   * Slides shown in the carousel of the per-site detail page (the right
+   * 2/3 card next to the description). Same shape as ImageCarouselSection
+   * slides so the public renderer is shared.
+   */
+  gallerySlides?: Array<{
+    imageUrl: string | null
+    caption?: LocaleString
+    visible?: boolean
+  }>
+  /** Additional editable sections rendered below the intro cards block. */
+  sections?: PageSection[]
   createdAt?: Timestamp
   updatedAt?: Timestamp
 }
