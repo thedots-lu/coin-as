@@ -41,8 +41,10 @@ export default function ServiceBanner({ imageUrl, serviceTitle }: Props) {
 
       {hasImage && (
         <>
-          {/* Dark overlay for legible text on any photo */}
-          <div className="absolute inset-0 bg-black/35 pointer-events-none" />
+          {/* Dark overlay for legible text on any photo. Slightly heavier in
+              the middle band where the title sits so it pops without making
+              the corners look murky. */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/55 to-black/40 pointer-events-none" />
 
           {/* Breadcrumb pinned top-left */}
           <nav
@@ -67,7 +69,7 @@ export default function ServiceBanner({ imageUrl, serviceTitle }: Props) {
 
           {/* Title centered horizontally + vertically */}
           <div className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none">
-            <h1 className="text-white text-3xl md:text-5xl lg:text-6xl font-bold font-display text-center drop-shadow-lg">
+            <h1 className="text-white text-3xl md:text-5xl lg:text-6xl font-bold font-display text-center [text-shadow:0_2px_14px_rgba(0,0,0,0.55)]">
               {serviceTitle}
             </h1>
           </div>
