@@ -1,11 +1,13 @@
 'use client'
 
 import Image from 'next/image'
-import { Lock } from 'lucide-react'
+import Link from 'next/link'
+import { ArrowRight, Lock } from 'lucide-react'
 import { getLocalizedField } from '@/lib/locale'
 import { SiteGallerySection } from '@/lib/types/page'
 import { Site } from '@/lib/types/site'
 import { Locale } from '@/lib/types/locale'
+import { siteSlug } from '@/lib/firestore/sites'
 import AnimatedSection from '@/components/ui/AnimatedSection'
 import { useEditing } from '@/components/admin/cms/EditingContext'
 import { isHtml, sanitizeRichHtml } from '@/lib/utils/html'
@@ -37,8 +39,9 @@ export default function SiteGallery({ section, locale, sites }: SiteGalleryProps
         phone: s.phone,
         capacity: s.capacity,
         mapUrl: s.mapUrl,
+        slug: siteSlug(s),
       }))
-    : section.sites
+    : section.sites.map((s) => ({ ...s, slug: undefined as string | undefined }))
 
   return (
     <section className="py-20 bg-secondary-50">
@@ -126,19 +129,30 @@ export default function SiteGallery({ section, locale, sites }: SiteGalleryProps
                       )}
                     </div>
 
-                    {site.mapUrl && (
-                      <a
-                        href={site.mapUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors mt-2"
-                      >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                        </svg>
-                        View on map
-                      </a>
-                    )}
+                    <div className="mt-2 flex flex-wrap items-center gap-4">
+                      {site.slug && (
+                        <Link
+                          href={`/locations/${site.slug}`}
+                          className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
+                        >
+                          Learn more
+                          <ArrowRight className="w-4 h-4" />
+                        </Link>
+                      )}
+                      {site.mapUrl && (
+                        <a
+                          href={site.mapUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-sm font-medium text-secondary-600 hover:text-primary-600 transition-colors"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                          </svg>
+                          View on map
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
               </AnimatedSection>

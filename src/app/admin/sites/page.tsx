@@ -18,6 +18,7 @@ import { logAudit } from '@/lib/firebase/audit-log'
 import { Site } from '@/lib/types/site'
 import { Locale, LocaleString, createEmptyLocaleString } from '@/lib/types/locale'
 import RichTextEditor from '@/components/admin/RichTextEditor'
+import Link from 'next/link'
 import {
   Eye,
   EyeOff,
@@ -28,7 +29,9 @@ import {
   Pencil,
   X,
   GripVertical,
+  Layout,
 } from 'lucide-react'
+import { siteSlug } from '@/lib/firestore/sites'
 import {
   DndContext,
   closestCenter,
@@ -778,10 +781,17 @@ function SortableSiteRow({ item, onEdit, onDelete, onToggleVisible }: SortableSi
           <button
             onClick={onEdit}
             className="p-1.5 text-gray-400 hover:text-primary-700 hover:bg-primary-50 rounded transition-colors"
-            title="Edit"
+            title="Edit details"
           >
             <Pencil className="w-4 h-4" />
           </button>
+          <Link
+            href={`/admin/sites/${siteSlug(item)}/visual`}
+            className="p-1.5 text-gray-400 hover:text-primary-700 hover:bg-primary-50 rounded transition-colors"
+            title="Edit page"
+          >
+            <Layout className="w-4 h-4" />
+          </Link>
           <button
             onClick={onDelete}
             className="p-1.5 text-gray-400 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
