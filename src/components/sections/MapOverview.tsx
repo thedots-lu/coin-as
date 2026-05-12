@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { ArrowRight, Lock, Phone } from 'lucide-react'
 import { getLocalizedField } from '@/lib/locale'
 import { MapOverviewSection } from '@/lib/types/page'
@@ -81,6 +82,7 @@ const FALLBACK_SITES: Site[] = [
 
 export default function MapOverview({ section, locale, basePath, sites }: MapOverviewProps) {
   const isEditing = !!useEditing()
+  const pathname = usePathname()
   const headingValue: LocaleString = section.heading ?? { en: '', fr: '', nl: '' }
   const headingDisplayed = getLocalizedField(headingValue, locale) || DEFAULT_HEADING
   const mapSrc = section.mapImageUrl || DEFAULT_MAP_IMAGE
@@ -88,6 +90,9 @@ export default function MapOverview({ section, locale, basePath, sites }: MapOve
   const displayedSites = sites && sites.length > 0 ? sites : FALLBACK_SITES
   const ctaLabelValue = section.ctaLabel ?? EMPTY_LS
   const ctaLabelDisplayed = getLocalizedField(ctaLabelValue, locale) || DEFAULT_CTA_LABEL
+  // Hide the CTA when the section is rendered on the page it points to.
+  // Still show it in edit mode so the label remains reachable from /locations.
+  const showCta = isEditing || pathname !== '/locations'
 
   return (
     <section id="locations" className="py-16 md:py-20 bg-warm-50 scroll-mt-24">
@@ -154,23 +159,25 @@ export default function MapOverview({ section, locale, basePath, sites }: MapOve
               </div>
             </div>
 
-            {/* Link to dedicated Locations page */}
-            <Link
-              href="/locations"
-              className="w-full max-w-sm inline-flex items-center justify-between gap-2 px-5 py-3 rounded-xl bg-primary-600 text-white text-sm font-semibold shadow-sm hover:bg-primary-700 transition-colors"
-            >
-              {isEditing ? (
-                <EditableText
-                  path={`${basePath}.ctaLabel`}
-                  value={ctaLabelValue}
-                  placeholder={DEFAULT_CTA_LABEL}
-                  as="span"
-                />
-              ) : (
-                <span>{ctaLabelDisplayed}</span>
-              )}
-              <ArrowRight className="w-4 h-4 shrink-0" />
-            </Link>
+            {/* Link to dedicated Locations page — hidden when we're already on it */}
+            {showCta && (
+              <Link
+                href="/locations"
+                className="w-full max-w-sm inline-flex items-center justify-between gap-2 px-5 py-3 rounded-xl bg-primary-600 text-white text-sm font-semibold shadow-sm hover:bg-primary-700 transition-colors"
+              >
+                {isEditing ? (
+                  <EditableText
+                    path={`${basePath}.ctaLabel`}
+                    value={ctaLabelValue}
+                    placeholder={DEFAULT_CTA_LABEL}
+                    as="span"
+                  />
+                ) : (
+                  <span>{ctaLabelDisplayed}</span>
+                )}
+                <ArrowRight className="w-4 h-4 shrink-0" />
+              </Link>
+            )}
           </div>
 
           {/* Sites list */}
