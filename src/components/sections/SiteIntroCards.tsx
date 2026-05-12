@@ -1,5 +1,6 @@
 'use client'
 
+import { MapPin } from 'lucide-react'
 import { Site } from '@/lib/types/site'
 import { Locale, LocaleString } from '@/lib/types/locale'
 import { getLocalizedField } from '@/lib/locale'
@@ -25,15 +26,38 @@ export default function SiteIntroCards({ site, locale }: Props) {
   const isEditing = !!useEditing()
   const description: LocaleString = site.description ?? EMPTY_LS
   const descriptionText = getLocalizedField(description, locale)
+  const siteName = getLocalizedField(site.name, locale)
+  const siteCountry = getLocalizedField(site.country, locale)
 
   return (
     <section className="py-12 md:py-16 bg-warm-50">
       <div className="container-padding max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-          {/* Description card — 1/3 */}
+          {/* Description card — 1/3.
+              Name + country are intentionally NOT inline-editable here: they
+              are the source of truth on the Site doc itself and are edited
+              from the form admin at /admin/sites. */}
           <div className="lg:col-span-1 bg-white rounded-2xl shadow-sm border border-secondary-100 p-6 md:p-8 flex flex-col">
-            <div className="w-12 h-1 bg-accent-500 rounded-full mb-4" />
-            {(descriptionText || isEditing) && (
+            <div
+              className="w-12 h-1 rounded-full mb-4"
+              style={{ backgroundColor: site.color || 'var(--color-accent-500)' }}
+            />
+            <div className="flex items-start gap-3 mb-5">
+              <div className="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
+                <MapPin className="w-5 h-5 text-primary-600" strokeWidth={2} />
+              </div>
+              <div className="pt-0.5 min-w-0">
+                <h2 className="font-display text-2xl font-bold text-primary-900 leading-tight">
+                  {siteName}
+                </h2>
+                {siteCountry && (
+                  <p className="text-xs text-secondary-400 uppercase tracking-wider font-medium mt-0.5">
+                    {siteCountry}
+                  </p>
+                )}
+              </div>
+            </div>
+            {(descriptionText || isEditing) ? (
               isHtml(descriptionText) ? (
                 <RichInlineText
                   path="description"
@@ -47,10 +71,7 @@ export default function SiteIntroCards({ site, locale }: Props) {
                   className="text-secondary-700 leading-relaxed prose prose-sm max-w-none [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2 [&_li]:my-0.5"
                 />
               )
-            )}
-            {!descriptionText && !isEditing && (
-              // Render nothing when there's no description on the public site
-              // (the card stays for symmetry on the page; could remove later).
+            ) : (
               <div
                 className="text-secondary-400 text-sm italic"
                 dangerouslySetInnerHTML={{ __html: sanitizeRichHtml('') }}
