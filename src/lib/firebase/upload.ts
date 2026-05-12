@@ -1,4 +1,5 @@
 import { auth } from './config'
+import { compressImage } from '@/lib/utils/image-compress'
 
 export type UploadProgress = (percent: number) => void
 
@@ -43,15 +44,23 @@ export async function uploadFile(
   file: File,
   storagePath: string,
   onProgress?: UploadProgress,
-  options?: { trim?: boolean },
+  options?: { trim?: boolean; compress?: boolean },
 ): Promise<string> {
   const user = auth.currentUser
   if (!user) throw new Error('Not authenticated')
   const token = await user.getIdToken()
 
+  // Resize + re-encode large phone photos to WebP before hitting the API.
+  // Netlify functions cap the request body at 6 MB; a raw camera shot easily
+  // exceeds that and surfaces as an opaque 500 to the editor.
+  const payload =
+    options?.compress === false ? file : await compressImage(file)
+  const isCompressed = payload !== file
+  const finalKey = isCompressed ? rewriteExtension(storagePath, 'webp') : storagePath
+
   const form = new FormData()
-  form.append('file', file)
-  form.append('key', storagePath)
+  form.append('file', payload)
+  form.append('key', finalKey)
   if (options?.trim) form.append('trim', '1')
 
   return new Promise<string>((resolve, reject) => {
@@ -85,4 +94,8 @@ export async function uploadFile(
     xhr.addEventListener('abort', () => reject(new Error('Upload cancelled.')))
     xhr.send(form)
   })
+}
+
+function rewriteExtension(key: string, ext: string): string {
+  return key.replace(/\.[^./]+$/, `.${ext}`)
 }
