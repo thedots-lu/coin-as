@@ -33,7 +33,15 @@ export default function ImageCarousel({ section, locale, basePath }: Props) {
   const trackRef = useRef<HTMLDivElement>(null)
   const [activeIdx, setActiveIdx] = useState(0)
   const [hoverPaused, setHoverPaused] = useState(false)
+  // How many slides fit in the visible window. Defaults to 1 until the ref
+  // is attached; gets updated by the ResizeObserver below.
+  const [visibleCount, setVisibleCount] = useState(1)
   const total = renderable.length
+  // The last "page" index the user can land on: with 5 slides and 3 visible
+  // simultaneously, the rightmost valid start is slide 2 (showing 2-3-4).
+  // Going further would scroll past the edge and silently clamp.
+  const maxIdx = Math.max(0, total - visibleCount)
+  const pageCount = maxIdx + 1
 
   const getSlideWidth = useCallback(() => {
     const el = trackRef.current
@@ -58,23 +66,47 @@ export default function ImageCarousel({ section, locale, basePath }: Props) {
 
   const next = useCallback(() => {
     if (total === 0) return
-    goTo((activeIdx + 1) % total)
-  }, [activeIdx, total, goTo])
+    const nextIdx = activeIdx >= maxIdx ? 0 : activeIdx + 1
+    setActiveIdx(nextIdx)
+    goTo(nextIdx)
+  }, [activeIdx, total, maxIdx, goTo])
 
   const prev = useCallback(() => {
     if (total === 0) return
-    goTo((activeIdx - 1 + total) % total)
-  }, [activeIdx, total, goTo])
+    const prevIdx = activeIdx <= 0 ? maxIdx : activeIdx - 1
+    setActiveIdx(prevIdx)
+    goTo(prevIdx)
+  }, [activeIdx, total, maxIdx, goTo])
 
-  // Auto-play. Skipped in editor mode and when paused or only one slide.
+  // Auto-play. Skipped in editor mode and when there's only one page worth.
   useEffect(() => {
-    if (hoverPaused || isEditing || total <= 1) return
+    if (hoverPaused || isEditing || pageCount <= 1) return
     const timer = setInterval(next, INTERVAL)
     return () => clearInterval(timer)
-  }, [hoverPaused, isEditing, total, next])
+  }, [hoverPaused, isEditing, pageCount, next])
+
+  // Detect how many slides currently fit on screen so next/prev/dots know
+  // when to wrap. Re-runs on resize and whenever the slide set changes.
+  useEffect(() => {
+    const el = trackRef.current
+    if (!el) return
+    const computeVisible = () => {
+      const w = getSlideWidth()
+      if (w === 0) return
+      // +0.5 absorbs sub-pixel rounding so 2.97 doesn't collapse to 2.
+      const count = Math.max(1, Math.floor(el.clientWidth / w + 0.5))
+      setVisibleCount(count)
+    }
+    computeVisible()
+    if (typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(computeVisible)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [getSlideWidth, total])
 
   // Sync activeIdx with the user's manual scroll position so the dots stay
-  // accurate when scrolling/swiping by hand.
+  // accurate when scrolling/swiping by hand. Clamps to maxIdx, not total-1,
+  // because positions past maxIdx can't actually be scrolled to.
   useEffect(() => {
     const el = trackRef.current
     if (!el || total === 0) return
@@ -85,7 +117,7 @@ export default function ImageCarousel({ section, locale, basePath }: Props) {
         const w = getSlideWidth()
         if (w === 0) return
         const idx = Math.round(el.scrollLeft / w)
-        const clamped = Math.max(0, Math.min(idx, total - 1))
+        const clamped = Math.max(0, Math.min(idx, maxIdx))
         setActiveIdx((prev) => (prev === clamped ? prev : clamped))
       }, 100)
     }
@@ -94,12 +126,17 @@ export default function ImageCarousel({ section, locale, basePath }: Props) {
       el.removeEventListener('scroll', handleScroll)
       if (timeoutId) clearTimeout(timeoutId)
     }
-  }, [total, getSlideWidth])
+  }, [total, maxIdx, getSlideWidth])
 
-  // Reset scroll position if slides shrink and the current index is now OOB.
+  // Snap back if slides shrink or visibleCount grows and the current index
+  // is no longer reachable.
   useEffect(() => {
-    if (activeIdx >= total && total > 0) goTo(0, 'auto')
-  }, [activeIdx, total, goTo])
+    if (activeIdx > maxIdx) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setActiveIdx(maxIdx)
+      goTo(maxIdx, 'auto')
+    }
+  }, [activeIdx, maxIdx, goTo])
 
   const headingValue: LocaleString = section.heading ?? EMPTY_LS
   const headingDisplayed = getLocalizedField(headingValue, locale)
@@ -212,9 +249,9 @@ export default function ImageCarousel({ section, locale, basePath }: Props) {
             })}
           </div>
 
-          {/* Arrows. Hidden when every slide fits on screen at once (single
-              slide, or fewer slides than the LG viewport shows). */}
-          {total > 1 && (
+          {/* Arrows. Hidden when every slide fits on screen at once — i.e.
+              when there's only one "page" to navigate to. */}
+          {pageCount > 1 && (
             <>
               <button
                 type="button"
@@ -236,14 +273,18 @@ export default function ImageCarousel({ section, locale, basePath }: Props) {
           )}
         </div>
 
-        {/* Dots */}
-        {total > 1 && (
+        {/* Dots — one per scrollable "page", not per slide, so we don't get
+            unreachable indices on the right end. */}
+        {pageCount > 1 && (
           <div className="mt-6 flex items-center justify-center gap-1.5">
-            {renderable.map((_, i) => (
+            {Array.from({ length: pageCount }).map((_, i) => (
               <button
                 key={i}
                 type="button"
-                onClick={() => goTo(i)}
+                onClick={() => {
+                  setActiveIdx(i)
+                  goTo(i)
+                }}
                 aria-label={`Go to slide ${i + 1}`}
                 className={`h-2 rounded-full transition-all ${
                   i === activeIdx
