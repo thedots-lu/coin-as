@@ -45,6 +45,7 @@ const COLLECTIONS = [
   'team_members',
   'testimonials',
   'customer_logos',
+  'sites',
 ]
 
 const APPLY = process.argv.includes('--apply')
