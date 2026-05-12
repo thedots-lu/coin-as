@@ -185,7 +185,10 @@ export interface MapOverviewSection {
 export interface RoomTypesSection {
   type: 'room_types'
   order: number
-  imageUrl: string | null
+  /** @deprecated The top image used to live here. Use an `image_carousel`
+   *  section above this one for illustration. Kept optional so legacy data
+   *  doesn't break the type. */
+  imageUrl?: string | null
   rooms: Array<{
     name: LocaleString
     description: LocaleString
