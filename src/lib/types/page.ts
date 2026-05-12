@@ -340,6 +340,23 @@ export interface PageIntroSection {
   body: LocaleString
 }
 
+/**
+ * Generic image carousel with a single caption per slide displayed in the
+ * bottom-left over a dark gradient. Used by `recovery-workplaces` but
+ * reusable on any page. Slides without an imageUrl are skipped on the
+ * public site; the editor shows them so they can be populated.
+ */
+export interface ImageCarouselSection {
+  type: 'image_carousel'
+  order: number
+  heading?: LocaleString
+  slides: Array<{
+    imageUrl: string | null
+    caption: LocaleString
+    visible?: boolean
+  }>
+}
+
 export interface FeaturedCarouselSection {
   type: 'featured_carousel'
   order: number
@@ -390,6 +407,7 @@ export type PageSection = WithVisibility<
   | BusinessCaseSection
   | RichTextSection
   | FeaturedCarouselSection
+  | ImageCarouselSection
   | LifecycleDiagramSection
   | ServicesGridSection
   | IconCardGridSection

@@ -13,6 +13,7 @@ import {
   HeroSlide,
   FeaturesListSection,
   IconCardGridSection,
+  ImageCarouselSection,
   CardsPerRow,
 } from '@/lib/types/page'
 import { createEmptyLocaleString } from '@/lib/types/locale'
@@ -47,6 +48,7 @@ const TYPE_LABELS: Record<string, string> = {
   room_types: 'Room Types',
   site_gallery: 'Site Gallery',
   featured_carousel: 'Featured Carousel',
+  image_carousel: 'Image Carousel',
   icon_card_grid: 'Icon Card Grid',
   page_intro: 'Page Intro',
 }
@@ -188,6 +190,8 @@ function SectionFields({ section, basePath }: { section: PageSection; basePath: 
       return <FeaturesListFields section={section} basePath={basePath} />
     case 'icon_card_grid':
       return <IconCardGridFields section={section} basePath={basePath} />
+    case 'image_carousel':
+      return <ImageCarouselFields section={section} basePath={basePath} />
     default:
       return (
         <p className="text-sm text-gray-500">
@@ -663,6 +667,138 @@ function IconCardGridFields({
           })}
         />
       </div>
+    </>
+  )
+}
+
+function ImageCarouselFields({
+  section,
+  basePath,
+}: {
+  section: ImageCarouselSection
+  basePath: string
+}) {
+  const ctx = useEditing()!
+  const ctxLocale = ctx.activeLocale
+  const slides = section.slides ?? []
+
+  const updateSlides = (next: ImageCarouselSection['slides']) => {
+    ctx.updateAt(`${basePath}.slides`, next)
+  }
+
+  const addSlide = () => {
+    updateSlides([...slides, { imageUrl: null, caption: createEmptyLocaleString() }])
+  }
+
+  const removeSlide = (i: number) => {
+    if (!confirm('Remove this slide?')) return
+    updateSlides(slides.filter((_, idx) => idx !== i))
+  }
+
+  const moveSlide = (i: number, dir: 'up' | 'down') => {
+    const target = dir === 'up' ? i - 1 : i + 1
+    if (target < 0 || target >= slides.length) return
+    const next = [...slides]
+    ;[next[i], next[target]] = [next[target], next[i]]
+    updateSlides(next)
+  }
+
+  const toggleVisible = (i: number) => {
+    ctx.updateAt(`${basePath}.slides.${i}.visible`, !(slides[i].visible !== false))
+  }
+
+  return (
+    <>
+      <div className="text-[10px] font-semibold text-gray-700 uppercase tracking-wider mb-2">
+        Slides ({slides.length})
+      </div>
+      <p className="text-[11px] text-gray-500 mb-3">
+        Upload the image and edit the caption directly on the page. Use this panel to add, hide,
+        reorder, or remove slides.
+      </p>
+      {slides.length === 0 && (
+        <div className="rounded-md bg-gray-50 border border-dashed border-gray-300 p-4 text-[12px] text-gray-600 mb-3">
+          No slides yet. Click <strong>Add slide</strong> to create the first one — you&apos;ll then
+          be able to upload an image and write its caption by clicking on the page.
+        </div>
+      )}
+      <div className="space-y-2">
+        {slides.map((slide, i) => {
+          const captionText = getLocalizedField(slide.caption, ctxLocale)
+          const isHidden = slide.visible === false
+          return (
+            <div
+              key={i}
+              className={[
+                'flex items-stretch gap-2 border rounded-md overflow-hidden bg-white',
+                isHidden ? 'border-gray-300 opacity-60' : 'border-gray-200',
+              ].join(' ')}
+            >
+              <div className="relative w-14 h-14 bg-gray-100 shrink-0">
+                {slide.imageUrl ? (
+                  <Image src={slide.imageUrl} alt="" fill sizes="56px" className="object-cover" />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center text-[10px] text-gray-400">
+                    No image
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 py-1.5 min-w-0">
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">
+                  Slide {i + 1}
+                </div>
+                <div className="text-[12px] font-medium text-gray-800 truncate">
+                  {captionText || <span className="italic text-gray-400">No caption</span>}
+                </div>
+              </div>
+              <div className="flex items-center gap-0.5 pr-1.5">
+                <button
+                  type="button"
+                  onClick={() => toggleVisible(i)}
+                  className="text-gray-400 hover:text-gray-700 p-1"
+                  aria-label={isHidden ? 'Show slide' : 'Hide slide'}
+                  title={isHidden ? 'Show slide' : 'Hide slide'}
+                >
+                  {isHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveSlide(i, 'up')}
+                  disabled={i === 0}
+                  className="text-gray-400 hover:text-gray-700 disabled:opacity-30 p-1"
+                  aria-label="Move up"
+                >
+                  <ArrowUp className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveSlide(i, 'down')}
+                  disabled={i === slides.length - 1}
+                  className="text-gray-400 hover:text-gray-700 disabled:opacity-30 p-1"
+                  aria-label="Move down"
+                >
+                  <ArrowDown className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeSlide(i)}
+                  className="text-red-500 hover:text-red-700 p-1"
+                  aria-label="Remove slide"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      <button
+        type="button"
+        onClick={addSlide}
+        className="mt-4 w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-primary-700 bg-primary-50 border border-primary-200 rounded-md hover:bg-primary-100 transition-colors"
+      >
+        <Plus className="w-3.5 h-3.5" /> Add slide
+      </button>
     </>
   )
 }

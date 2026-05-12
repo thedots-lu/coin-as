@@ -36,6 +36,7 @@ import LifecycleDiagram from '@/components/sections/LifecycleDiagram'
 import ServicesGrid from '@/components/sections/ServicesGrid'
 import IconCardGrid from '@/components/sections/IconCardGrid'
 import PageIntro from '@/components/sections/PageIntro'
+import ImageCarousel from '@/components/sections/ImageCarousel'
 import SectionEditOverlay from '@/components/admin/cms/SectionEditOverlay'
 
 interface PageSectionRendererProps {
@@ -147,6 +148,8 @@ export default function PageSectionRenderer({
         return <IconCardGrid section={section} locale={locale} basePath={basePath} />
       case 'page_intro':
         return <PageIntro section={section} locale={locale} basePath={basePath} />
+      case 'image_carousel':
+        return <ImageCarousel section={section} locale={locale} basePath={basePath} />
       // Hidden for now — hero carousel replaces this
       // case 'featured_carousel':
       //   return <FeaturedCarousel section={section} locale={locale} />
