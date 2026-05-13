@@ -439,6 +439,18 @@ h1, h2, h3, h4, h5, h6 {
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display), Arial, Helvetica, sans-serif;
   }
+  /* Tailwind v4's preflight removes the browser default of
+     cursor: pointer on buttons. Restore it for interactive
+     buttons (carousels, toolbars, etc.) and keep the not-allowed
+     hint on disabled controls. */
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+  button:disabled,
+  [role='button']:disabled {
+    cursor: not-allowed;
+  }
 }
 
 /* =============================================================
