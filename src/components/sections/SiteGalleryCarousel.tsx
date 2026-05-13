@@ -127,11 +127,15 @@ export default function SiteGalleryCarousel({ slides, locale, slidesPath }: Prop
         className="flex w-full h-full overflow-x-auto snap-x snap-mandatory scroll-smooth"
         style={{ scrollbarWidth: 'none' }}
       >
-        {renderable.map(({ slide, originalIdx }) => {
+        {renderable.map(({ slide, originalIdx }, i) => {
           const captionValue: LocaleString = slide.caption ?? EMPTY_LS
           const captionText = getLocalizedField(captionValue, locale)
           const isHidden = slide.visible === false
           const slidePath = `${slidesPath}.${originalIdx}`
+          // Eager-load + preload the first visible slide: this carousel
+          // fills the right 2/3 of the top fold on /locations/<slug> and
+          // is the page's LCP candidate.
+          const isLcpCandidate = i === 0
 
           return (
             <div
@@ -146,6 +150,7 @@ export default function SiteGalleryCarousel({ slides, locale, slidesPath }: Prop
                   fill
                   sizes="(max-width: 1024px) 100vw, 66vw"
                   className="object-cover"
+                  priority={isLcpCandidate}
                 />
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-200 text-gray-500">
