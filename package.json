@@ -74,5 +74,13 @@
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.4",
     "shadcn": "^4.0.2"
-  }
+  },
+  "browserslist": [
+    "Chrome >= 94",
+    "Firefox >= 93",
+    "Safari >= 15.4",
+    "Edge >= 94",
+    "Opera >= 80",
+    "Samsung >= 18"
+  ]
 }

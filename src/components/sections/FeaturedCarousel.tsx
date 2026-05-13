@@ -135,15 +135,15 @@ export default function FeaturedCarousel({ section, locale }: FeaturedCarouselPr
                 type="button"
                 onClick={() => setActive(i)}
                 aria-label={`Slide ${i + 1}`}
-                className={`relative h-2 rounded-full transition-all duration-300 overflow-hidden ${
+                className={`relative h-2 rounded-full transition-colors duration-300 overflow-hidden ${
                   i === active ? 'w-8 bg-primary-200' : 'w-2 bg-slate-300 hover:bg-slate-400'
                 }`}
               >
                 {i === active && !paused && (
                   <motion.span
-                    className="absolute inset-y-0 left-0 bg-primary-500 rounded-full"
-                    initial={{ width: '0%' }}
-                    animate={{ width: '100%' }}
+                    className="absolute inset-y-0 left-0 w-full bg-primary-500 rounded-full origin-left"
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
                     transition={{ duration: AUTO_PLAY_MS / 1000, ease: 'linear' }}
                   />
                 )}

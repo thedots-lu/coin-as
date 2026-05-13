@@ -223,7 +223,7 @@ export default function SiteGalleryCarousel({ slides, locale, slidesPath }: Prop
               type="button"
               onClick={() => goTo(i)}
               aria-label={`Go to slide ${i + 1}`}
-              className={`h-2 rounded-full transition-all ${
+              className={`h-2 rounded-full transition-colors duration-300 ${
                 i === activeIdx
                   ? 'bg-white w-6'
                   : 'bg-white/70 w-2 hover:bg-white/90'

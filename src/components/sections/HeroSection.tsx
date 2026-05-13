@@ -224,7 +224,7 @@ export default function HeroSection({ section, locale, basePath }: HeroSectionPr
                     alt={currentSlide.alt}
                     fill
                     priority={activeIdx === 0}
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 600px"
                     className="object-cover"
                   />
                 ) : currentSlide.imageUrl ? (
@@ -233,7 +233,7 @@ export default function HeroSection({ section, locale, basePath }: HeroSectionPr
                     alt={currentSlide.alt}
                     fill
                     priority={activeIdx === 0}
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 600px"
                     className="object-cover"
                     unoptimized={isAvifUrl(currentSlide.imageUrl)}
                   />
@@ -382,15 +382,15 @@ export default function HeroSection({ section, locale, basePath }: HeroSectionPr
                 type="button"
                 onClick={() => setActive(i)}
                 aria-label={`Slide ${i + 1}`}
-                className={`relative h-2 rounded-full transition-all duration-300 overflow-hidden ${
+                className={`relative h-2 rounded-full transition-colors duration-300 overflow-hidden ${
                   i === activeIdx ? 'w-8 bg-primary-200' : 'w-2 bg-secondary-300 hover:bg-secondary-400'
                 }`}
               >
                 {i === activeIdx && !paused && !isEditing && (
                   <motion.span
-                    className="absolute inset-y-0 left-0 bg-primary-500 rounded-full"
-                    initial={{ width: '0%' }}
-                    animate={{ width: '100%' }}
+                    className="absolute inset-y-0 left-0 w-full bg-primary-500 rounded-full origin-left"
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
                     transition={{ duration: INTERVAL / 1000, ease: 'linear' }}
                   />
                 )}

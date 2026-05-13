@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { ChevronDown, Menu, X, Search } from 'lucide-react'
 import { motion } from 'framer-motion'
@@ -53,9 +54,12 @@ export default function Header({ navItems, siteConfig }: HeaderProps) {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center group">
-            <img
+            <Image
               src="/images/coin/coin-logo-header.png"
               alt="COIN Business Continuity Innovation"
+              width={329}
+              height={40}
+              priority
               className="h-10 w-auto transition-opacity duration-300 group-hover:opacity-80"
             />
           </Link>

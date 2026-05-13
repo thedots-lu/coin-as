@@ -286,7 +286,7 @@ export default function ImageCarousel({ section, locale, basePath }: Props) {
                   goTo(i)
                 }}
                 aria-label={`Go to slide ${i + 1}`}
-                className={`h-2 rounded-full transition-all ${
+                className={`h-2 rounded-full transition-colors duration-300 ${
                   i === activeIdx
                     ? 'bg-primary-600 w-6'
                     : 'bg-secondary-300 w-2 hover:bg-secondary-400'

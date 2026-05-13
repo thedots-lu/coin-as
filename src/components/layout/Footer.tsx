@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { Linkedin, Phone, Mail, ArrowUpRight, Mailbox } from 'lucide-react'
 import { getLocalizedField } from '@/lib/locale'
@@ -38,9 +39,11 @@ export default function Footer({ footerNav, siteConfig }: FooterProps) {
         {/* Brand row: Logo + description */}
         <div className="mb-10">
           <Link href="/" className="inline-block mb-5 group">
-            <img
+            <Image
               src="/images/coin/coin-logo-negative.png"
               alt="COIN Availability Services"
+              width={135}
+              height={40}
               className="h-10 w-auto transition-opacity duration-300 group-hover:opacity-80"
             />
           </Link>
