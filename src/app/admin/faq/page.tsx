@@ -11,6 +11,7 @@ import {
   Timestamp,
 } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
+import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { logAudit } from '@/lib/firebase/audit-log'
 import { FaqItem } from '@/lib/types/faq'
 import { LocaleString, createEmptyLocaleString } from '@/lib/types/locale'
@@ -107,6 +108,7 @@ export default function AdminFaqPage() {
         })
         await logAudit({ action: 'create', resource: 'faq_items', resourceId: created.id, label })
       }
+      await revalidate('/resources/faq')
       await fetchItems()
       cancelForm()
     } catch (err) {
@@ -124,6 +126,7 @@ export default function AdminFaqPage() {
       const label = target?.question?.en || target?.question?.fr || target?.question?.nl || '(untitled)'
       await deleteDoc(doc(db, 'faq_items', id))
       await logAudit({ action: 'delete', resource: 'faq_items', resourceId: id, label })
+      await revalidate('/resources/faq')
       await fetchItems()
     } catch (err) {
       console.error('Error deleting FAQ item:', err)
@@ -144,6 +147,7 @@ export default function AdminFaqPage() {
         label: item.question?.en || item.question?.fr || item.question?.nl || '(untitled)',
         details: { published: nextPublished },
       })
+      await revalidate('/resources/faq')
       await fetchItems()
     } catch (err) {
       console.error('Error toggling published:', err)
@@ -303,4 +307,10 @@ export default function AdminFaqPage() {
       )}
     </div>
   )
+}
+
+async function revalidate(path: string) {
+  try {
+    await triggerRevalidate(path)
+  } catch { /* best-effort */ }
 }

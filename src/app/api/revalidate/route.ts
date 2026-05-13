@@ -24,20 +24,31 @@ export async function POST(request: NextRequest) {
   }
 
   // Parse body
-  let body: { path?: string }
+  let body: { path?: string; type?: 'page' | 'layout' }
   try {
     body = await request.json()
   } catch {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
-  const { path } = body
+  const { path, type } = body
   if (!path) {
     return NextResponse.json({ error: 'Must provide "path"' }, { status: 400 })
   }
+  if (type !== undefined && type !== 'page' && type !== 'layout') {
+    return NextResponse.json({ error: '"type" must be "page" or "layout"' }, { status: 400 })
+  }
 
   try {
-    revalidatePath(path)
-    return NextResponse.json({ revalidated: true, path })
+    // Default of 'page' matches Next's own default — but most call sites
+    // that change shared data (site_config, nav, services) now explicitly
+    // pass 'layout' so the invalidation cascades through every page
+    // underneath the marketing layout.
+    if (type === 'layout') {
+      revalidatePath(path, 'layout')
+    } else {
+      revalidatePath(path)
+    }
+    return NextResponse.json({ revalidated: true, path, type: type ?? 'page' })
   } catch {
     return NextResponse.json({ error: 'Error revalidating' }, { status: 500 })
   }

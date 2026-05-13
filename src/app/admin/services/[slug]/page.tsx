@@ -91,6 +91,11 @@ export default function AdminServiceDetailPage() {
         label: editTitle.en || editTitle.fr || editTitle.nl || service.slug,
         details: { sectionCount: editSections.length },
       })
+      // Title / shortTitle changes flow into the layout's Services menu, so
+      // cascade the invalidation. Cheaper-than-correct alternative would be
+      // to skip the layout call when only seo/sections changed; not worth the
+      // dirty-tracking complexity.
+      await triggerRevalidate('/', 'layout')
       await revalidate('/services')
       await revalidate(`/services/${service.slug}`)
       alert('Service saved successfully.')

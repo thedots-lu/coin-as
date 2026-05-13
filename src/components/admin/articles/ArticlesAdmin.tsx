@@ -167,6 +167,12 @@ export default function ArticlesAdmin({
         await logAudit({ action: 'create', resource: 'articles', resourceId: created.id, label })
       }
       await revalidate(revalidatePath)
+      // Per-article detail page is /resources/<slug.en> regardless of kind.
+      // Refresh the new slug, plus the old slug when the editor renamed it.
+      const newSlugEn = slug.en
+      const oldSlugEn = editing?.slug?.en
+      if (newSlugEn) await revalidate(`/resources/${newSlugEn}`)
+      if (oldSlugEn && oldSlugEn !== newSlugEn) await revalidate(`/resources/${oldSlugEn}`)
       await fetchArticles()
       handleCancel()
     } catch (err) {
@@ -187,6 +193,7 @@ export default function ArticlesAdmin({
       if (item?.imageUrl) await deleteFile(item.imageUrl)
       await logAudit({ action: 'delete', resource: 'articles', resourceId: id, label })
       await revalidate(revalidatePath)
+      if (item?.slug?.en) await revalidate(`/resources/${item.slug.en}`)
       await fetchArticles()
     } catch (err) {
       console.error('Error deleting article:', err)
@@ -212,6 +219,7 @@ export default function ArticlesAdmin({
         details: { published: nextPublished },
       })
       await revalidate(revalidatePath)
+      if (item.slug?.en) await revalidate(`/resources/${item.slug.en}`)
       await fetchArticles()
     } catch (err) {
       console.error('Error toggling published:', err)

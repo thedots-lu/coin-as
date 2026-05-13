@@ -175,13 +175,21 @@ export default function AdminSitesPage() {
     } catch {
       /* best-effort */
     }
-    if (slugForDetail) {
-      try {
-        await triggerRevalidate(`/locations/${slugForDetail}`)
-      } catch {
-        /* best-effort */
-      }
+    // Every /locations/<slug> page renders this site's card in its
+    // "other locations" carousel, so a change to ANY site has to ripple
+    // through every per-site detail page — not just its own.
+    const slugs = new Set<string>()
+    for (const item of items) {
+      slugs.add(siteSlug(item))
     }
+    if (slugForDetail) slugs.add(slugForDetail)
+    await Promise.all(
+      Array.from(slugs).map((s) =>
+        triggerRevalidate(`/locations/${s}`).catch(() => {
+          /* best-effort */
+        }),
+      ),
+    )
   }
 
   const updateLocaleField = (

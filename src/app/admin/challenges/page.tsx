@@ -13,6 +13,7 @@ import {
   Timestamp,
 } from 'firebase/firestore'
 import { dbAdmin as db } from '@/lib/firebase/config'
+import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { logAudit } from '@/lib/firebase/audit-log'
 import { Challenge } from '@/lib/types/challenge'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
@@ -193,6 +194,8 @@ export default function AdminChallengesPage() {
         }
         await logAudit({ action: 'create', resource: 'challenges', resourceId: createdId, label: labelForLog })
       }
+      await revalidate('/challenges')
+      await revalidate(`/challenges/${slug}`)
       await fetchChallenges()
       cancel()
     } catch (err) {
@@ -210,6 +213,8 @@ export default function AdminChallengesPage() {
       const label = target?.title?.en || target?.title?.fr || target?.title?.nl || target?.slug || id
       await deleteDoc(doc(db, 'challenges', id))
       await logAudit({ action: 'delete', resource: 'challenges', resourceId: id, label })
+      await revalidate('/challenges')
+      if (target?.slug) await revalidate(`/challenges/${target.slug}`)
       await fetchChallenges()
     } catch (err) {
       console.error('Error deleting challenge:', err)
@@ -230,6 +235,8 @@ export default function AdminChallengesPage() {
         label: item.title?.en || item.title?.fr || item.title?.nl || item.slug,
         details: { published: nextPublished },
       })
+      await revalidate('/challenges')
+      if (item.slug) await revalidate(`/challenges/${item.slug}`)
       await fetchChallenges()
     } catch (err) {
       console.error('Error toggling published:', err)
@@ -467,4 +474,10 @@ function JsonField({
       />
     </div>
   )
+}
+
+async function revalidate(path: string) {
+  try {
+    await triggerRevalidate(path)
+  } catch { /* best-effort */ }
 }

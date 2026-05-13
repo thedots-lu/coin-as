@@ -171,6 +171,7 @@ export default function AdminWhitePapersPage() {
       }
 
       await revalidate('/resources')
+      await revalidate('/resources/white-papers')
       await fetchItems()
       handleCancel()
     } catch (err) {
@@ -190,6 +191,7 @@ export default function AdminWhitePapersPage() {
       if (item.thumbnailUrl) await deleteFile(item.thumbnailUrl)
       await logAudit({ action: 'delete', resource: 'white_papers', resourceId: item.id, label })
       await revalidate('/resources')
+      await revalidate('/resources/white-papers')
       await fetchItems()
     } catch (err) {
       console.error('Error deleting white paper:', err)
@@ -211,6 +213,7 @@ export default function AdminWhitePapersPage() {
         details: { published: nextPublished },
       })
       await revalidate('/resources')
+      await revalidate('/resources/white-papers')
       await fetchItems()
     } catch (err) {
       console.error('Error toggling published:', err)

@@ -62,6 +62,12 @@ export default function AdminNewsPage() {
         await logAudit({ action: 'create', resource: 'news', resourceId: created.id, label })
       }
       await revalidate('/news')
+      // Per-slug page is /news/<slug.en> — refresh both the new slug and,
+      // when editing, the old slug too (in case the editor renamed it).
+      const newSlug = data.slug?.en
+      const oldSlug = editing?.slug?.en
+      if (newSlug) await revalidate(`/news/${newSlug}`)
+      if (oldSlug && oldSlug !== newSlug) await revalidate(`/news/${oldSlug}`)
       await fetchNews()
       setEditing(null)
       setCreating(false)
@@ -81,6 +87,7 @@ export default function AdminNewsPage() {
       await deleteDoc(doc(db, 'news', id))
       await logAudit({ action: 'delete', resource: 'news', resourceId: id, label })
       await revalidate('/news')
+      if (target?.slug?.en) await revalidate(`/news/${target.slug.en}`)
       await fetchNews()
     } catch (err) {
       console.error('Error deleting news:', err)
@@ -102,6 +109,7 @@ export default function AdminNewsPage() {
         details: { published: nextPublished },
       })
       await revalidate('/news')
+      if (item.slug?.en) await revalidate(`/news/${item.slug.en}`)
       await fetchNews()
     } catch (err) {
       console.error('Error toggling published:', err)

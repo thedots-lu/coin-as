@@ -203,11 +203,16 @@ export default function ServiceVisualEditor() {
         details: { sectionCount: draft.sections.length, source: 'visual-editor' },
       })
       try {
-        await Promise.all(
-          isOverview
-            ? [triggerRevalidate('/services')]
-            : [triggerRevalidate(`/services/${slug}`), triggerRevalidate('/services')],
-        )
+        // Title changes feed the marketing layout's Services menu; cascade
+        // the invalidation via the layout to refresh every page's nav.
+        const calls = isOverview
+          ? [triggerRevalidate('/services'), triggerRevalidate('/', 'layout')]
+          : [
+              triggerRevalidate(`/services/${slug}`),
+              triggerRevalidate('/services'),
+              triggerRevalidate('/', 'layout'),
+            ]
+        await Promise.all(calls)
       } catch {
         /* best-effort */
       }

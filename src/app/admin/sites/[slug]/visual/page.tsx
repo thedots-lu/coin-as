@@ -189,9 +189,14 @@ export default function SiteVisualEditor() {
         },
       })
       try {
+        // The "other locations" carousel on every /locations/<other> page
+        // re-renders this site's card from its current data, so invalidate
+        // all per-site pages, not just our own slug.
+        const otherSlugs = allSites.map((s) => siteSlug(s)).filter((s) => s !== slug)
         await Promise.all([
           triggerRevalidate(`/locations/${slug}`),
           triggerRevalidate('/locations'),
+          ...otherSlugs.map((s) => triggerRevalidate(`/locations/${s}`)),
         ])
       } catch {
         /* best-effort */

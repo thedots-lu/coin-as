@@ -119,6 +119,7 @@ export default function AdminServicesPage() {
         label: row.label,
         details: { published: nextPublished },
       })
+      await revalidateLayout()
       await revalidate('/services')
       if (row.slug !== 'overview') await revalidate(`/services/${row.slug}`)
       await fetchServices()
@@ -148,6 +149,7 @@ export default function AdminServicesPage() {
         resourceId: row.service.id,
         label: row.label,
       })
+      await revalidateLayout()
       await revalidate('/services')
       await revalidate(`/services/${row.slug}`)
       await fetchServices()
@@ -186,6 +188,7 @@ export default function AdminServicesPage() {
         resource: 'services',
         details: { order: reordered.map((r) => r.slug) },
       })
+      await revalidateLayout()
       await revalidate('/services')
       await fetchServices()
     } catch (err) {
@@ -379,10 +382,20 @@ function ServiceRowCells({
   )
 }
 
-async function revalidate(path: string) {
+async function revalidate(path: string, type: 'page' | 'layout' = 'page') {
   try {
-    await triggerRevalidate(path)
+    await triggerRevalidate(path, type)
   } catch {
     /* best-effort */
   }
+}
+
+/**
+ * Services mutations always affect the marketing layout: the nav menu's
+ * Services dropdown is derived from the published services collection, so
+ * adding / removing / renaming / publishing any service must cascade to
+ * every page underneath the layout. Call this from every mutation handler.
+ */
+async function revalidateLayout() {
+  await revalidate('/', 'layout')
 }

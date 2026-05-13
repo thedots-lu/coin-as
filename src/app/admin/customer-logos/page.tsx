@@ -116,9 +116,16 @@ export default function AdminCustomerLogosPage() {
     resetForm()
   }
 
-  async function revalidateHome() {
+  async function revalidateAffectedPages() {
+    // Customer logos appear on both the home (Trusted-by marquee) and the
+    // About page, so refresh both.
     try {
       await triggerRevalidate('/')
+    } catch {
+      /* best-effort */
+    }
+    try {
+      await triggerRevalidate('/about')
     } catch {
       /* best-effort */
     }
@@ -184,7 +191,7 @@ export default function AdminCustomerLogosPage() {
         })
       }
 
-      await revalidateHome()
+      await revalidateAffectedPages()
       handleCancel()
       await fetchItems()
     } catch (err) {
@@ -206,7 +213,7 @@ export default function AdminCustomerLogosPage() {
         resourceId: item.id,
         label: item.name,
       })
-      await revalidateHome()
+      await revalidateAffectedPages()
       await fetchItems()
     } catch (err) {
       console.error('Delete failed:', err)
@@ -228,7 +235,7 @@ export default function AdminCustomerLogosPage() {
         label: item.name,
         details: { visible: nextVisible },
       })
-      await revalidateHome()
+      await revalidateAffectedPages()
       await fetchItems()
     } catch (err) {
       console.error('Toggle failed:', err)
@@ -262,7 +269,7 @@ export default function AdminCustomerLogosPage() {
         resource: 'customer_logos',
         details: { order: reordered.map((i) => i.name) },
       })
-      await revalidateHome()
+      await revalidateAffectedPages()
     } catch (err) {
       console.error('Reorder persist failed:', err)
       alert('Reorder failed to save. Refreshing.')

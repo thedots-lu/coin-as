@@ -82,7 +82,9 @@ export default function AdminSettingsPage() {
         resourceId: 'global',
         label: 'Site settings',
       })
-      await revalidate('/')
+      // site_config is read by the marketing layout (header, footer, banner),
+      // so the change must cascade to every page underneath — hence 'layout'.
+      await revalidate('/', 'layout')
       alert('Settings saved successfully.')
     } catch (err) {
       console.error('Error saving settings:', err)
@@ -236,8 +238,8 @@ export default function AdminSettingsPage() {
   )
 }
 
-async function revalidate(path: string) {
+async function revalidate(path: string, type: 'page' | 'layout' = 'page') {
   try {
-    await triggerRevalidate(path)
+    await triggerRevalidate(path, type)
   } catch { /* best-effort */ }
 }

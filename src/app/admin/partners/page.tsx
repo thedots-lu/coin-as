@@ -122,6 +122,8 @@ export default function AdminPartnersPage() {
         await logAudit({ action: 'create', resource: 'partners', resourceId: created.id, label: name })
       }
       await revalidate('/partners')
+      // Partners also appear on the About page.
+      await revalidate('/about')
       await fetchPartners()
       handleCancel()
     } catch (err) {
@@ -145,6 +147,8 @@ export default function AdminPartnersPage() {
         label: item?.name ?? '(unknown)',
       })
       await revalidate('/partners')
+      // Partners also appear on the About page.
+      await revalidate('/about')
       await fetchPartners()
     } catch (err) {
       console.error('Error deleting partner:', err)
