@@ -12,6 +12,7 @@ import EditableText from '@/components/admin/cms/EditableText'
 import EditableImage from '@/components/admin/cms/EditableImage'
 import RichInlineText from '@/components/admin/cms/RichInlineText'
 import { useEditing } from '@/components/admin/cms/EditingContext'
+import { siteSlug } from '@/lib/firestore/sites'
 
 const DEFAULT_MAP_IMAGE = '/images/coin/Amsterdam.png'
 const DEFAULT_ISO_BADGE = '/images/coin/kiwa-iso-27001-logo.jpg'
@@ -202,6 +203,11 @@ export default function MapOverview({ section, locale, basePath, sites }: MapOve
               const name = getLocalizedField(site.name, locale)
               const country = getLocalizedField(site.country, locale)
               const capacity = site.capacity ? getLocalizedField(site.capacity, locale) : ''
+              // Fallback sites use synthetic `_fallback-*` ids and have no
+              // matching Firestore doc, so suppress the Discover link until
+              // the collection is seeded. Real sites always link out.
+              const showDiscover = !site.id.startsWith('_fallback-')
+              const slug = showDiscover ? siteSlug(site) : null
               return (
                 <div
                   key={site.id}
@@ -248,6 +254,15 @@ export default function MapOverview({ section, locale, basePath, sites }: MapOve
                         <p className="text-xs text-secondary-500 italic pt-1">{capacity}</p>
                       )}
                     </div>
+                    {slug && (
+                      <Link
+                        href={`/locations/${slug}`}
+                        className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
+                      >
+                        Discover
+                        <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    )}
                   </div>
                 </div>
               )

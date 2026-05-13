@@ -57,6 +57,7 @@ function emptySiteForm(): {
   name: LocaleString
   country: LocaleString
   description: LocaleString
+  detailDescription: LocaleString
   capacity: LocaleString
   address: string
   phone: string
@@ -70,6 +71,7 @@ function emptySiteForm(): {
     name: createEmptyLocaleString(),
     country: createEmptyLocaleString(),
     description: createEmptyLocaleString(),
+    detailDescription: createEmptyLocaleString(),
     capacity: createEmptyLocaleString(),
     address: '',
     phone: '',
@@ -136,6 +138,7 @@ export default function AdminSitesPage() {
       name: item.name ?? createEmptyLocaleString(),
       country: item.country ?? createEmptyLocaleString(),
       description: item.description ?? createEmptyLocaleString(),
+      detailDescription: item.detailDescription ?? createEmptyLocaleString(),
       capacity: item.capacity ?? createEmptyLocaleString(),
       address: item.address ?? '',
       phone: item.phone ?? '',
@@ -161,7 +164,7 @@ export default function AdminSitesPage() {
     if (officeFileInputRef.current) officeFileInputRef.current.value = ''
   }
 
-  async function revalidateAffectedPages() {
+  async function revalidateAffectedPages(slugForDetail?: string) {
     try {
       await triggerRevalidate('/about')
     } catch {
@@ -172,10 +175,17 @@ export default function AdminSitesPage() {
     } catch {
       /* best-effort */
     }
+    if (slugForDetail) {
+      try {
+        await triggerRevalidate(`/locations/${slugForDetail}`)
+      } catch {
+        /* best-effort */
+      }
+    }
   }
 
   const updateLocaleField = (
-    field: 'name' | 'country' | 'description' | 'capacity',
+    field: 'name' | 'country' | 'description' | 'detailDescription' | 'capacity',
     value: string,
   ) => {
     setForm((prev) => ({
@@ -223,6 +233,7 @@ export default function AdminSitesPage() {
         name: form.name,
         country: form.country,
         description: form.description,
+        detailDescription: form.detailDescription,
         capacity: form.capacity,
         address: form.address.trim(),
         phone: form.phone.trim(),
@@ -263,7 +274,10 @@ export default function AdminSitesPage() {
         })
       }
 
-      await revalidateAffectedPages()
+      const slugForRevalidate = editing
+        ? siteSlug(editing)
+        : siteSlug({ slug: undefined, name: form.name, id: docIdForUpload })
+      await revalidateAffectedPages(slugForRevalidate)
       handleCancel()
       await fetchItems()
     } catch (err) {
@@ -499,7 +513,33 @@ export default function AdminSitesPage() {
                   }
                 />
                 <p className="text-[11px] text-gray-500 mt-1">
-                  Long description shown on the dedicated Locations page.
+                  Shown on the Locations overview cards (/locations) and on the
+                  About-page map cards.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Detail description ({activeLocale.toUpperCase()})
+                </label>
+                <RichTextEditor
+                  key={`${editing?.id ?? 'new'}-detail-description-${activeLocale}`}
+                  value={form.detailDescription[activeLocale] ?? ''}
+                  onChange={(html) =>
+                    setForm((p) => ({
+                      ...p,
+                      detailDescription: {
+                        ...p.detailDescription,
+                        [activeLocale]: html,
+                      },
+                    }))
+                  }
+                />
+                <p className="text-[11px] text-gray-500 mt-1">
+                  Used by the top intro card of /locations/&lt;slug&gt; and by
+                  this site&apos;s card in the carousel at the bottom of every
+                  other location page. Leave blank in a locale to fall back to
+                  Description.
                 </p>
               </div>
 

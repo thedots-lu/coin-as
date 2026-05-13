@@ -30,6 +30,14 @@ export interface Site {
   officeImageUrl?: string
   /** Long description shown on the dedicated Locations page (rich text or plain). */
   description: LocaleString
+  /**
+   * Description used by the top intro card of the per-site detail page
+   * (/locations/<slug>) and by the cards in the "Explore our other locations"
+   * carousel on every other site page. Independent from `description` so the
+   * `/locations` overview grid can stay shorter while the detail page goes long.
+   * Falls back to `description` when empty.
+   */
+  detailDescription?: LocaleString
   /** Short capacity / feature line shown on both compact and full cards. */
   capacity?: LocaleString
   /** Google Maps link (or any external map URL). Optional. */

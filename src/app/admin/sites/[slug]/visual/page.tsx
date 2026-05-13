@@ -33,6 +33,7 @@ function normalizeSiteDoc(d: Site): Site {
     name: d.name ?? EMPTY_LOCALE,
     country: d.country ?? EMPTY_LOCALE,
     description: d.description ?? EMPTY_LOCALE,
+    detailDescription: d.detailDescription ?? EMPTY_LOCALE,
     capacity: d.capacity ?? EMPTY_LOCALE,
     gallerySlides: d.gallerySlides ?? [],
     sections: d.sections ?? [],
@@ -91,6 +92,7 @@ export default function SiteVisualEditor() {
     if (!original || !draft) return false
     return (
       JSON.stringify(original.description) !== JSON.stringify(draft.description) ||
+      JSON.stringify(original.detailDescription) !== JSON.stringify(draft.detailDescription) ||
       JSON.stringify(original.gallerySlides) !== JSON.stringify(draft.gallerySlides) ||
       JSON.stringify(original.sections) !== JSON.stringify(draft.sections)
     )
@@ -170,6 +172,7 @@ export default function SiteVisualEditor() {
     try {
       await updateDoc(doc(db, 'sites', draft.id), {
         description: draft.description,
+        detailDescription: draft.detailDescription ?? EMPTY_LOCALE,
         gallerySlides: draft.gallerySlides ?? [],
         sections: draft.sections ?? [],
         updatedAt: Timestamp.now(),

@@ -135,7 +135,7 @@ export default function SiteGallery({ section, locale, sites }: SiteGalleryProps
                           href={`/locations/${site.slug}`}
                           className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
                         >
-                          Learn more
+                          Discover
                           <ArrowRight className="w-4 h-4" />
                         </Link>
                       )}

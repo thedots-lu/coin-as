@@ -4,12 +4,11 @@ import { MapPin } from 'lucide-react'
 import { Site } from '@/lib/types/site'
 import { Locale, LocaleString } from '@/lib/types/locale'
 import { getLocalizedField } from '@/lib/locale'
-import { isHtml, sanitizeRichHtml } from '@/lib/utils/html'
+import { siteDetailDescription } from '@/lib/firestore/sites'
+import { sanitizeRichHtml } from '@/lib/utils/html'
 import RichInlineText from '@/components/admin/cms/RichInlineText'
 import { useEditing } from '@/components/admin/cms/EditingContext'
 import SiteGalleryCarousel from './SiteGalleryCarousel'
-
-const EMPTY_LS: LocaleString = { en: '', fr: '', nl: '' }
 
 interface Props {
   site: Site
@@ -19,13 +18,18 @@ interface Props {
 /**
  * Top block of a per-site detail page: a 1/3 description card on the left
  * and a 2/3 image carousel card on the right (stacked on mobile/tablet).
- * The description is the existing Site.description; gallery slides live on
- * Site.gallerySlides — both are inline-editable in the visual editor.
+ * Body text is `Site.detailDescription` (falling back per-locale to
+ * `Site.description`); gallery slides live on `Site.gallerySlides` — both are
+ * inline-editable in the visual editor.
  */
 export default function SiteIntroCards({ site, locale }: Props) {
   const isEditing = !!useEditing()
-  const description: LocaleString = site.description ?? EMPTY_LS
-  const descriptionText = getLocalizedField(description, locale)
+  // Per-locale fallback: each locale uses detailDescription[locale] when
+  // filled, otherwise the matching description[locale]. Used both for the
+  // public render and as the editor's initial content (WYSIWYG), so leaving
+  // detailDescription blank in a locale means "show the overview text".
+  const displayValue: LocaleString = siteDetailDescription(site)
+  const descriptionText = getLocalizedField(displayValue, locale)
   const siteName = getLocalizedField(site.name, locale)
   const siteCountry = getLocalizedField(site.country, locale)
 
@@ -58,19 +62,11 @@ export default function SiteIntroCards({ site, locale }: Props) {
               </div>
             </div>
             {(descriptionText || isEditing) ? (
-              isHtml(descriptionText) ? (
-                <RichInlineText
-                  path="description"
-                  value={description}
-                  className="text-secondary-700 leading-relaxed prose prose-sm max-w-none [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2 [&_li]:my-0.5"
-                />
-              ) : (
-                <RichInlineText
-                  path="description"
-                  value={description}
-                  className="text-secondary-700 leading-relaxed prose prose-sm max-w-none [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2 [&_li]:my-0.5"
-                />
-              )
+              <RichInlineText
+                path="detailDescription"
+                value={displayValue}
+                className="text-secondary-700 leading-relaxed prose prose-sm max-w-none [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2 [&_li]:my-0.5"
+              />
             ) : (
               <div
                 className="text-secondary-400 text-sm italic"

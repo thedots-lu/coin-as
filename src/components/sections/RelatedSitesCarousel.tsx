@@ -7,7 +7,7 @@ import { getLocalizedField } from '@/lib/locale'
 import { Site } from '@/lib/types/site'
 import { Locale } from '@/lib/types/locale'
 import { isHtml, sanitizeRichHtml } from '@/lib/utils/html'
-import { siteSlug } from '@/lib/firestore/sites'
+import { siteSlug, siteDetailDescription } from '@/lib/firestore/sites'
 
 interface Props {
   sites: Site[]
@@ -20,8 +20,9 @@ const COPIES = 3
  * Bottom-of-page carousel listing the other locations. Same horizontal
  * scroll-snap pattern as RelatedServicesCarousel — cards loop seamlessly by
  * rendering three copies and silently re-anchoring once the user drifts out
- * of the middle copy. Each card uses the site's `description` as the body
- * (the "first card description" the brief asked for).
+ * of the middle copy. Each card uses `siteDetailDescription(site)` as the
+ * body so it stays in sync with the top intro card of that site's detail
+ * page (per-locale fallback to `Site.description` when blank).
  */
 export default function RelatedSitesCarousel({ sites, locale = 'en' }: Props) {
   const trackRef = useRef<HTMLDivElement>(null)
@@ -135,7 +136,7 @@ export default function RelatedSitesCarousel({ sites, locale = 'en' }: Props) {
               const slug = siteSlug(site)
               const name = getLocalizedField(site.name, locale)
               const country = getLocalizedField(site.country, locale)
-              const description = getLocalizedField(site.description, locale)
+              const description = getLocalizedField(siteDetailDescription(site), locale)
               const isClone = index < n || index >= 2 * n
 
               return (
@@ -179,7 +180,7 @@ export default function RelatedSitesCarousel({ sites, locale = 'en' }: Props) {
                     )
                   )}
                   <div className="flex items-center gap-2 text-sm font-semibold text-primary-600 group-hover:text-primary-800 transition-colors">
-                    <span>Learn more</span>
+                    <span>Discover</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </Link>
