@@ -145,7 +145,6 @@ function navigationFooter() {
           { label: ls('Our Customers'), path: '/about#customers' },
           { label: ls('Our History'), path: '/about#history' },
           { label: ls('Our Locations'), path: '/locations' },
-          { label: ls('FAQ'), path: '/resources/faq' },
         ],
       },
       {
