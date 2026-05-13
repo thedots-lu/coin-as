@@ -14,7 +14,7 @@ import ArticleCard from '@/components/knowledge-hub/ArticleCard'
 import type { NewsItem } from '@/lib/types/news'
 import type { YoutubeVideo } from '@/lib/youtube'
 
-export const revalidate = 300
+export const dynamic = 'force-static'
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage('resources')

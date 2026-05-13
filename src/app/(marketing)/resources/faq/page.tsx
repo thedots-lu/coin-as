@@ -5,7 +5,7 @@ import { getPublishedFaqItems } from '@/lib/firestore/faq'
 import { getPage } from '@/lib/firestore/pages'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 
-export const revalidate = 300
+export const dynamic = 'force-static'
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage('resources-faq')

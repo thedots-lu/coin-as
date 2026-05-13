@@ -8,7 +8,7 @@ import { generatePageMetadata } from '@/lib/utils/metadata'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
 
-export const revalidate = 300
+export const dynamic = 'force-static'
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage('about')

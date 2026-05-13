@@ -5,7 +5,7 @@ import { generatePageMetadata } from '@/lib/utils/metadata'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
 import YoutubeVideos from '@/components/sections/YoutubeVideos'
 
-export const revalidate = 300
+export const dynamic = 'force-static'
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage('resources-videos')

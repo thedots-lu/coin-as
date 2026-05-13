@@ -14,7 +14,7 @@ function getYoutubeId(url: string | null | undefined): string | null {
   return match?.[1] ?? null
 }
 
-export const revalidate = 300
+export const dynamic = 'force-static'
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage('partners')

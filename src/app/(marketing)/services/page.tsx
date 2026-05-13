@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
 
-export const revalidate = 300
+export const dynamic = 'force-static'
 
 export async function generateMetadata(): Promise<Metadata> {
   const overview = await getServiceBySlug('overview')

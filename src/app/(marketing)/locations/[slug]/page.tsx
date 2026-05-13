@@ -7,7 +7,12 @@ import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
 import SiteIntroCards from '@/components/sections/SiteIntroCards'
 import RelatedSitesCarousel from '@/components/sections/RelatedSitesCarousel'
 
-export const revalidate = 300
+export const dynamic = 'force-static'
+
+export async function generateStaticParams() {
+  const sites = await getPublishedSites()
+  return sites.map((s) => ({ slug: siteSlug(s) }))
+}
 
 export async function generateMetadata({
   params,

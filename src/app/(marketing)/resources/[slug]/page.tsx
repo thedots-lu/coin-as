@@ -2,14 +2,22 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { getArticleBySlug } from '@/lib/firestore/articles'
+import { getArticleBySlug, getPublishedArticles } from '@/lib/firestore/articles'
 import { getLocalizedField } from '@/lib/locale'
 import { formatDate } from '@/lib/utils/date'
 import { isHtml, sanitizeRichHtml } from '@/lib/utils/html'
 import Badge from '@/components/ui/Badge'
 import Markdown from 'react-markdown'
 
-export const revalidate = 300
+export const dynamic = 'force-static'
+
+export async function generateStaticParams() {
+  const items = await getPublishedArticles()
+  return items.flatMap((item) => {
+    const slug = item.slug?.en
+    return slug ? [{ slug }] : []
+  })
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>

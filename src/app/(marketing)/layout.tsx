@@ -13,7 +13,14 @@ import EventBanner from '@/components/layout/EventBanner'
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? ''
 const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID ?? ''
 
-export const revalidate = 300
+/**
+ * The marketing layout is built once at deploy time. Layout data (nav,
+ * footer, site_config, services menu) is refreshed on demand via
+ * `triggerRevalidate('/', 'layout')` from the relevant admin handlers
+ * (see settings, services, sites). No background ISR — the static cache
+ * stays valid until an admin save explicitly invalidates it.
+ */
+export const dynamic = 'force-static'
 
 // The Services submenu is derived from the `services` collection
 // (published only) so admin publish/unpublish reflects in the nav

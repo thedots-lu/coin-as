@@ -7,6 +7,8 @@ import { getChallengeBySlug, getPublishedChallenges } from '@/lib/firestore/chal
 
 type Params = { slug: string }
 
+export const dynamic = 'force-static'
+
 export async function generateStaticParams(): Promise<Params[]> {
   const challenges = await getPublishedChallenges()
   return challenges.map((c) => ({ slug: c.slug }))

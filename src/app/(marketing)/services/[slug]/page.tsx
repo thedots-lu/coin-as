@@ -15,7 +15,17 @@ const RELATED_ORDER = [
   'cyberresilience',
 ]
 
-export const revalidate = 300
+export const dynamic = 'force-static'
+
+/**
+ * Pre-build a page for every published service slug at deploy time so the
+ * common paths are served from the CDN. New / renamed services rendered
+ * on demand thanks to dynamicParams=true (Next's default).
+ */
+export async function generateStaticParams() {
+  const services = await getPublishedServices()
+  return services.map((s) => ({ slug: s.slug ?? s.id }))
+}
 
 export async function generateMetadata({
   params,

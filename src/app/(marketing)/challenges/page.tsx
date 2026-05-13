@@ -6,6 +6,8 @@ import { getPublishedChallenges } from '@/lib/firestore/challenges'
 import { getPage } from '@/lib/firestore/pages'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 
+export const dynamic = 'force-static'
+
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage('challenges')
   return generatePageMetadata(page?.seo, page?.title, { path: '/challenges' })

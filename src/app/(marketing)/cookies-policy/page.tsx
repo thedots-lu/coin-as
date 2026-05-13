@@ -4,7 +4,7 @@ import { generatePageMetadata } from '@/lib/utils/metadata'
 import { getLocalizedField } from '@/lib/locale'
 import ReactMarkdown from 'react-markdown'
 
-export const revalidate = 300
+export const dynamic = 'force-static'
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage('cookies-policy')
