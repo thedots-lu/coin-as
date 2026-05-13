@@ -1,13 +1,13 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowRight, ChevronLeft, ChevronRight, MapPin } from 'lucide-react'
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { getLocalizedField } from '@/lib/locale'
 import { Site } from '@/lib/types/site'
 import { Locale } from '@/lib/types/locale'
-import { isHtml, sanitizeRichHtml } from '@/lib/utils/html'
-import { siteSlug, siteDetailDescription } from '@/lib/firestore/sites'
+import { siteSlug } from '@/lib/firestore/sites'
 
 interface Props {
   sites: Site[]
@@ -20,9 +20,8 @@ const COPIES = 3
  * Bottom-of-page carousel listing the other locations. Same horizontal
  * scroll-snap pattern as RelatedServicesCarousel — cards loop seamlessly by
  * rendering three copies and silently re-anchoring once the user drifts out
- * of the middle copy. Each card uses `siteDetailDescription(site)` as the
- * body so it stays in sync with the top intro card of that site's detail
- * page (per-locale fallback to `Site.description` when blank).
+ * of the middle copy. Each card is a building image with the site name +
+ * country overlaid bottom-left, and a "Discover" link below.
  */
 export default function RelatedSitesCarousel({ sites, locale = 'en' }: Props) {
   const trackRef = useRef<HTMLDivElement>(null)
@@ -104,7 +103,7 @@ export default function RelatedSitesCarousel({ sites, locale = 'en' }: Props) {
             <div>
               <div className="w-12 h-1 bg-accent-500 rounded-full mb-4" />
               <h2 className="font-display text-2xl md:text-3xl font-bold text-primary-900">
-                Explore our other locations
+                Take a look at our other business continuity centres
               </h2>
             </div>
             <div className="flex gap-2 shrink-0">
@@ -136,7 +135,6 @@ export default function RelatedSitesCarousel({ sites, locale = 'en' }: Props) {
               const slug = siteSlug(site)
               const name = getLocalizedField(site.name, locale)
               const country = getLocalizedField(site.country, locale)
-              const description = getLocalizedField(siteDetailDescription(site), locale)
               const isClone = index < n || index >= 2 * n
 
               return (
@@ -146,42 +144,35 @@ export default function RelatedSitesCarousel({ sites, locale = 'en' }: Props) {
                   data-carousel-card
                   aria-hidden={isClone ? true : undefined}
                   tabIndex={isClone ? -1 : undefined}
-                  className="group snap-start shrink-0 basis-full md:basis-[calc((100%-3rem)/3)] bg-white rounded-2xl p-8 shadow-sm border border-secondary-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                  className="group snap-start shrink-0 basis-full md:basis-[calc((100%-3rem)/3)] bg-white rounded-2xl shadow-sm border border-secondary-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden"
                 >
-                  <div
-                    className="w-10 h-1 rounded-full mb-5"
-                    style={{ backgroundColor: site.color || 'var(--color-primary-500)' }}
-                  />
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
-                      <MapPin className="w-5 h-5 text-primary-600" strokeWidth={2} />
-                    </div>
-                    <div className="pt-1">
-                      <h3 className="font-display text-xl font-bold text-primary-900 leading-tight group-hover:text-primary-600 transition-colors">
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-secondary-50">
+                    {site.imageUrl && (
+                      <Image
+                        src={site.imageUrl}
+                        alt={`COIN ${name} site`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <h3 className="font-display text-xl font-bold text-white leading-tight">
                         {name}
                       </h3>
                       {country && (
-                        <p className="text-xs text-secondary-400 uppercase tracking-wider font-medium mt-0.5">
+                        <p className="text-[11px] text-primary-100 uppercase tracking-wider font-medium mt-0.5">
                           {country}
                         </p>
                       )}
                     </div>
                   </div>
-                  {description && (
-                    isHtml(description) ? (
-                      <div
-                        className="text-secondary-600 leading-relaxed mb-6 flex-1 prose prose-sm max-w-none [&_p]:my-1 [&_ul]:my-2 [&_li]:my-0.5 [&_li]:marker:text-accent-500"
-                        dangerouslySetInnerHTML={{ __html: sanitizeRichHtml(description) }}
-                      />
-                    ) : (
-                      <p className="text-secondary-600 leading-relaxed mb-6 flex-1">
-                        {description}
-                      </p>
-                    )
-                  )}
-                  <div className="flex items-center gap-2 text-sm font-semibold text-primary-600 group-hover:text-primary-800 transition-colors">
-                    <span>Discover</span>
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <div className="px-6 py-5">
+                    <div className="inline-flex items-center gap-2 text-sm font-semibold text-primary-600 group-hover:text-primary-800 transition-colors">
+                      <span>Discover</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </div>
                 </Link>
               )
