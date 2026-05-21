@@ -1,4 +1,4 @@
-import { Locale } from '@/lib/types/locale'
+import { Locale, ENABLED_LOCALES } from '@/lib/types/locale'
 
 // Recursively walks an object/array tree, counting LocaleString leaves
 // ({ en, fr, nl }) and how many are filled per locale.
@@ -46,7 +46,9 @@ export function computeLocaleStats(root: unknown): Array<{
 
   walk(root)
 
-  return (['en', 'fr', 'nl'] as Locale[]).map((locale) => ({
+  // Only surface the locales exposed in the admin (the toolbar hides its
+  // switcher entirely when this yields a single locale).
+  return ENABLED_LOCALES.map((locale) => ({
     locale,
     filled: counts[locale].filled,
     total: counts[locale].total,

@@ -59,7 +59,8 @@ export default function EditorToolbar({
           </div>
         </div>
 
-        {/* Center: locale switcher */}
+        {/* Center: locale switcher — hidden when a single locale is enabled */}
+        {localeStats.length > 1 && (
         <div className="flex items-center gap-1 bg-white/5 rounded-md p-1">
           {localeStats.map(({ locale, filled, total }) => {
             const pct = total === 0 ? 0 : Math.round((filled / total) * 100)
@@ -88,6 +89,7 @@ export default function EditorToolbar({
             )
           })}
         </div>
+        )}
 
         {/* Right: actions */}
         <div className="flex items-center gap-2">
