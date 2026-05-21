@@ -8,8 +8,8 @@ import { triggerRevalidate } from '@/lib/firebase/revalidate'
 import { deleteFile } from '@/lib/firebase/upload'
 import { logAudit } from '@/lib/firebase/audit-log'
 import { extractUrls } from '@/lib/utils/extract-urls'
-import { PageDocument } from '@/lib/types/page'
-import { Locale } from '@/lib/types/locale'
+import { PageDocument, PageSection } from '@/lib/types/page'
+import { Locale, LocaleString, createEmptyLocaleString } from '@/lib/types/locale'
 import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
 import HubBanner from '@/components/knowledge-hub/HubBanner'
 import {
@@ -145,6 +145,63 @@ const PAGE_CONFIG: Record<string, PageConfig> = {
   challenges: { title: 'Challenges', previewPath: '/challenges', seoOnly: true },
 }
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+}
+
+// Fold a (plain-text) heading into the HTML body as a leading paragraph, so a
+// page_intro → free_text conversion never drops content the editor may have
+// typed into either field.
+function mergeHeadingIntoBody(
+  heading: LocaleString | undefined,
+  body: LocaleString | undefined,
+): LocaleString {
+  const out = createEmptyLocaleString()
+  ;(['en', 'fr', 'nl'] as const).forEach((l) => {
+    const h = heading?.[l]?.trim() ?? ''
+    const b = body?.[l] ?? ''
+    out[l] = h ? `<p>${escapeHtml(h)}</p>${b}` : b
+  })
+  return out
+}
+
+// The privacy-policy intro is an editable `free_text` block (heading-less,
+// default font size). Older docs may carry a `page_intro` (large title) or
+// nothing at all: convert / seed so the editor always renders the right block.
+// `draft` gets the normalized version while `original` keeps the raw doc, so
+// any conversion shows up as a pending change the admin can Save in one click.
+function normalizePrivacySections(slug: string, data: PageDocument): PageDocument {
+  if (slug !== 'privacy-policy') return data
+  const sections = data.sections ?? []
+
+  let mutated = false
+  const converted: PageSection[] = sections.map((s) => {
+    if (s.type !== 'page_intro') return s
+    mutated = true
+    return {
+      type: 'free_text',
+      order: s.order,
+      ...(s.visible !== undefined ? { visible: s.visible } : {}),
+      body: mergeHeadingIntoBody(s.heading, s.body),
+    } as PageSection
+  })
+
+  if (converted.some((s) => s.type === 'free_text')) {
+    return mutated ? { ...data, sections: converted } : data
+  }
+
+  const maxOrder = converted.reduce((m, s) => Math.max(m, s.order ?? 0), -1)
+  const block: PageSection = {
+    type: 'free_text',
+    order: maxOrder + 1,
+    body: createEmptyLocaleString(),
+  } as PageSection
+  return { ...data, sections: [...converted, block] }
+}
+
 export default function PageVisualEditor() {
   const params = useParams()
   const router = useRouter()
@@ -179,9 +236,9 @@ export default function PageVisualEditor() {
           setError(`Page "${pageSlug}" not found in Firestore`)
           return
         }
-        const data = { slug: snap.id, ...snap.data() } as PageDocument
-        setOriginal(data)
-        setDraft(data)
+        const raw = { slug: snap.id, ...snap.data() } as PageDocument
+        setOriginal({ ...raw, sections: raw.sections ?? [] })
+        setDraft(normalizePrivacySections(pageSlug, raw))
         setAux(auxData)
       } catch (err) {
         console.error('Failed to load page:', err)

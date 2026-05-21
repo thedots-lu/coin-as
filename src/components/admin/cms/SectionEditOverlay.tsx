@@ -40,6 +40,7 @@ const INLINE_EDITABLE_TYPES: ReadonlySet<string> = new Set([
   'services_grid',
   'icon_card_grid',
   'page_intro',
+  'free_text',
 ])
 
 const TYPE_LABELS: Record<string, string> = {
@@ -71,6 +72,7 @@ const TYPE_LABELS: Record<string, string> = {
   site_gallery: 'Site Gallery',
   featured_carousel: 'Featured Carousel',
   page_intro: 'Page Intro',
+  free_text: 'Free Text',
 }
 
 export default function SectionEditOverlay({

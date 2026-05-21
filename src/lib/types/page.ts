@@ -344,6 +344,18 @@ export interface PageIntroSection {
 }
 
 /**
+ * A single inline-rich text block with no heading, rendered at the default
+ * prose size (unlike `page_intro`, which leads with a large title). Used for
+ * editable body copy such as the privacy-policy intro.
+ */
+export interface FreeTextSection {
+  type: 'free_text'
+  order: number
+  // Stored as HTML (TipTap output). Renderer sanitizes before injecting.
+  body: LocaleString
+}
+
+/**
  * Generic image carousel with a single caption per slide displayed in the
  * bottom-left over a dark gradient. Used by `recovery-workplaces` but
  * reusable on any page. Slides without an imageUrl are skipped on the
@@ -415,6 +427,7 @@ export type PageSection = WithVisibility<
   | ServicesGridSection
   | IconCardGridSection
   | PageIntroSection
+  | FreeTextSection
 >
 
 export function isSectionVisible(section: { visible?: boolean }): boolean {

@@ -63,7 +63,7 @@ export default async function MarketingLayout({ children }: { children: React.Re
       <Header navItems={navItems} siteConfig={siteConfig} />
 
       <main className="min-h-screen pt-20">
-        {siteConfig?.newsletterUrl && (
+        {siteConfig?.newsletterUrl && siteConfig.newsletterEnabled !== false && (
           <EventBanner
             message="Stay informed on business continuity & cyber resilience"
             linkText="Subscribe to our newsletter"

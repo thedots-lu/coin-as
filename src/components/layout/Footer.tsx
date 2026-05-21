@@ -137,7 +137,7 @@ export default function Footer({ footerNav, siteConfig }: FooterProps) {
                   <ArrowUpRight className="h-3 w-3 text-secondary-500" />
                 </a>
               )}
-              {siteConfig?.newsletterUrl && (
+              {siteConfig?.newsletterUrl && siteConfig.newsletterEnabled !== false && (
                 <a
                   href={siteConfig.newsletterUrl}
                   target="_blank"

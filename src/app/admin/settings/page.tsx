@@ -8,6 +8,7 @@ import { logAudit } from '@/lib/firebase/audit-log'
 import { SiteConfig } from '@/lib/types/site-config'
 import { createEmptyLocaleString, LocaleString } from '@/lib/types/locale'
 import LocaleEditor from '@/components/admin/LocaleEditor'
+import FileUpload from '@/components/admin/FileUpload'
 
 export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true)
@@ -20,6 +21,8 @@ export default function AdminSettingsPage() {
   const [phoneLU, setPhoneLU] = useState('')
   const [linkedinUrl, setLinkedinUrl] = useState('')
   const [newsletterUrl, setNewsletterUrl] = useState('')
+  const [newsletterEnabled, setNewsletterEnabled] = useState(true)
+  const [privacyPolicyPdf, setPrivacyPolicyPdf] = useState('')
   const [companyName, setCompanyName] = useState('')
   const [companyKvk, setCompanyKvk] = useState('')
   const [companyAddress, setCompanyAddress] = useState('')
@@ -40,6 +43,8 @@ export default function AdminSettingsPage() {
           setPhoneLU(data.phoneLU || '')
           setLinkedinUrl(data.linkedinUrl || '')
           setNewsletterUrl(data.newsletterUrl || '')
+          setNewsletterEnabled(data.newsletterEnabled !== false)
+          setPrivacyPolicyPdf(data.privacyPolicyPdf || '')
           setCompanyName(data.companyLegal?.name || '')
           setCompanyKvk(data.companyLegal?.kvk || '')
           setCompanyAddress(data.companyLegal?.address || '')
@@ -67,6 +72,8 @@ export default function AdminSettingsPage() {
         phoneLU,
         linkedinUrl,
         newsletterUrl,
+        newsletterEnabled,
+        privacyPolicyPdf: privacyPolicyPdf || null,
         companyLegal: {
           name: companyName,
           kvk: companyKvk,
@@ -185,6 +192,18 @@ export default function AdminSettingsPage() {
               <p className="text-xs text-gray-500 mt-1">
                 Used in the footer, the top event banner and the newsletter popup.
               </p>
+              <label className="mt-3 flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={newsletterEnabled}
+                  onChange={(e) => setNewsletterEnabled(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                />
+                <span className="text-sm text-gray-700">Show newsletter signup</span>
+              </label>
+              <p className="text-xs text-gray-500 mt-1">
+                When off, the green signup banner and the footer newsletter link are hidden.
+              </p>
             </div>
           </div>
         </div>
@@ -231,6 +250,23 @@ export default function AdminSettingsPage() {
           <div className="space-y-4">
             <LocaleEditor label="Footer Description" value={footerDescription} onChange={setFooterDescription} multiline />
             <LocaleEditor label="Copyright Text" value={copyright} onChange={setCopyright} />
+          </div>
+        </div>
+
+        {/* Documents */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Documents</h2>
+          <div className="space-y-2">
+            <FileUpload
+              label="Privacy Policy PDF"
+              value={privacyPolicyPdf}
+              onChange={setPrivacyPolicyPdf}
+              storagePath="documents"
+              accept="application/pdf"
+            />
+            <p className="text-xs text-gray-500">
+              When set, a download link appears beneath the intro text on the Privacy Policy page.
+            </p>
           </div>
         </div>
       </form>

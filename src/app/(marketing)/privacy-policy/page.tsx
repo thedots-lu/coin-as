@@ -1,8 +1,10 @@
 import { getPage } from '@/lib/firestore/pages'
+import { getSiteConfig } from '@/lib/firestore/site-config'
 import { Metadata } from 'next'
 import { generatePageMetadata } from '@/lib/utils/metadata'
 import { getLocalizedField } from '@/lib/locale'
-import ReactMarkdown from 'react-markdown'
+import { Download } from 'lucide-react'
+import PageSectionRenderer from '@/components/sections/PageSectionRenderer'
 
 export const dynamic = 'force-static'
 
@@ -13,7 +15,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PrivacyPolicyPage() {
-  const pageData = await getPage('privacy-policy')
+  const [pageData, siteConfig] = await Promise.all([
+    getPage('privacy-policy'),
+    getSiteConfig(),
+  ])
 
   if (!pageData) {
     return (
@@ -24,7 +29,7 @@ export default async function PrivacyPolicyPage() {
   }
 
   const title = getLocalizedField(pageData.title)
-  const body = pageData.body ? getLocalizedField(pageData.body) : ''
+  const pdfUrl = siteConfig?.privacyPolicyPdf
 
   return (
     <>
@@ -34,13 +39,24 @@ export default async function PrivacyPolicyPage() {
         </div>
       </section>
 
-      <section className="py-16">
-        <div className="container-padding max-w-4xl mx-auto">
-          <div className="prose prose-lg max-w-none">
-            <ReactMarkdown>{body}</ReactMarkdown>
+      {/* Editable intro — managed via the visual editor (free_text section). */}
+      <PageSectionRenderer sections={pageData.sections ?? []} />
+
+      {pdfUrl && (
+        <section className="py-8">
+          <div className="container-padding max-w-6xl mx-auto flex items-center justify-center min-h-[15vh]">
+            <a
+              href={pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-md bg-primary-600 text-white text-sm font-medium transition-colors hover:bg-primary-700"
+            >
+              <Download className="h-4 w-4" />
+              Download the full privacy policy (PDF)
+            </a>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </>
   )
 }

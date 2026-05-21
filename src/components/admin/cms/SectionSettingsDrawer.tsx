@@ -53,6 +53,7 @@ const TYPE_LABELS: Record<string, string> = {
   image_carousel: 'Image Carousel',
   icon_card_grid: 'Icon Card Grid',
   page_intro: 'Page Intro',
+  free_text: 'Free Text',
 }
 
 interface Props {
