@@ -179,6 +179,10 @@ export interface MapOverviewSection {
   mapImageUrl: string | null
   mapEmbedUrl?: string | null
   isoBadgeUrl: string | null
+  // Text lines of the ISO certification badge card (beside the logo).
+  isoLabel?: LocaleString
+  isoTitle?: LocaleString
+  isoSubtext?: LocaleString
   ctaLabel?: LocaleString
 }
 

@@ -18,6 +18,9 @@ const DEFAULT_MAP_IMAGE = '/images/coin/Amsterdam.png'
 const DEFAULT_ISO_BADGE = '/images/coin/kiwa-iso-27001-logo.jpg'
 const DEFAULT_HEADING = 'Our Locations'
 const DEFAULT_CTA_LABEL = 'View all our locations'
+const DEFAULT_ISO_LABEL = 'Certified'
+const DEFAULT_ISO_TITLE = 'All sites ISO 27001/2022 certified'
+const DEFAULT_ISO_SUBTEXT = '24/7 operations'
 const DEFAULT_COLOR = 'var(--color-primary-500)'
 const EMPTY_LS: LocaleString = { en: '', fr: '', nl: '' }
 
@@ -91,6 +94,12 @@ export default function MapOverview({ section, locale, basePath, sites }: MapOve
   const displayedSites = sites && sites.length > 0 ? sites : FALLBACK_SITES
   const ctaLabelValue = section.ctaLabel ?? EMPTY_LS
   const ctaLabelDisplayed = getLocalizedField(ctaLabelValue, locale) || DEFAULT_CTA_LABEL
+  const isoLabelValue = section.isoLabel ?? EMPTY_LS
+  const isoLabelDisplayed = getLocalizedField(isoLabelValue, locale) || DEFAULT_ISO_LABEL
+  const isoTitleValue = section.isoTitle ?? EMPTY_LS
+  const isoTitleDisplayed = getLocalizedField(isoTitleValue, locale) || DEFAULT_ISO_TITLE
+  const isoSubtextValue = section.isoSubtext ?? EMPTY_LS
+  const isoSubtextDisplayed = getLocalizedField(isoSubtextValue, locale) || DEFAULT_ISO_SUBTEXT
   // Hide the CTA when the section is rendered on the page it points to.
   // Still show it in edit mode so the label remains reachable from /locations.
   const showCta = isEditing || pathname !== '/locations'
@@ -151,12 +160,42 @@ export default function MapOverview({ section, locale, basePath, sites }: MapOve
               </div>
               <div className="text-center sm:text-left">
                 <p className="text-xs uppercase tracking-wider text-secondary-400 font-medium mb-1">
-                  Certified
+                  {isEditing ? (
+                    <EditableText
+                      path={`${basePath}.isoLabel`}
+                      value={isoLabelValue}
+                      placeholder={DEFAULT_ISO_LABEL}
+                      as="span"
+                    />
+                  ) : (
+                    isoLabelDisplayed
+                  )}
                 </p>
                 <p className="text-base md:text-lg font-semibold text-secondary-800 leading-snug">
-                  All sites ISO 27001/2022 certified
+                  {isEditing ? (
+                    <EditableText
+                      path={`${basePath}.isoTitle`}
+                      value={isoTitleValue}
+                      placeholder={DEFAULT_ISO_TITLE}
+                      as="span"
+                      multiline
+                    />
+                  ) : (
+                    isoTitleDisplayed
+                  )}
                 </p>
-                <p className="text-sm text-secondary-500 mt-1">24/7 operations</p>
+                <p className="text-sm text-secondary-500 mt-1">
+                  {isEditing ? (
+                    <EditableText
+                      path={`${basePath}.isoSubtext`}
+                      value={isoSubtextValue}
+                      placeholder={DEFAULT_ISO_SUBTEXT}
+                      as="span"
+                    />
+                  ) : (
+                    isoSubtextDisplayed
+                  )}
+                </p>
               </div>
             </div>
 
