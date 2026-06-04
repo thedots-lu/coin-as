@@ -21,6 +21,9 @@ export default function NewsForm({ news, onSave, onCancel }: NewsFormProps) {
   const [slug, setSlug] = useState<LocaleString>(news?.slug || createEmptyLocaleString())
   const [imageUrl, setImageUrl] = useState(news?.imageUrl || '')
   const [published, setPublished] = useState(news?.published ?? false)
+  const [publishedAt, setPublishedAt] = useState(
+    news?.publishedAt ? formatDateForInput(news.publishedAt) : ''
+  )
   const [author, setAuthor] = useState(news?.author || '')
   const [tags, setTags] = useState(news?.tags?.join(', ') || '')
   const [type, setType] = useState<'news' | 'event'>(news?.type || 'news')
@@ -68,7 +71,7 @@ export default function NewsForm({ news, onSave, onCancel }: NewsFormProps) {
       slug,
       imageUrl: imageUrl || null,
       published,
-      publishedAt: published ? new Date() : null,
+      publishedAt: published ? (publishedAt ? new Date(publishedAt) : new Date()) : null,
       author,
       tags: tags.split(',').map((t) => t.trim()).filter(Boolean),
       type,
@@ -83,7 +86,16 @@ export default function NewsForm({ news, onSave, onCancel }: NewsFormProps) {
         <h2 className="text-lg font-semibold text-gray-900">
           {news ? 'Edit News' : 'Create News'}
         </h2>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
+          <label className="flex items-center gap-2 text-sm">
+            <span className="font-medium text-gray-700">Publication date</span>
+            <input
+              type="date"
+              value={publishedAt}
+              onChange={(e) => setPublishedAt(e.target.value)}
+              className="px-2 py-1 border border-gray-300 rounded-md text-sm"
+            />
+          </label>
           <label className="flex items-center gap-2 text-sm">
             <input
               type="checkbox"
